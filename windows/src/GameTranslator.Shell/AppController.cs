@@ -166,6 +166,12 @@ public sealed class AppController : INotifyPropertyChanged, IDisposable
     /// </summary>
     public static bool UsesTurkishFeatures(UserSettings settings) => TargetLanguages.IsTurkish(settings.TargetLanguage);
 
+    /// <summary>Is the current target language Turkish (see <see cref="UsesTurkishFeatures"/>).</summary>
+    public bool UsesTurkish => UsesTurkishFeatures(settings);
+
+    /// <summary>The line "Send a test subtitle" shows on the TV when the target is Arabic: the user sees the Arabic font and direction.</summary>
+    public const string ArabicTestSubtitle = "هذه ترجمة تجريبية. هل تراها فوق اللعبة؟";
+
     private static bool PoolAllowed(UserSettings settings) => settings.SharePool && UsesTurkishFeatures(settings);
 
     private void OfferToPool(string text)
@@ -706,7 +712,9 @@ public sealed class AppController : INotifyPropertyChanged, IDisposable
         // Oyunda henüz altyazı görülmediyse altyazı bölgesinin altına yakın tipik bir yer kullanılır.
         var region = settings.Region;
         var box = lastSubtitleBox ?? new TextBox(0.3, region.Bottom - 0.1, 0.7, region.Bottom - 0.03);
-        var msg = text["This is a test subtitle. Can you see it on top of the game?"];
+        var msg = TargetLanguages.Normalize(settings.TargetLanguage) == TargetLanguages.Arabic
+            ? ArabicTestSubtitle
+            : text["This is a test subtitle. Can you see it on top of the game?"];
         server.SendSubtitle(msg, 8000, box);
         post(() => LiveSubtitleShown?.Invoke(msg, 8000, box));
     }

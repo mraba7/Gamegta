@@ -592,6 +592,18 @@
                             <TextBlock Text="Yapay Zeka &amp; Çeviri Motoru Seçimi" FontWeight="Bold" FontSize="15" Foreground="{DynamicResource textPrimaryBrush}" Margin="0,0,0,4" />
                             <TextBlock Text="Yamada yer almayan replikler için kullanılacak çeviri motorunu belirleyin." Style="{StaticResource HintText}" FontSize="13" Margin="0,0,0,12" />
 
+                            <!-- Arabic edition: quality mode. "Best" uses the strongest model of the chosen AI service, "Fastest" its quick one. -->
+                            <Border x:Name="BorderQuality" Background="{DynamicResource cardBrush}" BorderBrush="{DynamicResource hairlineBrush}" BorderThickness="1" CornerRadius="8" Padding="14" Margin="0,0,0,10">
+                                <StackPanel FlowDirection="RightToLeft">
+                                    <TextBlock Text="وضع الترجمة" FontWeight="Bold" FontSize="13" Foreground="White" Margin="0,0,0,8" />
+                                    <StackPanel Orientation="Horizontal">
+                                        <RadioButton x:Name="RadioQualityBest" GroupName="QualityModeGroup" Checked="OnQualitySelected" Content="أقوى جودة" FontWeight="Bold" FontSize="13" Foreground="White" Margin="0,0,24,0" Cursor="Hand" />
+                                        <RadioButton x:Name="RadioQualityFastest" GroupName="QualityModeGroup" Checked="OnQualitySelected" Content="أسرع" FontWeight="Bold" FontSize="13" Foreground="White" Cursor="Hand" />
+                                    </StackPanel>
+                                    <TextBlock x:Name="QualityHint" Text="" FontSize="12" Foreground="{DynamicResource textSecondaryBrush}" TextWrapping="Wrap" Margin="0,8,0,0" />
+                                </StackPanel>
+                            </Border>
+
                             <!-- Model 1: DirectML Yerel Model -->
                             <Border x:Name="BorderDirectMl" Background="{DynamicResource cardBrush}" BorderBrush="{DynamicResource accentBrush}" BorderThickness="1.5" CornerRadius="8" Padding="14" Margin="0,0,0,10"
                                     MouseLeftButtonUp="OnCardDirectMlClick" Cursor="Hand">
@@ -606,7 +618,7 @@
                                             </StackPanel>
                                         </Border>
                                     </Grid>
-                                    <TextBlock Text="Bilgisayarınızın ekran kartını (DirectML) ve CPU'sunu kullanarak tamamen çevrimdışı, sıfır gecikmeli çeviri yapar. Kota ve internet gerektirmez."
+                                    <TextBlock x:Name="LocalModelDescription" Text="Bilgisayarınızın ekran kartını (DirectML) ve CPU'sunu kullanarak tamamen çevrimdışı, sıfır gecikmeli çeviri yapar. Kota ve internet gerektirmez."
                                                FontSize="13" Foreground="{DynamicResource textSecondaryBrush}" TextWrapping="Wrap" Margin="22,0,0,0" />
                                 </StackPanel>
                             </Border>
@@ -617,7 +629,7 @@
                                 <StackPanel>
                                     <Grid Margin="0,0,0,6">
                                         <RadioButton x:Name="RadioModelGemini" GroupName="TranslationModelGroup" Checked="OnModelSelected"
-                                                     Content="Google Gemini (en iyi çeviri kalitesi)" FontWeight="Bold" FontSize="13" Foreground="White" VerticalAlignment="Center" Cursor="Hand" />
+                                                     Content="Google Gemini" FontWeight="Bold" FontSize="13" Foreground="White" VerticalAlignment="Center" Cursor="Hand" />
                                         <Border x:Name="BadgeGemini" HorizontalAlignment="Right" Background="{DynamicResource successSoftBrush}" CornerRadius="10" Padding="8,2" Visibility="Collapsed">
                                             <StackPanel Orientation="Horizontal">
                                                 <Ellipse Width="5" Height="5" Fill="{DynamicResource successBrush}" Margin="0,0,4,0" VerticalAlignment="Center" />
@@ -625,7 +637,7 @@
                                             </StackPanel>
                                         </Border>
                                     </Grid>
-                                    <TextBlock Text="Oyun jargonu, sokak ağzı ve diyaloglarda insan düzeyinde en akıcı Türkçe altyazı deneyimini sunar." FontSize="13" Foreground="{DynamicResource textSecondaryBrush}" TextWrapping="Wrap" Margin="22,0,0,8" />
+                                    <TextBlock x:Name="GeminiDescription" Text="Oyun jargonu, sokak ağzı ve diyaloglarda insan düzeyinde en akıcı Türkçe altyazı deneyimini sunar." FontSize="13" Foreground="{DynamicResource textSecondaryBrush}" TextWrapping="Wrap" Margin="22,0,0,8" />
                                     <Grid Margin="22,0,0,6">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="*" />
@@ -637,6 +649,68 @@
                                     <TextBlock Margin="22,0,0,0">
                                         <Hyperlink NavigateUri="https://aistudio.google.com/apikey" RequestNavigate="OnHyperlink">
                                             <Run Text="Ücretsiz Google Gemini API anahtarı alın " Foreground="{DynamicResource accentBrush}" FontSize="13" />
+                                        </Hyperlink>
+                                    </TextBlock>
+                                </StackPanel>
+                            </Border>
+
+                            <!-- Arabic edition: OpenAi -->
+                            <Border x:Name="BorderOpenAi" Background="{DynamicResource cardBrush}" BorderBrush="{DynamicResource hairlineBrush}" BorderThickness="1" CornerRadius="8" Padding="14" Margin="0,0,0,10"
+                                    MouseLeftButtonUp="OnCardOpenAiClick" Cursor="Hand">
+                                <StackPanel FlowDirection="RightToLeft">
+                                    <Grid Margin="0,0,0,6">
+                                        <RadioButton x:Name="RadioModelOpenAi" GroupName="TranslationModelGroup" Checked="OnModelSelected"
+                                                     Content="OpenAI (GPT)" FontWeight="Bold" FontSize="13" Foreground="White" VerticalAlignment="Center" Cursor="Hand" />
+                                        <Border x:Name="BadgeOpenAi" HorizontalAlignment="Right" Background="{DynamicResource successSoftBrush}" CornerRadius="10" Padding="8,2" Visibility="Collapsed">
+                                            <StackPanel Orientation="Horizontal">
+                                                <Ellipse Width="5" Height="5" Fill="{DynamicResource successBrush}" Margin="0,0,4,0" VerticalAlignment="Center" />
+                                                <TextBlock Text="مفعّل" FontSize="11" FontWeight="Bold" Foreground="{DynamicResource successBrush}" VerticalAlignment="Center" />
+                                            </StackPanel>
+                                        </Border>
+                                    </Grid>
+                                    <TextBlock Text="ترجمة بالذكاء الاصطناعي من OpenAI. تحتاج مفتاح API مدفوع من حسابك." FontSize="13" Foreground="{DynamicResource textSecondaryBrush}" TextWrapping="Wrap" Margin="22,0,0,8" />
+                                    <Grid Margin="22,0,0,6">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+                                        <PasswordBox x:Name="OpenAiKeyInput" FlowDirection="LeftToRight" MinHeight="32" VerticalContentAlignment="Center" Margin="0,0,8,0" />
+                                        <Button Grid.Column="1" Content="حفظ وتفعيل" Click="OnOpenAiSave" Style="{StaticResource PillButton}" FontWeight="Bold" />
+                                    </Grid>
+                                    <TextBlock Margin="22,0,0,0">
+                                        <Hyperlink NavigateUri="https://platform.openai.com/api-keys" RequestNavigate="OnHyperlink">
+                                            <Run Text="احصل على مفتاح OpenAI" Foreground="{DynamicResource accentBrush}" FontSize="13" />
+                                        </Hyperlink>
+                                    </TextBlock>
+                                </StackPanel>
+                            </Border>
+
+                            <!-- Arabic edition: Claude -->
+                            <Border x:Name="BorderClaude" Background="{DynamicResource cardBrush}" BorderBrush="{DynamicResource hairlineBrush}" BorderThickness="1" CornerRadius="8" Padding="14" Margin="0,0,0,10"
+                                    MouseLeftButtonUp="OnCardClaudeClick" Cursor="Hand">
+                                <StackPanel FlowDirection="RightToLeft">
+                                    <Grid Margin="0,0,0,6">
+                                        <RadioButton x:Name="RadioModelClaude" GroupName="TranslationModelGroup" Checked="OnModelSelected"
+                                                     Content="Claude (Anthropic)" FontWeight="Bold" FontSize="13" Foreground="White" VerticalAlignment="Center" Cursor="Hand" />
+                                        <Border x:Name="BadgeClaude" HorizontalAlignment="Right" Background="{DynamicResource successSoftBrush}" CornerRadius="10" Padding="8,2" Visibility="Collapsed">
+                                            <StackPanel Orientation="Horizontal">
+                                                <Ellipse Width="5" Height="5" Fill="{DynamicResource successBrush}" Margin="0,0,4,0" VerticalAlignment="Center" />
+                                                <TextBlock Text="مفعّل" FontSize="11" FontWeight="Bold" Foreground="{DynamicResource successBrush}" VerticalAlignment="Center" />
+                                            </StackPanel>
+                                        </Border>
+                                    </Grid>
+                                    <TextBlock Text="ترجمة بالذكاء الاصطناعي من Anthropic. تحتاج مفتاح API مدفوع من حسابك." FontSize="13" Foreground="{DynamicResource textSecondaryBrush}" TextWrapping="Wrap" Margin="22,0,0,8" />
+                                    <Grid Margin="22,0,0,6">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+                                        <PasswordBox x:Name="ClaudeKeyInput" FlowDirection="LeftToRight" MinHeight="32" VerticalContentAlignment="Center" Margin="0,0,8,0" />
+                                        <Button Grid.Column="1" Content="حفظ وتفعيل" Click="OnClaudeSave" Style="{StaticResource PillButton}" FontWeight="Bold" />
+                                    </Grid>
+                                    <TextBlock Margin="22,0,0,0">
+                                        <Hyperlink NavigateUri="https://platform.claude.com/settings/keys" RequestNavigate="OnHyperlink">
+                                            <Run Text="احصل على مفتاح Claude" Foreground="{DynamicResource accentBrush}" FontSize="13" />
                                         </Hyperlink>
                                     </TextBlock>
                                 </StackPanel>

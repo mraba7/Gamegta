@@ -176,6 +176,41 @@ public class ArabicEngineTests
         }
     }
 
+    [Theory]
+    [InlineData("ar", false)]
+    [InlineData("tr", true)]
+    public void UsesTurkishFollowsTheTargetLanguage(string target, bool expected)
+    {
+        var (controller, _, _) = Ready(new UserSettings { TargetLanguage = target });
+        Assert.Equal(expected, controller.UsesTurkish);
+        controller.Dispose();
+    }
+
+    /// <summary>The test line sent to the TV is Arabic for an Arabic target, so the user sees the right-to-left font at once.</summary>
+    [Fact]
+    public void TestSubtitleIsArabicForAnArabicTarget()
+    {
+        var (controller, _, _) = Ready();
+        string? shown = null;
+        controller.LiveSubtitleShown += (text, _, _) => shown = text;
+        controller.SendTestSubtitle();
+        Assert.NotNull(shown);
+        Assert.Contains(shown!, c => c >= '\u0600' && c <= '\u06FF');
+        Assert.Equal(AppController.ArabicTestSubtitle, shown);
+        controller.Dispose();
+    }
+
+    [Fact]
+    public void TestSubtitleStaysAsBeforeForTurkish()
+    {
+        var (controller, _, _) = Ready(new UserSettings { TargetLanguage = "tr" });
+        string? shown = null;
+        controller.LiveSubtitleShown += (text, _, _) => shown = text;
+        controller.SendTestSubtitle();
+        Assert.Equal("This is a test subtitle. Can you see it on top of the game?", shown);
+        controller.Dispose();
+    }
+
     /// <summary>The voices are Turkish: no dubbing for another target language, whatever the saved setting says.</summary>
     [Theory]
     [InlineData("ar", false)]

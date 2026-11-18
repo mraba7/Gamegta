@@ -183,9 +183,10 @@ public partial class MainView : UserControl
             if (ThumbnailStatusText != null) ThumbnailStatusText.Text = "Görüntü bekleniyor";
         }
 
-        if (controller.HasGeminiKey && GeminiKeyInput != null)
+        // A saved key is never shown; dots tell the user one is stored.
+        foreach (var (provider, input) in new[] { (AiProvider.Gemini, GeminiKeyInput), (AiProvider.OpenAi, OpenAiKeyInput), (AiProvider.Claude, ClaudeKeyInput) })
         {
-            GeminiKeyInput.Password = "************";
+            if (input != null && controller.HasAiKey(provider)) input.Password = SavedKeyMask;
         }
 
         UpdateModelSelectionUi();
@@ -919,6 +920,19 @@ public partial class MainView : UserControl
         if (loading) return;
         TranslationEngine targetEngine = TranslationEngine.DirectML;
 
+        if (CheckedAiProvider() is { } aiProvider && !(aiProvider == AiProvider.Gemini && controller.UsesTurkish))
+        {
+            if (!controller.HasAiKey(aiProvider))
+            {
+                MessageBox.Show(AiText.KeyNeeded(aiProvider), AiText.KeyNeededTitle, MessageBoxButton.OK, MessageBoxImage.Information);
+                UpdateModelSelectionUi();
+                return;
+            }
+            controller.UseAiProvider(aiProvider);
+            UpdateModelSelectionUi();
+            return;
+        }
+
         if (RadioModelGemini.IsChecked == true)
         {
             if (!controller.HasGeminiKey)
@@ -950,6 +964,11 @@ public partial class MainView : UserControl
 
     private async void OnGeminiSave(object sender, RoutedEventArgs e)
     {
+        if (!controller.UsesTurkish)
+        {
+            await SaveAiKeyAsync(AiProvider.Gemini, GeminiKeyInput);
+            return;
+        }
         var key = GeminiKeyInput.Password?.Trim();
         if (string.IsNullOrWhiteSpace(key))
         {
@@ -1003,6 +1022,10 @@ public partial class MainView : UserControl
         try
         {
             var engine = controller.Settings.Engine;
+            // Arabic edition: the three AI services share one engine value; Gemini saved by older versions counts as Gemini.
+            var ai = engine == TranslationEngine.Ai ? controller.Settings.Provider : engine == TranslationEngine.Gemini ? AiProvider.Gemini : (AiProvider?)null;
+            if (engine == TranslationEngine.Ai && ai == AiProvider.Gemini) engine = TranslationEngine.Gemini;
+            UpdateAiCards(ai);
 
             // Radio Buttons
             if (RadioModelDirectMl != null) RadioModelDirectMl.IsChecked = (engine == TranslationEngine.DirectML);
@@ -1040,12 +1063,115 @@ public partial class MainView : UserControl
 
         if (controller.HasGeminiKey)
         {
-            controller.Settings = controller.Settings with { Engine = TranslationEngine.Gemini, OnlineTranslation = true };
+            if (controller.UsesTurkish) controller.Settings = controller.Settings with { Engine = TranslationEngine.Gemini, OnlineTranslation = true };
+            else controller.UseAiProvider(AiProvider.Gemini);
             UpdateModelSelectionUi();
         }
         else
         {
             GeminiKeyInput?.Focus();
+        }
+    }
+
+    // --- Arabic edition: OpenAI and Claude cards, quality mode ---
+
+    private const string SavedKeyMask = "************";
+
+    /// <summary>The AI service whose radio button is checked, if any.</summary>
+    private AiProvider? CheckedAiProvider() =>
+        RadioModelOpenAi?.IsChecked == true ? AiProvider.OpenAi :
+        RadioModelClaude?.IsChecked == true ? AiProvider.Claude :
+        RadioModelGemini?.IsChecked == true ? AiProvider.Gemini : null;
+
+    private async Task SaveAiKeyAsync(AiProvider provider, PasswordBox input)
+    {
+        var key = input.Password?.Trim();
+        if (string.IsNullOrWhiteSpace(key) || key == SavedKeyMask)
+        {
+            MessageBox.Show(AiText.KeyMissing(provider), AiText.KeyMissingTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
+            return;
+        }
+
+        var check = await controller.SetAiKeyAsync(provider, key);
+        if (check.State is OnlineKeyState.Valid or OnlineKeyState.QuotaExceeded)
+        {
+            input.Password = SavedKeyMask;
+            UpdateModelSelectionUi();
+            controller.SendTestSubtitle();
+            MessageBox.Show(AiText.KeyAccepted(provider), AiText.KeyAcceptedTitle, MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+        else
+        {
+            MessageBox.Show(AiText.KeyRejected(provider), AiText.KeyRejectedTitle, MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+    }
+
+    private void SelectAiCard(AiProvider provider, PasswordBox? input, MouseButtonEventArgs e)
+    {
+        if (e.OriginalSource is PasswordBox || e.OriginalSource is Button) return;
+        if (controller.HasAiKey(provider))
+        {
+            controller.UseAiProvider(provider);
+            UpdateModelSelectionUi();
+        }
+        else
+        {
+            input?.Focus();
+        }
+    }
+
+    private async void OnOpenAiSave(object sender, RoutedEventArgs e) => await SaveAiKeyAsync(AiProvider.OpenAi, OpenAiKeyInput);
+    private async void OnClaudeSave(object sender, RoutedEventArgs e) => await SaveAiKeyAsync(AiProvider.Claude, ClaudeKeyInput);
+    private void OnCardOpenAiClick(object sender, MouseButtonEventArgs e) => SelectAiCard(AiProvider.OpenAi, OpenAiKeyInput, e);
+    private void OnCardClaudeClick(object sender, MouseButtonEventArgs e) => SelectAiCard(AiProvider.Claude, ClaudeKeyInput, e);
+
+    private void OnQualitySelected(object sender, RoutedEventArgs e)
+    {
+        if (loading) return;
+        controller.SetQuality(RadioQualityFastest?.IsChecked == true ? QualityMode.Fastest : QualityMode.Best);
+        UpdateModelSelectionUi();
+    }
+
+    /// <summary>OpenAI and Claude cards, the quality switch and the Arabic wording of the shared cards.</summary>
+    private void UpdateAiCards(AiProvider? active)
+    {
+        if (BorderOpenAi == null || BorderClaude == null || BorderQuality == null) return;
+        var activeBrush = new SolidColorBrush(Color.FromRgb(10, 132, 255));
+        var inactiveBrush = new SolidColorBrush(Color.FromRgb(31, 41, 61));
+        foreach (var (provider, border, radio, badge) in new[]
+                 {
+                     (AiProvider.OpenAi, BorderOpenAi, RadioModelOpenAi, BadgeOpenAi),
+                     (AiProvider.Claude, BorderClaude, RadioModelClaude, BadgeClaude),
+                 })
+        {
+            var on = active == provider;
+            radio.IsChecked = on;
+            badge.Visibility = on ? Visibility.Visible : Visibility.Collapsed;
+            border.BorderBrush = on ? activeBrush : inactiveBrush;
+        }
+
+        var quality = controller.Settings.Quality;
+        RadioQualityBest.IsChecked = quality == QualityMode.Best;
+        RadioQualityFastest.IsChecked = quality == QualityMode.Fastest;
+        QualityHint.Text = AiText.QualityHint(active, quality);
+
+        // What exists for Turkish only is hidden for any other target language, and the shared cards say what they do there.
+        var turkish = controller.UsesTurkish;
+        BorderOpenAi.Visibility = BorderClaude.Visibility = BorderQuality.Visibility = turkish ? Visibility.Collapsed : Visibility.Visible;
+        if (BorderDeepL != null) BorderDeepL.Visibility = turkish ? Visibility.Visible : Visibility.Collapsed;
+        if (!turkish)
+        {
+            if (LocalModelDescription != null)
+            {
+                LocalModelDescription.Text = AiText.LocalDescription;
+                LocalModelDescription.FlowDirection = FlowDirection.RightToLeft;
+            }
+            if (RadioModelDirectMl != null) RadioModelDirectMl.Content = AiText.LocalTitle;
+            if (GeminiDescription != null)
+            {
+                GeminiDescription.Text = AiText.GeminiDescription;
+                GeminiDescription.FlowDirection = FlowDirection.RightToLeft;
+            }
         }
     }
 
