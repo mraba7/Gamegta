@@ -142,7 +142,7 @@ public partial class TvAppCard : UserControl
         if (controller?.TvApp.Url is not { } url) return;
         try { Clipboard.SetText(url.AbsoluteUri); }
         catch (System.Runtime.InteropServices.COMException) { return; } // pano başka bir uygulamada kilitli
-        CopyLink.Content = "Kopyalandı";
+        CopyLink.Content = "تم النسخ";
     }
 
     private void OnGuide(object sender, RoutedEventArgs e) =>

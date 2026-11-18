@@ -25,7 +25,7 @@
             <DockPanel>
                 <!-- Başlık: logo, uygulama adı, ayarlar -->
                 <Grid DockPanel.Dock="Top" Margin="0,0,8,10">
-                    <Button Style="{StaticResource PillButton}" HorizontalAlignment="Left" VerticalAlignment="Center" Click="OnBackHome" ToolTip="Ana ekrana dön">
+                    <Button Style="{StaticResource PillButton}" HorizontalAlignment="Left" VerticalAlignment="Center" Click="OnBackHome" ToolTip="&#x202B;رجوع للشاشة الرئيسية&#x202C;">
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="&#xE76B;" Style="{StaticResource GlyphText}" FontSize="12" Margin="0,1,8,0" VerticalAlignment="Center" />
                             <TextBlock Text="Geri" VerticalAlignment="Center" />
@@ -35,14 +35,14 @@
                 </Grid>
 
                 <!-- Alt: hakkında -->
-                <Button x:Name="AboutButton" DockPanel.Dock="Bottom" Content="GameTranslator Hakkında" Style="{StaticResource PillButton}"
+                <Button x:Name="AboutButton" DockPanel.Dock="Bottom" Content="&#x202B;حول GameTranslator&#x202C;" Style="{StaticResource PillButton}"
                         HorizontalAlignment="Center" Margin="0,12,8,0" Click="OnAbout" />
 
                 <ScrollViewer VerticalScrollBarVisibility="Auto">
                     <StackPanel Margin="0,0,8,0">
 
                         <!-- Bağlantılar -->
-                        <TextBlock Text="Bağlantılar" Style="{StaticResource SectionText}" Margin="14,0,0,7" />
+                        <TextBlock Text="&#x202B;الاتصالات&#x202C;" Style="{StaticResource SectionText}" Margin="14,0,0,7" />
                         <Border Style="{StaticResource Glass}" Padding="14,4" Margin="0,0,0,16">
                             <StackPanel>
                                 <Grid Margin="0,9">
@@ -93,10 +93,10 @@
                                         <TextBlock Text="{x:Static c:Glyphs.Captions}" Style="{StaticResource GlyphText}" FontSize="15" HorizontalAlignment="Center" Foreground="White" />
                                     </Border>
                                     <StackPanel Grid.Column="1" Orientation="Horizontal" Margin="11,0,8,0" VerticalAlignment="Center">
-                                        <TextBlock Text="PC ekranında altyazı" FontWeight="SemiBold" FontSize="14" VerticalAlignment="Center" />
+                                        <TextBlock Text="&#x202B;الترجمة على شاشة الكمبيوتر&#x202C;" FontWeight="SemiBold" FontSize="14" VerticalAlignment="Center" />
                                         <Ellipse x:Name="OverlayStatusDot" Width="7" Height="7" Fill="{DynamicResource idleBrush}" Margin="8,1,0,0" VerticalAlignment="Center" />
                                     </StackPanel>
-                                    <Button x:Name="OverlayToggleButton" Grid.Column="2" Content="Kapalı" Style="{StaticResource PillButton}" VerticalAlignment="Center" Click="OnToggleOverlayButton" />
+                                    <Button x:Name="OverlayToggleButton" Grid.Column="2" Content="&#x202B;مغلق&#x202C;" Style="{StaticResource PillButton}" VerticalAlignment="Center" Click="OnToggleOverlayButton" />
                                 </Grid>
                                 <Rectangle Height="1" Fill="{DynamicResource hairlineBrush}" Margin="41,0,0,0" />
                                 <Grid Margin="0,9">
@@ -108,7 +108,7 @@
                                     <Border Width="30" Height="30" CornerRadius="8" Background="#FF9F0A">
                                         <TextBlock Text="&#xE767;" Style="{StaticResource GlyphText}" FontSize="15" HorizontalAlignment="Center" Foreground="White" />
                                     </Border>
-                                    <TextBlock Grid.Column="1" Text="PC sesi" FontWeight="SemiBold" FontSize="14" Margin="11,0,8,0" VerticalAlignment="Center" />
+                                    <TextBlock Grid.Column="1" Text="&#x202B;صوت الكمبيوتر&#x202C;" FontWeight="SemiBold" FontSize="14" Margin="11,0,8,0" VerticalAlignment="Center" />
                                     <Button x:Name="PcSesiButton" Grid.Column="2" Content="Sessiz" Style="{StaticResource PillButton}" FontWeight="SemiBold" VerticalAlignment="Center"
                                             Foreground="{DynamicResource dangerBrush}" Background="{DynamicResource dangerSoftBrush}" Click="OnPcSesiToggle" />
                                 </Grid>
@@ -116,26 +116,26 @@
                         </Border>
 
                         <!-- Okuma alanı kısayolu ve canlı önizleme -->
-                        <TextBlock Text="Oyun görüntüsü" Style="{StaticResource SectionText}" Margin="14,0,0,7" />
+                        <TextBlock Text="&#x202B;صورة اللعبة&#x202C;" Style="{StaticResource SectionText}" Margin="14,0,0,7" />
                         <Border Style="{StaticResource Glass}" Padding="12" Margin="0,0,0,16">
                             <StackPanel>
                                 <Grid Margin="2,0,2,9">
                                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                                         <Ellipse x:Name="StreamThumbnailDot" Width="7" Height="7" Fill="{DynamicResource successBrush}" Margin="0,1,7,0" VerticalAlignment="Center" />
-                                        <TextBlock x:Name="StreamThumbnailTitle" Text="PS5 görüntüsü" FontSize="12" FontWeight="SemiBold" Foreground="{DynamicResource textSecondaryBrush}" VerticalAlignment="Center" />
+                                        <TextBlock x:Name="StreamThumbnailTitle" Text="&#x202B;صورة الـPS5&#x202C;" FontSize="12" FontWeight="SemiBold" Foreground="{DynamicResource textSecondaryBrush}" VerticalAlignment="Center" />
                                     </StackPanel>
-                                    <TextBlock x:Name="StreamThumbnailBadge" Text="1080p CANLI" HorizontalAlignment="Right" FontSize="11" FontWeight="SemiBold" Foreground="{DynamicResource accentTextBrush}" VerticalAlignment="Center" />
+                                    <TextBlock x:Name="StreamThumbnailBadge" Text="&#x202B;1080p مباشر&#x202C;" HorizontalAlignment="Right" FontSize="11" FontWeight="SemiBold" Foreground="{DynamicResource accentTextBrush}" VerticalAlignment="Center" />
                                 </Grid>
                                 <Border Style="{StaticResource Well}" Height="150" ClipToBounds="True">
                                     <Grid>
                                         <Image x:Name="ThumbnailStreamImage" Stretch="UniformToFill" />
                                         <StackPanel x:Name="ThumbnailPlaceholder" VerticalAlignment="Center" HorizontalAlignment="Center">
                                             <TextBlock Text="{x:Static c:Glyphs.Controller}" Style="{StaticResource GlyphText}" FontSize="26" Foreground="{DynamicResource textTertiaryBrush}" HorizontalAlignment="Center" />
-                                            <TextBlock x:Name="ThumbnailStatusText" Text="Görüntü bekleniyor" FontSize="12" Foreground="{DynamicResource textTertiaryBrush}" Margin="0,6,0,0" HorizontalAlignment="Center" />
+                                            <TextBlock x:Name="ThumbnailStatusText" Text="&#x202B;بانتظار الصورة&#x202C;" FontSize="12" Foreground="{DynamicResource textTertiaryBrush}" Margin="0,6,0,0" HorizontalAlignment="Center" />
                                         </StackPanel>
                                     </Grid>
                                 </Border>
-                                <Button Click="OnOcrShortcut" Cursor="Hand" Margin="0,10,0,0" HorizontalAlignment="Stretch" ToolTip="Altyazının nereden okunacağını ayarla">
+                                <Button Click="OnOcrShortcut" Cursor="Hand" Margin="0,10,0,0" HorizontalAlignment="Stretch" ToolTip="&#x202B;حدّد المكان الذي تُقرأ منه الترجمة&#x202C;">
                                     <Button.Template>
                                         <ControlTemplate TargetType="Button">
                                             <Border x:Name="Row" Background="{DynamicResource cardStrongBrush}" CornerRadius="12" Padding="12,9">
@@ -153,7 +153,7 @@
                                             <ColumnDefinition Width="*" />
                                             <ColumnDefinition Width="Auto" />
                                         </Grid.ColumnDefinitions>
-                                        <TextBlock Text="Okuma alanı" FontSize="13" FontWeight="SemiBold" Foreground="{DynamicResource textPrimaryBrush}" VerticalAlignment="Center" />
+                                        <TextBlock Text="&#x202B;منطقة القراءة&#x202C;" FontSize="13" FontWeight="SemiBold" Foreground="{DynamicResource textPrimaryBrush}" VerticalAlignment="Center" />
                                         <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
                                             <TextBlock x:Name="ShortcutPresetText" Text="Otomatik" FontSize="13" Foreground="{DynamicResource textSecondaryBrush}" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" TextWrapping="NoWrap" />
                                             <TextBlock Text="&#xE76C;" Style="{StaticResource GlyphText}" FontSize="11" Margin="8,1,0,0" Foreground="{DynamicResource textTertiaryBrush}" />
@@ -165,14 +165,14 @@
 
                         <!-- Son altyazı -->
                         <Grid Margin="14,0,4,7">
-                            <TextBlock Text="Son altyazı" Style="{StaticResource SectionText}" VerticalAlignment="Center" />
+                            <TextBlock Text="&#x202B;آخر ترجمة&#x202C;" Style="{StaticResource SectionText}" VerticalAlignment="Center" />
                             <Border HorizontalAlignment="Right" Background="{DynamicResource successSoftBrush}" CornerRadius="10" Padding="8,2">
-                                <TextBlock x:Name="LiveBadgeText" Text="Canlı" FontSize="11" FontWeight="SemiBold" Foreground="{DynamicResource successBrush}" />
+                                <TextBlock x:Name="LiveBadgeText" Text="&#x202B;مباشر&#x202C;" FontSize="11" FontWeight="SemiBold" Foreground="{DynamicResource successBrush}" />
                             </Border>
                         </Grid>
                         <Border Style="{StaticResource Glass}" MinHeight="78" Margin="0,0,0,16">
                             <StackPanel>
-                                <TextBlock Text="Oynarken son altyazı burada görünür." Style="{StaticResource HintText}" FontSize="13"
+                                <TextBlock Text="&#x202B;أثناء اللعب تظهر آخر ترجمة هنا.&#x202C;" Style="{StaticResource HintText}" FontSize="13"
                                            Visibility="{Binding LastTranslation, Converter={StaticResource VisibleIf}, ConverterParameter=invert}" />
                                 <TextBlock Text="{Binding LastTranslation}" FontSize="15" FontWeight="SemiBold" Foreground="{DynamicResource textPrimaryBrush}" LineHeight="21"
                                            Visibility="{Binding LastTranslation, Converter={StaticResource VisibleIf}}" />
@@ -183,11 +183,11 @@
 
                         <!-- Altyazı geçmişi -->
                         <Grid Margin="14,0,0,7">
-                            <TextBlock Text="Altyazı geçmişi" Style="{StaticResource SectionText}" VerticalAlignment="Center" />
+                            <TextBlock Text="&#x202B;سجل الترجمة&#x202C;" Style="{StaticResource SectionText}" VerticalAlignment="Center" />
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                                <Button Content="Temizle" Style="{StaticResource PillButton}" Margin="0,0,6,0" Click="OnClearHistory" ToolTip="Geçmişi siler (kayıtlı dosyadaki de)" />
-                                <Button Content="TXT" Style="{StaticResource PillButton}" Margin="0,0,6,0" Click="OnExportTxt" ToolTip="Geçmişi metin dosyası olarak kaydet" />
-                                <Button Content="JSON" Style="{StaticResource PillButton}" Click="OnExportJson" ToolTip="Geçmişi JSON olarak kaydet" />
+                                <Button Content="Temizle" Style="{StaticResource PillButton}" Margin="0,0,6,0" Click="OnClearHistory" ToolTip="&#x202B;يحذف السجل (والمحفوظ في الملف أيضاً)&#x202C;" />
+                                <Button Content="TXT" Style="{StaticResource PillButton}" Margin="0,0,6,0" Click="OnExportTxt" ToolTip="&#x202B;احفظ السجل كملف نصي&#x202C;" />
+                                <Button Content="JSON" Style="{StaticResource PillButton}" Click="OnExportJson" ToolTip="&#x202B;احفظ السجل بصيغة JSON&#x202C;" />
                             </StackPanel>
                         </Grid>
                         <Border Style="{StaticResource Glass}" Padding="6" Height="132">
@@ -222,13 +222,13 @@
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
-                        <RadioButton x:Name="TabOcrArea" Grid.Column="0" Content="Okuma Alanı" IsChecked="True" Checked="OnTabChanged"
+                        <RadioButton x:Name="TabOcrArea" Grid.Column="0" Content="&#x202B;منطقة القراءة&#x202C;" IsChecked="True" Checked="OnTabChanged"
                                      Style="{StaticResource SegmentButton}" FontSize="12" />
-                        <RadioButton x:Name="TabDisplay" Grid.Column="1" Content="TV Görünümü" Checked="OnTabChanged"
+                        <RadioButton x:Name="TabDisplay" Grid.Column="1" Content="&#x202B;مظهر التلفزيون&#x202C;" Checked="OnTabChanged"
                                      Style="{StaticResource SegmentButton}" FontSize="12" />
                         <RadioButton x:Name="TabModels" Grid.Column="2" Content="Modeller" Checked="OnTabChanged"
                                      Style="{StaticResource SegmentButton}" FontSize="12" />
-                        <RadioButton x:Name="TabSystem" Grid.Column="3" Content="Bağlantı" Checked="OnTabChanged"
+                        <RadioButton x:Name="TabSystem" Grid.Column="3" Content="&#x202B;الاتصال&#x202C;" Checked="OnTabChanged"
                                      Style="{StaticResource SegmentButton}" FontSize="12" />
                         <RadioButton x:Name="TabGuide" Grid.Column="4" Content="Rehber" Checked="OnTabChanged"
                                      Style="{StaticResource SegmentButton}" FontSize="12" />
@@ -239,8 +239,8 @@
                 <Border DockPanel.Dock="Bottom" BorderBrush="{DynamicResource borderBrush}" BorderThickness="0,1,0,0" Padding="0,10,0,0">
                     <Grid>
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
-                            <Button Content="Kurulumu baştan yap" Style="{StaticResource SecondaryButton}" Margin="0,0,8,0" Click="OnReinstall" />
-                            <Button Content="Ayarları sıfırla" Style="{StaticResource SecondaryButton}" Foreground="{DynamicResource dangerBrush}" Click="OnResetAll" />
+                            <Button Content="&#x202B;أعد الإعداد من البداية&#x202C;" Style="{StaticResource SecondaryButton}" Margin="0,0,8,0" Click="OnReinstall" />
+                            <Button Content="&#x202B;إعادة ضبط الإعدادات&#x202C;" Style="{StaticResource SecondaryButton}" Foreground="{DynamicResource dangerBrush}" Click="OnResetAll" />
                         </StackPanel>
                         <Button Content="Bitti" HorizontalAlignment="Right" MinWidth="84" MinHeight="32"
                                 Background="{DynamicResource accentBrush}" Foreground="White" BorderThickness="0" FontWeight="SemiBold" Cursor="Hand" Click="OnDone">
@@ -263,21 +263,21 @@
                             <!-- Başlık & Açıklama -->
                             <StackPanel Margin="0,0,0,10">
                                 <StackPanel Orientation="Horizontal" Margin="0,0,0,3">
-                                    <TextBlock Text="Altyazının okunduğu yer" FontWeight="Bold" FontSize="15" Foreground="{DynamicResource textPrimaryBrush}" VerticalAlignment="Center" />
+                                    <TextBlock Text="&#x202B;مكان قراءة الترجمة&#x202C;" FontWeight="Bold" FontSize="15" Foreground="{DynamicResource textPrimaryBrush}" VerticalAlignment="Center" />
                                 </StackPanel>
-                                <TextBlock Text="Çoğu oyunda Otomatik yeterli: uygulama altyazının yerini kendisi bulur. Bulamazsa aşağıdan bir yer seç ya da mavi kutuyu ayarla."
+                                <TextBlock Text="&#x202B;في أغلب الألعاب يكفي «تلقائي»: البرنامج يجد مكان الترجمة بنفسه. إن لم يجده فاختر مكاناً من الأسفل أو اضبط المربع الأزرق.&#x202C;"
                                            Style="{StaticResource HintText}" FontSize="13" TextWrapping="Wrap" />
                             </StackPanel>
 
                             <!-- Hazır Şablonlar (Presets) -->
                             <WrapPanel Margin="0,0,0,6">
-                <Button x:Name="PresetAuto" Content="Otomatik (Önerilen)" Tag="Auto" Click="OnPresetClick" Style="{StaticResource PillButton}" Margin="0,0,6,6" 
-                                        ToolTip="Uygulama altyazının yerini kendisi bulur; menüleri, ipuçlarını ve göstergeleri yok sayar." />
-                <Button x:Name="PresetBottomCenter" Content="Alt Orta (Standart)" Tag="BottomCenter" Click="OnPresetClick" Style="{StaticResource PillButton}" Margin="0,0,6,6" />
-                <Button x:Name="PresetBottomWide" Content="Geniş Alt Bant" Tag="BottomWide" Click="OnPresetClick" Style="{StaticResource PillButton}" Margin="0,0,6,6" />
-                <Button x:Name="PresetFullBottom" Content="Tüm Alt Yarı" Tag="FullBottom" Click="OnPresetClick" Style="{StaticResource PillButton}" Margin="0,0,6,6" />
-                <Button x:Name="PresetTopBanner" Content="Üst Bölge (Görevler)" Tag="TopBanner" Click="OnPresetClick" Style="{StaticResource PillButton}" Margin="0,0,6,6" />
-                <Button x:Name="PresetCustom" Content="Özel Kutu" Tag="Custom" Click="OnPresetClick" Style="{StaticResource PillButton}" Margin="0,0,6,6" />
+                <Button x:Name="PresetAuto" Content="&#x202B;تلقائي (مستحسن)&#x202C;" Tag="Auto" Click="OnPresetClick" Style="{StaticResource PillButton}" Margin="0,0,6,6" 
+                                        ToolTip="&#x202B;البرنامج يجد مكان الترجمة بنفسه، ويتجاهل القوائم والتلميحات والمؤشرات.&#x202C;" />
+                <Button x:Name="PresetBottomCenter" Content="&#x202B;أسفل الوسط (المعتاد)&#x202C;" Tag="BottomCenter" Click="OnPresetClick" Style="{StaticResource PillButton}" Margin="0,0,6,6" />
+                <Button x:Name="PresetBottomWide" Content="&#x202B;شريط سفلي عريض&#x202C;" Tag="BottomWide" Click="OnPresetClick" Style="{StaticResource PillButton}" Margin="0,0,6,6" />
+                <Button x:Name="PresetFullBottom" Content="&#x202B;النصف السفلي كله&#x202C;" Tag="FullBottom" Click="OnPresetClick" Style="{StaticResource PillButton}" Margin="0,0,6,6" />
+                <Button x:Name="PresetTopBanner" Content="&#x202B;المنطقة العليا (المهام)&#x202C;" Tag="TopBanner" Click="OnPresetClick" Style="{StaticResource PillButton}" Margin="0,0,6,6" />
+                <Button x:Name="PresetCustom" Content="&#x202B;مربع مخصّص&#x202C;" Tag="Custom" Click="OnPresetClick" Style="{StaticResource PillButton}" Margin="0,0,6,6" />
                             </WrapPanel>
 
                             <!-- Hızlı Görüntü Kaynağı ve Hedef Pencere Seçimi (Yakalama Kartı / OBS / Belirli Pencere) -->
@@ -288,9 +288,9 @@
                                         <ColumnDefinition Width="*" />
                                         <ColumnDefinition Width="Auto" />
                                     </Grid.ColumnDefinitions>
-                                    <TextBlock Text="Yakalanacak Pencere / Ekran:" FontWeight="SemiBold" FontSize="13" Foreground="{DynamicResource accentTextBrush}" VerticalAlignment="Center" Margin="0,0,8,0" />
+                                    <TextBlock Text="&#x202B;النافذة / الشاشة المراد التقاطها:&#x202C;" FontWeight="SemiBold" FontSize="13" Foreground="{DynamicResource accentTextBrush}" VerticalAlignment="Center" Margin="0,0,8,0" />
                                     <ComboBox x:Name="QuickSourceWindowComboBox" Grid.Column="1" SelectionChanged="OnQuickSourceWindowSelected" MinHeight="28" FontSize="13" VerticalContentAlignment="Center" />
-                  <Button Grid.Column="2" Content="Pencereleri Yenile" Click="OnRefreshWindows" Style="{StaticResource PillButton}" Margin="8,0,0,0" ToolTip="Açık oyun ve OBS pencerelerini yeniden listele" />
+                  <Button Grid.Column="2" Content="&#x202B;تحديث النوافذ&#x202C;" Click="OnRefreshWindows" Style="{StaticResource PillButton}" Margin="8,0,0,0" ToolTip="&#x202B;أعد عرض نوافذ الألعاب و OBS المفتوحة&#x202C;" />
                                 </Grid>
                             </Border>
 
@@ -303,8 +303,8 @@
                                     <!-- Canlı Akış Kapalıyken Gösterilecek Kalibrasyon Zemin Deseni -->
                                     <StackPanel x:Name="StreamPlaceholder" VerticalAlignment="Center" HorizontalAlignment="Center">
                                         <TextBlock x:Name="StreamPlaceholderIcon" Text="{x:Static c:Glyphs.Controller}" Style="{StaticResource GlyphText}" FontSize="28" Foreground="{DynamicResource textTertiaryBrush}" HorizontalAlignment="Center" />
-                                        <TextBlock x:Name="StreamPlaceholderTitle" Text="Görüntü yok" FontWeight="SemiBold" FontSize="13" Foreground="{DynamicResource textSecondaryBrush}" HorizontalAlignment="Center" Margin="0,6,0,2" />
-                                        <TextBlock x:Name="StreamPlaceholderSubtitle" Text="Görüntüyü görmek için çeviriyi başlat." FontSize="12" Foreground="{DynamicResource textTertiaryBrush}" HorizontalAlignment="Center" TextAlignment="Center" />
+                                        <TextBlock x:Name="StreamPlaceholderTitle" Text="&#x202B;لا توجد صورة&#x202C;" FontWeight="SemiBold" FontSize="13" Foreground="{DynamicResource textSecondaryBrush}" HorizontalAlignment="Center" Margin="0,6,0,2" />
+                                        <TextBlock x:Name="StreamPlaceholderSubtitle" Text="&#x202B;ابدأ الترجمة لترى الصورة.&#x202C;" FontSize="12" Foreground="{DynamicResource textTertiaryBrush}" HorizontalAlignment="Center" TextAlignment="Center" />
                                     </StackPanel>
 
                                     <!-- Üst Rozet & Yenile Butonu -->
@@ -312,7 +312,7 @@
                                         <Border HorizontalAlignment="Left" Background="#CC000000" CornerRadius="12" Padding="8,4">
                                             <StackPanel Orientation="Horizontal">
                                                 <Ellipse Width="6" Height="6" Fill="{DynamicResource successBrush}" Margin="0,0,6,0" VerticalAlignment="Center" />
-                                                <TextBlock Text="CANLI GÖRÜNTÜ" FontSize="11" FontWeight="Bold" Foreground="White" VerticalAlignment="Center" />
+                                                <TextBlock Text="&#x202B;الصورة المباشرة&#x202C;" FontSize="11" FontWeight="Bold" Foreground="White" VerticalAlignment="Center" />
                                             </StackPanel>
                                         </Border>
                                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
@@ -324,7 +324,7 @@
                                     <Canvas x:Name="OcrCanvas" SizeChanged="OnOcrCanvasSizeChanged">
                                         <Border x:Name="OcrBoxBorder" BorderBrush="{DynamicResource accentTextBrush}" BorderThickness="2" Background="{DynamicResource accentSoftBrush}" CornerRadius="4">
                                             <Border HorizontalAlignment="Left" VerticalAlignment="Top" Background="#EE000000" CornerRadius="3" Padding="4,1.5" Margin="2">
-                                                <TextBlock Text="OKUNAN ALAN" FontSize="11" FontWeight="Bold" Foreground="{DynamicResource accentTextBrush}" />
+                                                <TextBlock Text="&#x202B;المنطقة المقروءة&#x202C;" FontSize="11" FontWeight="Bold" Foreground="{DynamicResource accentTextBrush}" />
                                             </Border>
                                         </Border>
                                     </Canvas>
@@ -336,7 +336,7 @@
                                 <StackPanel>
                                     <Grid Margin="0,0,0,4">
                                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                            <TextBlock Text="Son okunan ve çevrilen" FontWeight="Bold" FontSize="12" Foreground="White" VerticalAlignment="Center" />
+                                            <TextBlock Text="&#x202B;آخر ما قُرئ وتُرجم&#x202C;" FontWeight="Bold" FontSize="12" Foreground="White" VerticalAlignment="Center" />
                                         </StackPanel>
                                     </Grid>
                                     <Grid>
@@ -347,17 +347,17 @@
                                         </Grid.ColumnDefinitions>
                                         <!-- Sol: PS5 İngilizce -->
                                         <StackPanel Grid.Column="0">
-                                            <TextBlock Text="Oyunda (İngilizce)" FontSize="11" FontWeight="SemiBold" Foreground="{DynamicResource textSecondaryBrush}" Margin="0,0,0,2" />
-                                            <TextBlock x:Name="MonitorEnglishText" Text="Okunan yazı burada görünür" FontSize="12" Foreground="{DynamicResource textPrimaryBrush}" TextTrimming="CharacterEllipsis" />
+                                            <TextBlock Text="&#x202B;في اللعبة (الإنجليزية)&#x202C;" FontSize="11" FontWeight="SemiBold" Foreground="{DynamicResource textSecondaryBrush}" Margin="0,0,0,2" />
+                                            <TextBlock x:Name="MonitorEnglishText" Text="&#x202B;النص المقروء يظهر هنا&#x202C;" FontSize="12" Foreground="{DynamicResource textPrimaryBrush}" TextTrimming="CharacterEllipsis" />
                                         </StackPanel>
                                         <!-- Sağ: TV Türkçe -->
                                         <StackPanel Grid.Column="2">
-                                            <TextBlock Text="TV'de (Türkçe)" FontSize="11" FontWeight="SemiBold" Foreground="{DynamicResource accentTextBrush}" Margin="0,0,0,2" />
-                                            <TextBlock x:Name="MonitorTurkishText" Text="Çevirisi burada görünür" FontSize="12" FontWeight="Bold" Foreground="{DynamicResource textPrimaryBrush}" TextTrimming="CharacterEllipsis" />
+                                            <TextBlock Text="&#x202B;على التلفزيون (العربية)&#x202C;" FontSize="11" FontWeight="SemiBold" Foreground="{DynamicResource accentTextBrush}" Margin="0,0,0,2" />
+                                            <TextBlock x:Name="MonitorTurkishText" Text="&#x202B;ترجمته تظهر هنا&#x202C;" FontSize="12" FontWeight="Bold" Foreground="{DynamicResource textPrimaryBrush}" TextTrimming="CharacterEllipsis" />
                                         </StackPanel>
                                     </Grid>
                                     <!-- Canlı ölçüm: son satırın okuma, çeviri ve kareden TV'ye gecikme süresi -->
-                                    <TextBlock Text="{Binding MetricsText}" FontSize="11" Foreground="{DynamicResource textSecondaryBrush}" Margin="0,6,0,0" TextTrimming="CharacterEllipsis" ToolTip="Son satır: yazı tanıma, çeviri ve görüntünün gelişinden TV'ye toplam gecikme" />
+                                    <TextBlock Text="{Binding MetricsText}" FontSize="11" Foreground="{DynamicResource textSecondaryBrush}" Margin="0,6,0,0" TextTrimming="CharacterEllipsis" ToolTip="&#x202B;آخر سطر: التعرّف على النص، الترجمة، والتأخير الكلي من وصول الصورة حتى التلفزيون&#x202C;" />
                                 </StackPanel>
                             </Border>
 
@@ -371,7 +371,7 @@
                                 <!-- Sol Kolon: Üst Başlangıç & Sol Sınır -->
                                 <StackPanel Grid.Column="0">
                                     <Grid Margin="0,0,0,2">
-                                        <TextBlock Text="Üst" FontSize="12" Foreground="{DynamicResource textSecondaryBrush}" VerticalAlignment="Center" />
+                                        <TextBlock Text="&#x202B;أعلى&#x202C;" FontSize="12" Foreground="{DynamicResource textSecondaryBrush}" VerticalAlignment="Center" />
                                         <TextBlock x:Name="CropTopLabel" Text="%72" HorizontalAlignment="Right" FontFamily="Consolas" FontWeight="Bold" FontSize="12" Foreground="{DynamicResource accentTextBrush}" VerticalAlignment="Center" />
                                     </Grid>
                                     <Slider x:Name="CropTopSlider" Minimum="0" Maximum="0.85" Value="0.72" ValueChanged="OnCropSliderChanged" Margin="0,0,0,6" IsMoveToPointEnabled="True" />
@@ -392,7 +392,7 @@
                                     <Slider x:Name="CropBottomSlider" Minimum="0.15" Maximum="1.0" Value="0.85" ValueChanged="OnCropSliderChanged" Margin="0,0,0,6" IsMoveToPointEnabled="True" />
 
                                     <Grid Margin="0,0,0,2">
-                                        <TextBlock Text="Sağ" FontSize="12" Foreground="{DynamicResource textSecondaryBrush}" VerticalAlignment="Center" />
+                                        <TextBlock Text="&#x202B;يمين&#x202C;" FontSize="12" Foreground="{DynamicResource textSecondaryBrush}" VerticalAlignment="Center" />
                                         <TextBlock x:Name="CropRightLabel" Text="%84" HorizontalAlignment="Right" FontFamily="Consolas" FontWeight="Bold" FontSize="12" Foreground="{DynamicResource accentTextBrush}" VerticalAlignment="Center" />
                                     </Grid>
                                     <Slider x:Name="CropRightSlider" Minimum="0.55" Maximum="1.0" Value="0.84" ValueChanged="OnCropSliderChanged" IsMoveToPointEnabled="True" />
@@ -405,13 +405,13 @@
                         <!-- ========================================================= -->
                         <StackPanel x:Name="PanelDisplay" Visibility="Collapsed">
                             <StackPanel Margin="0,0,0,10">
-                                <TextBlock Text="TV Altyazı Görünümü" FontWeight="Bold" FontSize="15" Foreground="{DynamicResource textPrimaryBrush}" />
-                                <TextBlock Text="TV ekranınızdaki altyazının boyutunu, rengini ve konumunu canlı özelleştirin." Style="{StaticResource HintText}" FontSize="13" />
+                                <TextBlock Text="&#x202B;مظهر الترجمة على التلفزيون&#x202C;" FontWeight="Bold" FontSize="15" Foreground="{DynamicResource textPrimaryBrush}" />
+                                <TextBlock Text="&#x202B;خصّص حجم الترجمة ولونها وموضعها على شاشة التلفزيون مباشرة.&#x202C;" Style="{StaticResource HintText}" FontSize="13" />
                             </StackPanel>
 
                             <!-- Yazı Rengi Seçici -->
                             <StackPanel Margin="0,0,0,12">
-                                <TextBlock Text="Yazı rengi:" FontSize="13" FontWeight="Medium" Foreground="{DynamicResource textSecondaryBrush}" Margin="0,0,0,6" />
+                                <TextBlock Text="&#x202B;لون النص:&#x202C;" FontSize="13" FontWeight="Medium" Foreground="{DynamicResource textSecondaryBrush}" Margin="0,0,0,6" />
                                 <StackPanel Orientation="Horizontal">
                                     <!-- Beyaz -->
                                     <Button Click="OnColorWhite" Margin="0,0,8,0" Background="Transparent" BorderThickness="0" Cursor="Hand">
@@ -445,14 +445,14 @@
                                 </Grid.ColumnDefinitions>
                                 <StackPanel Grid.Column="0">
                                     <Grid Margin="0,0,0,2">
-                                        <TextBlock Text="Yazı boyutu (TV)" FontSize="13" FontWeight="Medium" Foreground="{DynamicResource textSecondaryBrush}" VerticalAlignment="Center" />
+                                        <TextBlock Text="&#x202B;حجم النص (التلفزيون)&#x202C;" FontSize="13" FontWeight="Medium" Foreground="{DynamicResource textSecondaryBrush}" VerticalAlignment="Center" />
                                         <TextBlock x:Name="TextSizeLabel" Text="46 px" HorizontalAlignment="Right" FontFamily="Consolas" FontWeight="Bold" FontSize="12" Foreground="{DynamicResource accentTextBrush}" VerticalAlignment="Center" />
                                     </Grid>
                                     <Slider x:Name="TextSizeSlider" Minimum="24" Maximum="72" Value="46" ValueChanged="OnTextSize" IsMoveToPointEnabled="True" />
                                 </StackPanel>
                                 <StackPanel Grid.Column="2">
                                     <Grid Margin="0,0,0,2">
-                                        <TextBlock Text="Arka plan opaklığı" FontSize="13" FontWeight="Medium" Foreground="{DynamicResource textSecondaryBrush}" VerticalAlignment="Center" />
+                                        <TextBlock Text="&#x202B;عتامة الخلفية&#x202C;" FontSize="13" FontWeight="Medium" Foreground="{DynamicResource textSecondaryBrush}" VerticalAlignment="Center" />
                                         <TextBlock x:Name="BackgroundLabel" Text="%72" HorizontalAlignment="Right" FontFamily="Consolas" FontWeight="Bold" FontSize="12" Foreground="{DynamicResource accentTextBrush}" VerticalAlignment="Center" />
                                     </Grid>
                                     <Slider x:Name="BackgroundSlider" Minimum="0" Maximum="100" Value="72" ValueChanged="OnBackground" IsMoveToPointEnabled="True" />
@@ -462,7 +462,7 @@
                             <!-- Ekran Konumu (Alttan Yükseklik) -->
                             <StackPanel Margin="0,0,0,12">
                                 <Grid Margin="0,0,0,2">
-                                    <TextBlock Text="Ekran Konumu (Alttan Yükseklik)" FontSize="13" FontWeight="Medium" Foreground="{DynamicResource textSecondaryBrush}" VerticalAlignment="Center" />
+                                    <TextBlock Text="&#x202B;الموضع على الشاشة (الارتفاع من الأسفل)&#x202C;" FontSize="13" FontWeight="Medium" Foreground="{DynamicResource textSecondaryBrush}" VerticalAlignment="Center" />
                                     <TextBlock x:Name="BottomPercentLabel" Text="%7" HorizontalAlignment="Right" FontFamily="Consolas" FontWeight="Bold" FontSize="12" Foreground="{DynamicResource accentTextBrush}" VerticalAlignment="Center" />
                                 </Grid>
                                 <Slider x:Name="BottomPercentSlider" Minimum="2" Maximum="30" Value="7" ValueChanged="OnBottomPercent" IsMoveToPointEnabled="True" />
@@ -478,20 +478,20 @@
                                 <StackPanel Grid.Column="0">
                                     <TextBlock Text="Yeri:" FontSize="12" Foreground="{DynamicResource textSecondaryBrush}" Margin="0,0,0,3" />
                                     <ComboBox x:Name="PlacementBox" SelectionChanged="OnPlacement" HorizontalAlignment="Stretch">
-                                        <ComboBoxItem Content="İngilizce altyazının üstünü örtsün" Tag="Cover" IsSelected="True" />
-                                        <ComboBoxItem Content="İngilizce altyazının üstünde" Tag="Above" />
-                                        <ComboBoxItem Content="İngilizce altyazının altında" Tag="Below" />
-                                        <ComboBoxItem Content="Ekranda sabit yükseklikte" Tag="Fixed" />
+                                        <ComboBoxItem Content="&#x202B;تغطي الترجمة الإنجليزية&#x202C;" Tag="Cover" IsSelected="True" />
+                                        <ComboBoxItem Content="&#x202B;فوق الترجمة الإنجليزية&#x202C;" Tag="Above" />
+                                        <ComboBoxItem Content="&#x202B;تحت الترجمة الإنجليزية&#x202C;" Tag="Below" />
+                                        <ComboBoxItem Content="&#x202B;ارتفاع ثابت على الشاشة&#x202C;" Tag="Fixed" />
                                     </ComboBox>
                                 </StackPanel>
                                 <StackPanel Grid.Column="2">
-                                    <TextBlock Text="Oyunun dili:" FontSize="12" Foreground="{DynamicResource textSecondaryBrush}" Margin="0,0,0,3" />
+                                    <TextBlock Text="&#x202B;لغة اللعبة:&#x202C;" FontSize="12" Foreground="{DynamicResource textSecondaryBrush}" Margin="0,0,0,3" />
                                     <ComboBox x:Name="LanguageBox" SelectionChanged="OnLanguage" HorizontalAlignment="Stretch">
-                                        <ComboBoxItem Content="İngilizce" Tag="en" IsSelected="True" />
+                                        <ComboBoxItem Content="&#x202B;الإنجليزية&#x202C;" Tag="en" IsSelected="True" />
                                         <ComboBoxItem Content="Japonca" Tag="ja" />
                                         <ComboBoxItem Content="Almanca" Tag="de" />
-                                        <ComboBoxItem Content="Fransızca" Tag="fr" />
-                                        <ComboBoxItem Content="İspanyolca" Tag="es" />
+                                        <ComboBoxItem Content="&#x202B;الفرنسية&#x202C;" Tag="fr" />
+                                        <ComboBoxItem Content="&#x202B;الإسبانية&#x202C;" Tag="es" />
                                     </ComboBox>
                                 </StackPanel>
                             </Grid>
@@ -499,29 +499,29 @@
                             <!-- Anahtarlar ve deneme düğmeleri -->
                             <Border Style="{StaticResource Glass}" Padding="16,9" Margin="0,0,0,10">
                                 <WrapPanel>
-                                    <CheckBox x:Name="DesktopOverlayCheck" Content="PC Ekranında Altyazı (Şeffaf Katman)" Checked="OnDesktopOverlayToggle" Unchecked="OnDesktopOverlayToggle" Margin="0,5,22,5" />
-                                    <CheckBox x:Name="BoldCheck" Content="Kalın (Bold)" Checked="OnBold" Unchecked="OnBold" Margin="0,5,22,5" />
-                                    <CheckBox x:Name="SpeakerColorCheck" Content="Konuşmacı adı renkli" Checked="OnSpeakerColor" Unchecked="OnSpeakerColor" Margin="0,5,22,5" ToolTip="Konuşan kişinin adı (ör. MARKOS:) çevirinin geri kalanından farklı renkte gösterilir." />
-                                    <CheckBox x:Name="DubbingCheck" Content="Türkçe Dublaj" Checked="OnDubbing" Unchecked="OnDubbing" Margin="0,5,22,5" />
-                                    <CheckBox x:Name="MutePcCheck" Content="PC Sesini Kapat" Checked="OnMutePc" Unchecked="OnMutePc" Margin="0,5,22,5" IsChecked="True" />
+                                    <CheckBox x:Name="DesktopOverlayCheck" Content="&#x202B;الترجمة على شاشة الكمبيوتر (طبقة شفافة)&#x202C;" Checked="OnDesktopOverlayToggle" Unchecked="OnDesktopOverlayToggle" Margin="0,5,22,5" />
+                                    <CheckBox x:Name="BoldCheck" Content="&#x202B;عريض&#x202C;" Checked="OnBold" Unchecked="OnBold" Margin="0,5,22,5" />
+                                    <CheckBox x:Name="SpeakerColorCheck" Content="&#x202B;اسم المتكلم ملوّن&#x202C;" Checked="OnSpeakerColor" Unchecked="OnSpeakerColor" Margin="0,5,22,5" ToolTip="&#x202B;يظهر اسم المتكلم (مثل MARKOS:) بلون مختلف عن باقي الترجمة.&#x202C;" />
+                                    <CheckBox x:Name="DubbingCheck" Content="&#x202B;الدبلجة التركية&#x202C;" Checked="OnDubbing" Unchecked="OnDubbing" Margin="0,5,22,5" />
+                                    <CheckBox x:Name="MutePcCheck" Content="&#x202B;كتم صوت الكمبيوتر&#x202C;" Checked="OnMutePc" Unchecked="OnMutePc" Margin="0,5,22,5" IsChecked="True" />
                                 </WrapPanel>
                             </Border>
                             <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
-                                <Button Content="Ekrana &amp; TV'ye Test Gönder" Click="OnTestSubtitle" Style="{StaticResource TintButton}" Margin="0,0,8,0" />
-                                <Button Content="Altyazıyı Konumlandır" Click="OnDragOverlayPosition" Style="{StaticResource SecondaryButton}" ToolTip="3 monitörlü veya özel kurulumlarda altyazıyı istediğiniz ekrana sürükleyin" />
+                                <Button Content="&#x202B;أرسل تجربة للشاشة والتلفزيون&#x202C;" Click="OnTestSubtitle" Style="{StaticResource TintButton}" Margin="0,0,8,0" />
+                                <Button Content="&#x202B;حدّد موضع الترجمة&#x202C;" Click="OnDragOverlayPosition" Style="{StaticResource SecondaryButton}" ToolTip="&#x202B;في الإعدادات ذات 3 شاشات أو الخاصة اسحب الترجمة إلى الشاشة التي تريدها&#x202C;" />
                             </StackPanel>
 
                             <!-- CANLI TV ÖNİZLEME (16:9 Ekran Çerçevesi) -->
                             <Border Background="{DynamicResource cardBrush}" BorderBrush="{DynamicResource hairlineBrush}" BorderThickness="1" CornerRadius="8" Padding="10">
                                 <StackPanel>
                                     <Grid Margin="0,0,0,6">
-                                        <TextBlock Text="CANLI TV ÖNİZLEME (ÇEVİRİ YANSITMA ALANI)" FontSize="11" FontWeight="Bold" Foreground="{DynamicResource textSecondaryBrush}" VerticalAlignment="Center" />
+                                        <TextBlock Text="&#x202B;معاينة التلفزيون المباشرة (منطقة عرض الترجمة)&#x202C;" FontSize="11" FontWeight="Bold" Foreground="{DynamicResource textSecondaryBrush}" VerticalAlignment="Center" />
                                         <TextBlock Text="1920 x 1080 (16:9)" HorizontalAlignment="Right" FontSize="11" FontFamily="Consolas" Foreground="{DynamicResource textTertiaryBrush}" VerticalAlignment="Center" />
                                     </Grid>
                                     <Border Background="{DynamicResource wellBrush}" BorderBrush="{DynamicResource accentBrush}" BorderThickness="1.5" CornerRadius="7" Height="125" ClipToBounds="True">
                                         <Grid VerticalAlignment="Bottom" Margin="0,0,0,12">
                                             <Border x:Name="TvPreviewSubtitleBox" HorizontalAlignment="Center" Background="#B8000000" CornerRadius="4" Padding="14,6">
-                                                <TextBlock x:Name="TvPreviewSubtitleText" Text="HERHANGİ BİR DÜĞMEYE BASIN" FontSize="15" FontWeight="Bold" Foreground="White" TextAlignment="Center" />
+                                                <TextBlock x:Name="TvPreviewSubtitleText" Text="&#x202B;اضغط أي زر&#x202C;" FontSize="15" FontWeight="Bold" Foreground="White" TextAlignment="Center" />
                                             </Border>
                                         </Grid>
                                     </Border>
@@ -538,14 +538,14 @@
                                 <StackPanel>
                                     <Grid Margin="0,0,0,10">
                                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                            <TextBlock Text="Topluluk Oyun Yamaları (0 ms Gecikme)" FontWeight="Bold" FontSize="15" Foreground="{DynamicResource successBrush}" VerticalAlignment="Center" />
+                                            <TextBlock Text="&#x202B;حزم الألعاب من المجتمع (بدون تأخير)&#x202C;" FontWeight="Bold" FontSize="15" Foreground="{DynamicResource successBrush}" VerticalAlignment="Center" />
                                         </StackPanel>
                                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
                                             <CheckBox x:Name="CheckCommunityPatches" Content="Aktif" IsChecked="True" Checked="OnPatchToggleChanged" Unchecked="OnPatchToggleChanged" Foreground="{DynamicResource successBrush}" FontWeight="Bold" FontSize="13" VerticalAlignment="Center" Margin="0,0,12,0" Cursor="Hand" />
                                             <Border Background="{DynamicResource successSoftBrush}" CornerRadius="10" Padding="8,3">
                                                 <StackPanel Orientation="Horizontal">
                                                     <Ellipse Width="6" Height="6" Fill="{DynamicResource successBrush}" Margin="0,0,5,0" VerticalAlignment="Center" />
-                                                    <TextBlock Text="%100 İnsan Çevirisi" FontSize="12" FontWeight="Bold" Foreground="{DynamicResource successBrush}" VerticalAlignment="Center" />
+                                                    <TextBlock Text="&#x202B;ترجمة بشرية 100%&#x202C;" FontSize="12" FontWeight="Bold" Foreground="{DynamicResource successBrush}" VerticalAlignment="Center" />
                                                 </StackPanel>
                                             </Border>
                                         </StackPanel>
@@ -556,7 +556,7 @@
                                         <Button Style="{StaticResource RowButton}" Click="OnGameShortcut">
                                             <Grid>
                                                 <Grid.ColumnDefinitions><ColumnDefinition Width="*" /><ColumnDefinition Width="Auto" /></Grid.ColumnDefinitions>
-                                                <TextBlock Text="Oynadığın oyun" FontSize="14" VerticalAlignment="Center" />
+                                                <TextBlock Text="&#x202B;اللعبة التي تلعبها&#x202C;" FontSize="14" VerticalAlignment="Center" />
                                                 <StackPanel Grid.Column="1" Orientation="Horizontal">
                                                     <TextBlock x:Name="GameSelectText" Text="Otomatik" FontSize="14" Foreground="{DynamicResource textSecondaryBrush}" VerticalAlignment="Center" />
                                                     <TextBlock Text="&#xE76C;" Style="{StaticResource GlyphText}" FontSize="11" Margin="8,1,0,0" Foreground="{DynamicResource textTertiaryBrush}" />
@@ -564,15 +564,15 @@
                                             </Grid>
                                         </Button>
                                     </Border>
-                                    <TextBlock Text="Otomatik'te oyun ilk birkaç cümleden anlaşılır. Oyunu seçersen çeviri ilk cümleden itibaren paketten gelir." FontSize="12" Foreground="{DynamicResource textSecondaryBrush}" TextWrapping="Wrap" Margin="0,0,0,10" />
+                                    <TextBlock Text="&#x202B;في «تلقائي» تُعرف اللعبة من أول بضع جمل. إذا اخترت اللعبة تأتي الترجمة من الحزمة من أول جملة.&#x202C;" FontSize="12" Foreground="{DynamicResource textSecondaryBrush}" TextWrapping="Wrap" Margin="0,0,0,10" />
 
                                     <!-- Ortak havuz (CouchSubs): pakette olmayan satırlar yeni paketler için anonim gönderilir -->
-                                    <CheckBox x:Name="SharePoolCheck" Content="Pakette olmayan satırları ortak havuza gönder" Checked="OnSharePool" Unchecked="OnSharePool" Margin="0,0,0,4" Cursor="Hand" />
-                                    <TextBlock Text="Yeni oyun paketleri bunlardan hazırlanır. Yalnız oyundaki İngilizce satırın metni ve PS5'te çalışan oyunun adı gider; adın, PSN hesabın ya da IP adresin gitmez. Kapatınca bekleyen satırlar da silinir." FontSize="12" Foreground="{DynamicResource textSecondaryBrush}" TextWrapping="Wrap" Margin="0,0,0,10" />
+                                    <CheckBox x:Name="SharePoolCheck" Content="&#x202B;أرسل الجمل غير الموجودة في الحزمة إلى المجمّع المشترك&#x202C;" Checked="OnSharePool" Unchecked="OnSharePool" Margin="0,0,0,4" Cursor="Hand" />
+                                    <TextBlock Text="&#x202B;تُجهَّز منها حزم الألعاب الجديدة (التركية). يُرسل نص الجملة الإنجليزية واسم اللعبة فقط. في النسخة العربية هذا الإرسال متوقف دائماً.&#x202C;" FontSize="12" Foreground="{DynamicResource textSecondaryBrush}" TextWrapping="Wrap" Margin="0,0,0,10" />
 
                                     <!-- Desteklenen Oyunlar ve Canlı Yama Durumu Metni -->
                                     <Border Background="{DynamicResource wellBrush}" CornerRadius="6" Padding="12,10" Margin="0,0,0,10">
-                                        <TextBlock x:Name="PatchStatusText" Text="Desteklenen Oyunlar taranıyor..." FontSize="13" FontWeight="SemiBold" Foreground="{DynamicResource accentTextBrush}" TextWrapping="Wrap" />
+                                        <TextBlock x:Name="PatchStatusText" Text="&#x202B;جارٍ فحص الألعاب المدعومة...&#x202C;" FontSize="13" FontWeight="SemiBold" Foreground="{DynamicResource accentTextBrush}" TextWrapping="Wrap" />
                                     </Border>
 
                                     <!-- Aksiyon Butonları (Otomatik Tara & İçe Aktar) -->
@@ -581,24 +581,24 @@
                                             <ColumnDefinition Width="*" />
                                             <ColumnDefinition Width="Auto" />
                                         </Grid.ColumnDefinitions>
-                                        <Button Grid.Column="0" Content="Paketleri Tara ve Güncelle" Click="OnScanPatchesClick" Style="{StaticResource PrimaryButton}" Padding="14,6" FontSize="13" FontWeight="SemiBold" Margin="0,0,8,0" ToolTip="Hem yerel diskteki paketleri (%LOCALAPPDATA%\GameTranslator\packs) hem de resmi depodaki en güncel paketleri otomatik tarar ve eşler" />
-                    <Button Grid.Column="1" Content="Yama Yükle (.json, .srt)" Click="OnImportPatchClick" Style="{StaticResource PillButton}" FontWeight="SemiBold" ToolTip="Kendi hazırladığınız veya indirdiğiniz özel yama dosyasını içeri aktarın" />
+                                        <Button Grid.Column="0" Content="&#x202B;افحص الحزم وحدّثها&#x202C;" Click="OnScanPatchesClick" Style="{StaticResource PrimaryButton}" Padding="14,6" FontSize="13" FontWeight="SemiBold" Margin="0,0,8,0" ToolTip="&#x202B;يفحص الحزم المحفوظة على الجهاز (%LOCALAPPDATA%\GameTranslator\packs) وأحدث الحزم في المستودع الرسمي&#x202C;" />
+                    <Button Grid.Column="1" Content="&#x202B;حمّل حزمة (.json, .srt)&#x202C;" Click="OnImportPatchClick" Style="{StaticResource PillButton}" FontWeight="SemiBold" ToolTip="&#x202B;استورد ملف حزمة جهّزته بنفسك أو نزّلته&#x202C;" />
                                     </Grid>
 
-                                    <TextBlock Text="Yamada kayıtlı olan replikler oyun esnasında otomatik tanınır ve 0 milisaniyede televizyonunuza yansıtılır. Yamada olmayan yan diyaloglar seçtiğiniz yapay zeka motoruyla tamamlanır." FontSize="12" Foreground="{DynamicResource textSecondaryBrush}" TextWrapping="Wrap" />
+                                    <TextBlock Text="&#x202B;الحزم الحالية تركية ولا تُستخدم مع الترجمة العربية؛ كل الجمل تُترجم بخدمة الذكاء الاصطناعي التي تختارها بالأسفل.&#x202C;" FontSize="12" Foreground="{DynamicResource textSecondaryBrush}" TextWrapping="Wrap" />
                                 </StackPanel>
                             </Border>
 
-                            <TextBlock Text="Yapay Zeka &amp; Çeviri Motoru Seçimi" FontWeight="Bold" FontSize="15" Foreground="{DynamicResource textPrimaryBrush}" Margin="0,0,0,4" />
-                            <TextBlock Text="Yamada yer almayan replikler için kullanılacak çeviri motorunu belirleyin." Style="{StaticResource HintText}" FontSize="13" Margin="0,0,0,12" />
+                            <TextBlock Text="&#x202B;اختيار خدمة الترجمة&#x202C;" FontWeight="Bold" FontSize="15" Foreground="{DynamicResource textPrimaryBrush}" Margin="0,0,0,4" />
+                            <TextBlock Text="&#x202B;اختر الخدمة التي تترجم جمل اللعبة.&#x202C;" Style="{StaticResource HintText}" FontSize="13" Margin="0,0,0,12" />
 
                             <!-- Arabic edition: quality mode. "Best" uses the strongest model of the chosen AI service, "Fastest" its quick one. -->
                             <Border x:Name="BorderQuality" Background="{DynamicResource cardBrush}" BorderBrush="{DynamicResource hairlineBrush}" BorderThickness="1" CornerRadius="8" Padding="14" Margin="0,0,0,10">
                                 <StackPanel FlowDirection="RightToLeft">
-                                    <TextBlock Text="وضع الترجمة" FontWeight="Bold" FontSize="13" Foreground="White" Margin="0,0,0,8" />
+                                    <TextBlock Text="&#x202B;وضع الترجمة&#x202C;" FontWeight="Bold" FontSize="13" Foreground="White" Margin="0,0,0,8" />
                                     <StackPanel Orientation="Horizontal">
-                                        <RadioButton x:Name="RadioQualityBest" GroupName="QualityModeGroup" Checked="OnQualitySelected" Content="أقوى جودة" FontWeight="Bold" FontSize="13" Foreground="White" Margin="0,0,24,0" Cursor="Hand" />
-                                        <RadioButton x:Name="RadioQualityFastest" GroupName="QualityModeGroup" Checked="OnQualitySelected" Content="أسرع" FontWeight="Bold" FontSize="13" Foreground="White" Cursor="Hand" />
+                                        <RadioButton x:Name="RadioQualityBest" GroupName="QualityModeGroup" Checked="OnQualitySelected" Content="&#x202B;أقوى جودة&#x202C;" FontWeight="Bold" FontSize="13" Foreground="White" Margin="0,0,24,0" Cursor="Hand" />
+                                        <RadioButton x:Name="RadioQualityFastest" GroupName="QualityModeGroup" Checked="OnQualitySelected" Content="&#x202B;أسرع&#x202C;" FontWeight="Bold" FontSize="13" Foreground="White" Cursor="Hand" />
                                     </StackPanel>
                                     <TextBlock x:Name="QualityHint" Text="" FontSize="12" Foreground="{DynamicResource textSecondaryBrush}" TextWrapping="Wrap" Margin="0,8,0,0" />
                                 </StackPanel>
@@ -610,15 +610,15 @@
                                 <StackPanel>
                                     <Grid Margin="0,0,0,6">
                                         <RadioButton x:Name="RadioModelDirectMl" GroupName="TranslationModelGroup" Checked="OnModelSelected"
-                                                     Content="Donanım Hızlandırmalı Yerel Yapay Zeka (DirectML)" FontWeight="Bold" FontSize="13" Foreground="White" VerticalAlignment="Center" IsChecked="True" Cursor="Hand" />
+                                                     Content="&#x202B;الترجمة المحلية (بدون مفتاح)&#x202C;" FontWeight="Bold" FontSize="13" Foreground="White" VerticalAlignment="Center" IsChecked="True" Cursor="Hand" />
                                         <Border x:Name="BadgeDirectMl" HorizontalAlignment="Right" Background="{DynamicResource successSoftBrush}" CornerRadius="10" Padding="8,2">
                                             <StackPanel Orientation="Horizontal">
                                                 <Ellipse Width="5" Height="5" Fill="{DynamicResource successBrush}" Margin="0,0,4,0" VerticalAlignment="Center" />
-                                                <TextBlock Text="Aktif / Seçili" FontSize="11" FontWeight="Bold" Foreground="{DynamicResource successBrush}" VerticalAlignment="Center" />
+                                                <TextBlock Text="&#x202B;مفعّل&#x202C;" FontSize="11" FontWeight="Bold" Foreground="{DynamicResource successBrush}" VerticalAlignment="Center" />
                                             </StackPanel>
                                         </Border>
                                     </Grid>
-                                    <TextBlock x:Name="LocalModelDescription" Text="Bilgisayarınızın ekran kartını (DirectML) ve CPU'sunu kullanarak tamamen çevrimdışı, sıfır gecikmeli çeviri yapar. Kota ve internet gerektirmez."
+                                    <TextBlock x:Name="LocalModelDescription" Text="&#x202B;تعمل بدون مفتاح وبدون تكلفة، وجودتها أقل من خدمات الذكاء الاصطناعي.&#x202C;"
                                                FontSize="13" Foreground="{DynamicResource textSecondaryBrush}" TextWrapping="Wrap" Margin="22,0,0,0" />
                                 </StackPanel>
                             </Border>
@@ -633,22 +633,22 @@
                                         <Border x:Name="BadgeGemini" HorizontalAlignment="Right" Background="{DynamicResource successSoftBrush}" CornerRadius="10" Padding="8,2" Visibility="Collapsed">
                                             <StackPanel Orientation="Horizontal">
                                                 <Ellipse Width="5" Height="5" Fill="{DynamicResource successBrush}" Margin="0,0,4,0" VerticalAlignment="Center" />
-                                                <TextBlock Text="Aktif / Seçili" FontSize="11" FontWeight="Bold" Foreground="{DynamicResource successBrush}" VerticalAlignment="Center" />
+                                                <TextBlock Text="&#x202B;مفعّل&#x202C;" FontSize="11" FontWeight="Bold" Foreground="{DynamicResource successBrush}" VerticalAlignment="Center" />
                                             </StackPanel>
                                         </Border>
                                     </Grid>
-                                    <TextBlock x:Name="GeminiDescription" Text="Oyun jargonu, sokak ağzı ve diyaloglarda insan düzeyinde en akıcı Türkçe altyazı deneyimini sunar." FontSize="13" Foreground="{DynamicResource textSecondaryBrush}" TextWrapping="Wrap" Margin="22,0,0,8" />
+                                    <TextBlock x:Name="GeminiDescription" Text="&#x202B;ترجمة بالذكاء الاصطناعي من Google.&#x202C;" FontSize="13" Foreground="{DynamicResource textSecondaryBrush}" TextWrapping="Wrap" Margin="22,0,0,8" />
                                     <Grid Margin="22,0,0,6">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="*" />
                                             <ColumnDefinition Width="Auto" />
                                         </Grid.ColumnDefinitions>
                                         <PasswordBox x:Name="GeminiKeyInput" MinHeight="32" VerticalContentAlignment="Center" Margin="0,0,8,0" />
-                    <Button Grid.Column="1" Content="Kaydet ve Aktif Et" Click="OnGeminiSave" Style="{StaticResource PillButton}" FontWeight="Bold" />
+                    <Button Grid.Column="1" Content="&#x202B;حفظ وتفعيل&#x202C;" Click="OnGeminiSave" Style="{StaticResource PillButton}" FontWeight="Bold" />
                                     </Grid>
                                     <TextBlock Margin="22,0,0,0">
                                         <Hyperlink NavigateUri="https://aistudio.google.com/apikey" RequestNavigate="OnHyperlink">
-                                            <Run Text="Ücretsiz Google Gemini API anahtarı alın " Foreground="{DynamicResource accentBrush}" FontSize="13" />
+                                            <Run Text="&#x202B;احصل على مفتاح Google Gemini &#x202C;" Foreground="{DynamicResource accentBrush}" FontSize="13" />
                                         </Hyperlink>
                                     </TextBlock>
                                 </StackPanel>
@@ -664,22 +664,22 @@
                                         <Border x:Name="BadgeOpenAi" HorizontalAlignment="Right" Background="{DynamicResource successSoftBrush}" CornerRadius="10" Padding="8,2" Visibility="Collapsed">
                                             <StackPanel Orientation="Horizontal">
                                                 <Ellipse Width="5" Height="5" Fill="{DynamicResource successBrush}" Margin="0,0,4,0" VerticalAlignment="Center" />
-                                                <TextBlock Text="مفعّل" FontSize="11" FontWeight="Bold" Foreground="{DynamicResource successBrush}" VerticalAlignment="Center" />
+                                                <TextBlock Text="&#x202B;مفعّل&#x202C;" FontSize="11" FontWeight="Bold" Foreground="{DynamicResource successBrush}" VerticalAlignment="Center" />
                                             </StackPanel>
                                         </Border>
                                     </Grid>
-                                    <TextBlock Text="ترجمة بالذكاء الاصطناعي من OpenAI. تحتاج مفتاح API مدفوع من حسابك." FontSize="13" Foreground="{DynamicResource textSecondaryBrush}" TextWrapping="Wrap" Margin="22,0,0,8" />
+                                    <TextBlock Text="&#x202B;ترجمة بالذكاء الاصطناعي من OpenAI. تحتاج مفتاح API مدفوع من حسابك.&#x202C;" FontSize="13" Foreground="{DynamicResource textSecondaryBrush}" TextWrapping="Wrap" Margin="22,0,0,8" />
                                     <Grid Margin="22,0,0,6">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="*" />
                                             <ColumnDefinition Width="Auto" />
                                         </Grid.ColumnDefinitions>
                                         <PasswordBox x:Name="OpenAiKeyInput" FlowDirection="LeftToRight" MinHeight="32" VerticalContentAlignment="Center" Margin="0,0,8,0" />
-                                        <Button Grid.Column="1" Content="حفظ وتفعيل" Click="OnOpenAiSave" Style="{StaticResource PillButton}" FontWeight="Bold" />
+                                        <Button Grid.Column="1" Content="&#x202B;حفظ وتفعيل&#x202C;" Click="OnOpenAiSave" Style="{StaticResource PillButton}" FontWeight="Bold" />
                                     </Grid>
                                     <TextBlock Margin="22,0,0,0">
                                         <Hyperlink NavigateUri="https://platform.openai.com/api-keys" RequestNavigate="OnHyperlink">
-                                            <Run Text="احصل على مفتاح OpenAI" Foreground="{DynamicResource accentBrush}" FontSize="13" />
+                                            <Run Text="&#x202B;احصل على مفتاح OpenAI&#x202C;" Foreground="{DynamicResource accentBrush}" FontSize="13" />
                                         </Hyperlink>
                                     </TextBlock>
                                 </StackPanel>
@@ -695,22 +695,22 @@
                                         <Border x:Name="BadgeClaude" HorizontalAlignment="Right" Background="{DynamicResource successSoftBrush}" CornerRadius="10" Padding="8,2" Visibility="Collapsed">
                                             <StackPanel Orientation="Horizontal">
                                                 <Ellipse Width="5" Height="5" Fill="{DynamicResource successBrush}" Margin="0,0,4,0" VerticalAlignment="Center" />
-                                                <TextBlock Text="مفعّل" FontSize="11" FontWeight="Bold" Foreground="{DynamicResource successBrush}" VerticalAlignment="Center" />
+                                                <TextBlock Text="&#x202B;مفعّل&#x202C;" FontSize="11" FontWeight="Bold" Foreground="{DynamicResource successBrush}" VerticalAlignment="Center" />
                                             </StackPanel>
                                         </Border>
                                     </Grid>
-                                    <TextBlock Text="ترجمة بالذكاء الاصطناعي من Anthropic. تحتاج مفتاح API مدفوع من حسابك." FontSize="13" Foreground="{DynamicResource textSecondaryBrush}" TextWrapping="Wrap" Margin="22,0,0,8" />
+                                    <TextBlock Text="&#x202B;ترجمة بالذكاء الاصطناعي من Anthropic. تحتاج مفتاح API مدفوع من حسابك.&#x202C;" FontSize="13" Foreground="{DynamicResource textSecondaryBrush}" TextWrapping="Wrap" Margin="22,0,0,8" />
                                     <Grid Margin="22,0,0,6">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="*" />
                                             <ColumnDefinition Width="Auto" />
                                         </Grid.ColumnDefinitions>
                                         <PasswordBox x:Name="ClaudeKeyInput" FlowDirection="LeftToRight" MinHeight="32" VerticalContentAlignment="Center" Margin="0,0,8,0" />
-                                        <Button Grid.Column="1" Content="حفظ وتفعيل" Click="OnClaudeSave" Style="{StaticResource PillButton}" FontWeight="Bold" />
+                                        <Button Grid.Column="1" Content="&#x202B;حفظ وتفعيل&#x202C;" Click="OnClaudeSave" Style="{StaticResource PillButton}" FontWeight="Bold" />
                                     </Grid>
                                     <TextBlock Margin="22,0,0,0">
                                         <Hyperlink NavigateUri="https://platform.claude.com/settings/keys" RequestNavigate="OnHyperlink">
-                                            <Run Text="احصل على مفتاح Claude" Foreground="{DynamicResource accentBrush}" FontSize="13" />
+                                            <Run Text="&#x202B;احصل على مفتاح Claude&#x202C;" Foreground="{DynamicResource accentBrush}" FontSize="13" />
                                         </Hyperlink>
                                     </TextBlock>
                                 </StackPanel>
@@ -722,26 +722,26 @@
                                 <StackPanel>
                                     <Grid Margin="0,0,0,6">
                                         <RadioButton x:Name="RadioModelDeepL" GroupName="TranslationModelGroup" Checked="OnModelSelected"
-                                                     Content="DeepL API (Resmi Servis)" FontWeight="Bold" FontSize="13" Foreground="White" VerticalAlignment="Center" Cursor="Hand" />
+                                                     Content="&#x202B;DeepL (الخدمة الرسمية)&#x202C;" FontWeight="Bold" FontSize="13" Foreground="White" VerticalAlignment="Center" Cursor="Hand" />
                                         <Border x:Name="BadgeDeepL" HorizontalAlignment="Right" Background="{DynamicResource successSoftBrush}" CornerRadius="10" Padding="8,2" Visibility="Collapsed">
                                             <StackPanel Orientation="Horizontal">
                                                 <Ellipse Width="5" Height="5" Fill="{DynamicResource successBrush}" Margin="0,0,4,0" VerticalAlignment="Center" />
-                                                <TextBlock Text="Aktif / Seçili" FontSize="11" FontWeight="Bold" Foreground="{DynamicResource successBrush}" VerticalAlignment="Center" />
+                                                <TextBlock Text="&#x202B;مفعّل&#x202C;" FontSize="11" FontWeight="Bold" Foreground="{DynamicResource successBrush}" VerticalAlignment="Center" />
                                             </StackPanel>
                                         </Border>
                                     </Grid>
-                                    <TextBlock Text="Resmi DeepL REST API hesabınız ile profesyonel altyazı çevirisi." FontSize="13" Foreground="{DynamicResource textSecondaryBrush}" TextWrapping="Wrap" Margin="22,0,0,8" />
+                                    <TextBlock Text="&#x202B;ترجمة عبر حسابك في DeepL (للتركية فقط في هذا البرنامج).&#x202C;" FontSize="13" Foreground="{DynamicResource textSecondaryBrush}" TextWrapping="Wrap" Margin="22,0,0,8" />
                                     <Grid Margin="22,0,0,6">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="*" />
                                             <ColumnDefinition Width="Auto" />
                                         </Grid.ColumnDefinitions>
                                         <PasswordBox x:Name="DeepLKeyInput" MinHeight="32" VerticalContentAlignment="Center" Margin="0,0,8,0" />
-                    <Button Grid.Column="1" Content="Kaydet ve Aktif Et" Click="OnDeepLSave" Style="{StaticResource PillButton}" FontWeight="Bold" />
+                    <Button Grid.Column="1" Content="&#x202B;حفظ وتفعيل&#x202C;" Click="OnDeepLSave" Style="{StaticResource PillButton}" FontWeight="Bold" />
                                     </Grid>
                                     <TextBlock Margin="22,0,0,0">
                                         <Hyperlink NavigateUri="https://www.deepl.com/pro-api" RequestNavigate="OnHyperlink">
-                                            <Run Text="Ücretsiz DeepL API anahtarı alın " Foreground="{DynamicResource accentBrush}" FontSize="13" />
+                                            <Run Text="&#x202B;احصل على مفتاح DeepL &#x202C;" Foreground="{DynamicResource accentBrush}" FontSize="13" />
                                         </Hyperlink>
                                     </TextBlock>
                                 </StackPanel>
@@ -752,37 +752,37 @@
                         <!-- 4. SEKME: BAĞLANTI & SİSTEM                                -->
                         <!-- ========================================================= -->
                         <StackPanel x:Name="PanelSystem" Visibility="Collapsed">
-                            <TextBlock Text="Konsol, Giriş Kaynağı ve Ağ Bağlantıları" FontWeight="Bold" FontSize="15" Foreground="{DynamicResource textPrimaryBrush}" Margin="0,0,0,12" />
+                            <TextBlock Text="&#x202B;الجهاز ومصدر الصورة واتصالات الشبكة&#x202C;" FontWeight="Bold" FontSize="15" Foreground="{DynamicResource textPrimaryBrush}" Margin="0,0,0,12" />
 
                             <!-- GÖRÜNTÜ VE VİDEO GİRİŞ KAYNAĞI SEÇİMİ (Remote Play / Capture Card / OBS) -->
                             <Border Background="{DynamicResource cardBrush}" BorderBrush="{DynamicResource accentBrush}" BorderThickness="1.5" CornerRadius="10" Padding="14" Margin="0,0,0,12">
                                 <StackPanel>
                                     <Grid Margin="0,0,0,8">
                                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                            <TextBlock Text="Görüntü Giriş Kaynağı" FontWeight="Bold" FontSize="15" Foreground="{DynamicResource accentTextBrush}" VerticalAlignment="Center" />
+                                            <TextBlock Text="&#x202B;مصدر الصورة&#x202C;" FontWeight="Bold" FontSize="15" Foreground="{DynamicResource accentTextBrush}" VerticalAlignment="Center" />
                                         </StackPanel>
-                                        <TextBlock Text="OBS &amp; Capture Card Destekli" FontSize="12" FontFamily="Consolas" Foreground="{DynamicResource textSecondaryBrush}" HorizontalAlignment="Right" VerticalAlignment="Center" />
+                                        <TextBlock Text="&#x202B;يدعم OBS وكرت الالتقاط&#x202C;" FontSize="12" FontFamily="Consolas" Foreground="{DynamicResource textSecondaryBrush}" HorizontalAlignment="Right" VerticalAlignment="Center" />
                                     </Grid>
 
-                                    <TextBlock Text="Oyun görüntüsünün nereden okunacağını seçin. Capture Card veya OBS kullanıyorsanız PS5 Remote Play'e gerek kalmaz." FontSize="13" Foreground="{DynamicResource textSecondaryBrush}" Margin="0,0,0,10" TextWrapping="Wrap" />
+                                    <TextBlock Text="&#x202B;اختر من أين تُقرأ صورة اللعبة. إذا كنت تستخدم كرت التقاط أو OBS فلا حاجة لـPS5 Remote Play.&#x202C;" FontSize="13" Foreground="{DynamicResource textSecondaryBrush}" Margin="0,0,0,10" TextWrapping="Wrap" />
 
                                     <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
                                         <RadioButton x:Name="SourceRadioRemotePlay" Content="PS5 Remote Play" GroupName="VideoSourceGroup" Checked="OnVideoSourceChanged" IsChecked="True" Foreground="White" FontSize="13" VerticalAlignment="Center" Margin="0,0,14,0" Cursor="Hand" />
-                                        <RadioButton x:Name="SourceRadioCaptureCard" Content="Yakalama Kartı" GroupName="VideoSourceGroup" Checked="OnVideoSourceChanged" Foreground="White" FontSize="13" VerticalAlignment="Center" Margin="0,0,14,0" Cursor="Hand" />
-                                        <RadioButton x:Name="SourceRadioDesktop" Content="Masaüstü / OBS" GroupName="VideoSourceGroup" Checked="OnVideoSourceChanged" Foreground="White" FontSize="13" VerticalAlignment="Center" Cursor="Hand" />
+                                        <RadioButton x:Name="SourceRadioCaptureCard" Content="&#x202B;كرت الالتقاط&#x202C;" GroupName="VideoSourceGroup" Checked="OnVideoSourceChanged" Foreground="White" FontSize="13" VerticalAlignment="Center" Margin="0,0,14,0" Cursor="Hand" />
+                                        <RadioButton x:Name="SourceRadioDesktop" Content="&#x202B;سطح المكتب / OBS&#x202C;" GroupName="VideoSourceGroup" Checked="OnVideoSourceChanged" Foreground="White" FontSize="13" VerticalAlignment="Center" Cursor="Hand" />
                                     </StackPanel>
 
                                     <!-- Pencere / Monitör Seçimi Kartı (Masaüstü veya Capture Card seçildiğinde) -->
                                     <Border x:Name="SourceWindowPickerCard" Background="{DynamicResource wellBrush}" CornerRadius="6" Padding="10" Visibility="Collapsed">
                                         <StackPanel>
                                             <Grid Margin="0,0,0,6">
-                                                <TextBlock Text="Hedef Pencere veya Ekran:" FontSize="12" FontWeight="SemiBold" Foreground="{DynamicResource textSecondaryBrush}" VerticalAlignment="Center" />
-                        <Button Content="Pencereleri Yenile" Click="OnRefreshWindows" HorizontalAlignment="Right" Style="{StaticResource PillButton}" />
+                                                <TextBlock Text="&#x202B;النافذة أو الشاشة المطلوبة:&#x202C;" FontSize="12" FontWeight="SemiBold" Foreground="{DynamicResource textSecondaryBrush}" VerticalAlignment="Center" />
+                        <Button Content="&#x202B;تحديث النوافذ&#x202C;" Click="OnRefreshWindows" HorizontalAlignment="Right" Style="{StaticResource PillButton}" />
                                             </Grid>
                                             <ComboBox x:Name="SourceWindowComboBox" SelectionChanged="OnSourceWindowSelected" MinHeight="30" FontSize="13">
-                                                <ComboBoxItem Content="Tüm Masaüstü / Ana Ekran" Tag="" IsSelected="True" />
+                                                <ComboBoxItem Content="&#x202B;كل سطح المكتب / الشاشة الرئيسية&#x202C;" Tag="" IsSelected="True" />
                                             </ComboBox>
-                                            <TextBlock Text="OBS kullanıyorsanız: OBS'te 'Tam Ekran Projektör' veya 'Pencere Projektörü' açıp listeden seçebilirsiniz." FontSize="12" Foreground="#64748B" Margin="0,6,0,0" TextWrapping="Wrap" />
+                                            <TextBlock Text="&#x202B;إذا كنت تستخدم OBS: افتح «عارض ملء الشاشة» أو «عارض النافذة» في OBS ثم اختره من القائمة.&#x202C;" FontSize="12" Foreground="#64748B" Margin="0,6,0,0" TextWrapping="Wrap" />
                                         </StackPanel>
                                     </Border>
                                 </StackPanel>
@@ -798,7 +798,7 @@
                                         </StackPanel>
                                         <TextBlock Text="1080p 60 FPS" HorizontalAlignment="Right" FontSize="12" FontFamily="Consolas" Foreground="{DynamicResource textTertiaryBrush}" VerticalAlignment="Center" />
                                     </Grid>
-                                    <TextBlock Text="PS5 konsolunuzda Remote Play etkinleştirilmiş olmalıdır. Kumandanızın TV'den kopmaması için bilgisayar arka planda 2. bir PSN hesabı ile bağlanır."
+                                    <TextBlock Text="&#x202B;يجب تفعيل اللعب عن بُعد (Remote Play) في الـPS5. يتصل الكمبيوتر في الخلفية بحساب PSN ثانٍ حتى لا تنفصل يد التحكم عن التلفزيون.&#x202C;"
                                                FontSize="13" Foreground="{DynamicResource textSecondaryBrush}" TextWrapping="Wrap" />
                                 </StackPanel>
                             </Border>
@@ -809,11 +809,11 @@
                                     <Grid Margin="0,0,0,6">
                                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                                             <TextBlock Text="{x:Static c:Glyphs.Tv}" Style="{StaticResource GlyphText}" FontSize="15" Foreground="{DynamicResource successBrush}" Margin="0,0,6,0" VerticalAlignment="Center" />
-                                            <TextBlock Text="Akıllı TV &amp; GameTranslator" FontWeight="SemiBold" FontSize="13" Foreground="White" VerticalAlignment="Center" />
+                                            <TextBlock Text="&#x202B;التلفزيون الذكي و GameTranslator&#x202C;" FontWeight="SemiBold" FontSize="13" Foreground="White" VerticalAlignment="Center" />
                                         </StackPanel>
-                                        <TextBlock Text="Port 8787 (SSE)" HorizontalAlignment="Right" FontSize="12" FontFamily="Consolas" Foreground="{DynamicResource textTertiaryBrush}" VerticalAlignment="Center" />
+                                        <TextBlock Text="&#x202B;المنفذ 8787 (SSE)&#x202C;" HorizontalAlignment="Right" FontSize="12" FontFamily="Consolas" Foreground="{DynamicResource textTertiaryBrush}" VerticalAlignment="Center" />
                                     </Grid>
-                                    <TextBlock Text="TCL / Android TV (APK), LG webOS (IPK) ve Samsung Tizen (WGT) paketleri TV'nize yüklendiğinde otomatik olarak bilgisayarınıza bağlanır."
+                                    <TextBlock Text="&#x202B;بعد تثبيت تطبيق التلفزيون (سامسونج Tizen أو LG webOS أو Android TV) يتصل بكمبيوترك تلقائياً.&#x202C;"
                                                FontSize="13" Foreground="{DynamicResource textSecondaryBrush}" TextWrapping="Wrap" />
                                 </StackPanel>
                             </Border>
@@ -822,13 +822,13 @@
                             <Border Background="{DynamicResource cardBrush}" BorderBrush="{DynamicResource hairlineBrush}" BorderThickness="1" CornerRadius="8" Padding="12">
                                 <StackPanel>
                                     <Grid Margin="0,0,0,8">
-                                        <TextBlock Text="Ekranı çevir kısayolu" FontSize="13" Foreground="{DynamicResource textSecondaryBrush}" VerticalAlignment="Center" />
+                                        <TextBlock Text="&#x202B;اختصار ترجمة الشاشة&#x202C;" FontSize="13" Foreground="{DynamicResource textSecondaryBrush}" VerticalAlignment="Center" />
                                         <Border HorizontalAlignment="Right" Background="{DynamicResource textTertiaryBrush}" CornerRadius="4" Padding="6,2">
                                             <TextBlock Text="Num 9 / Alt+T" FontFamily="Consolas" FontWeight="Bold" FontSize="13" Foreground="{DynamicResource textPrimaryBrush}" />
                                         </Border>
                                     </Grid>
                                     <Grid>
-                                        <TextBlock x:Name="ObsText" Text="OBS overlay: http://localhost:8787/obs" FontSize="13" FontFamily="Consolas" Foreground="{DynamicResource textSecondaryBrush}" VerticalAlignment="Center" />
+                                        <TextBlock x:Name="ObsText" Text="&#x202B;طبقة OBS: http://localhost:8787/obs&#x202C;" FontSize="13" FontFamily="Consolas" Foreground="{DynamicResource textSecondaryBrush}" VerticalAlignment="Center" />
                     <Button Content="Kopyala" HorizontalAlignment="Right" Click="OnCopyObs" Style="{StaticResource PillButton}" />
                                     </Grid>
                                 </StackPanel>
@@ -839,7 +839,7 @@
                         <!-- 5. SEKME: HIZLI REHBER                                     -->
                         <!-- ========================================================= -->
                         <StackPanel x:Name="PanelGuide" Visibility="Collapsed">
-                            <TextBlock Text="Nasıl Kullanılır? (Hızlı Rehber)" FontWeight="Bold" FontSize="15" Foreground="{DynamicResource textPrimaryBrush}" Margin="0,0,0,12" />
+                            <TextBlock Text="&#x202B;طريقة الاستخدام (دليل سريع)&#x202C;" FontWeight="Bold" FontSize="15" Foreground="{DynamicResource textPrimaryBrush}" Margin="0,0,0,12" />
 
                             <!-- 1. PS5 & TV -->
                             <Border Background="{DynamicResource cardBrush}" BorderBrush="{DynamicResource hairlineBrush}" BorderThickness="1" CornerRadius="7" Padding="10" Margin="0,0,0,8">
@@ -852,8 +852,8 @@
                                         <TextBlock Text="1" FontWeight="Bold" FontSize="13" Foreground="{DynamicResource accentBrush}" HorizontalAlignment="Center" VerticalAlignment="Center" />
                                     </Border>
                                     <StackPanel Grid.Column="1">
-                                        <TextBlock Text="PS5 &amp; TV" FontWeight="SemiBold" FontSize="13" Foreground="White" Margin="0,0,0,2" />
-                                        <TextBlock Text="PS5 konsolunuzu açın ve TV'deki HDMI portuna geçin. PS5 doğrudan TV'ye bağlı kalır." FontSize="12" Foreground="{DynamicResource textSecondaryBrush}" TextWrapping="Wrap" />
+                                        <TextBlock Text="&#x202B;الـPS5 والتلفزيون&#x202C;" FontWeight="SemiBold" FontSize="13" Foreground="White" Margin="0,0,0,2" />
+                                        <TextBlock Text="&#x202B;شغّل الـPS5 وانتقل إلى منفذ HDMI في التلفزيون. يبقى الـPS5 موصولاً بالتلفزيون مباشرة.&#x202C;" FontSize="12" Foreground="{DynamicResource textSecondaryBrush}" TextWrapping="Wrap" />
                                     </StackPanel>
                                 </Grid>
                             </Border>
@@ -869,8 +869,8 @@
                                         <TextBlock Text="2" FontWeight="Bold" FontSize="13" Foreground="{DynamicResource accentBrush}" HorizontalAlignment="Center" VerticalAlignment="Center" />
                                     </Border>
                                     <StackPanel Grid.Column="1">
-                                        <TextBlock Text="TV Uygulaması" FontWeight="SemiBold" FontSize="13" Foreground="White" Margin="0,0,0,2" />
-                                        <TextBlock Text="TV'nizde GameTranslator uygulamasını açın. Bilgisayara aynı Wi-Fi üzerinden otomatik olarak bağlanır." FontSize="12" Foreground="{DynamicResource textSecondaryBrush}" TextWrapping="Wrap" />
+                                        <TextBlock Text="&#x202B;تطبيق التلفزيون&#x202C;" FontWeight="SemiBold" FontSize="13" Foreground="White" Margin="0,0,0,2" />
+                                        <TextBlock Text="&#x202B;افتح تطبيق GameTranslator على التلفزيون. يتصل بالكمبيوتر تلقائياً عبر نفس الشبكة.&#x202C;" FontSize="12" Foreground="{DynamicResource textSecondaryBrush}" TextWrapping="Wrap" />
                                     </StackPanel>
                                 </Grid>
                             </Border>
@@ -886,8 +886,8 @@
                                         <TextBlock Text="3" FontWeight="Bold" FontSize="13" Foreground="{DynamicResource accentBrush}" HorizontalAlignment="Center" VerticalAlignment="Center" />
                                     </Border>
                                     <StackPanel Grid.Column="1">
-                                        <TextBlock Text="Okuma Alanı" FontWeight="SemiBold" FontSize="13" Foreground="White" Margin="0,0,0,2" />
-                                        <TextBlock Text="Oyununuzun altyazı konumuna göre 'Oyun Okuma Alanı' sekmesinden hazır şablon seçin veya mavi kutuyu ayarlayın." FontSize="12" Foreground="{DynamicResource textSecondaryBrush}" TextWrapping="Wrap" />
+                                        <TextBlock Text="&#x202B;منطقة القراءة&#x202C;" FontWeight="SemiBold" FontSize="13" Foreground="White" Margin="0,0,0,2" />
+                                        <TextBlock Text="&#x202B;حسب مكان الترجمة في لعبتك اختر قالباً جاهزاً من تبويب «منطقة القراءة» أو اضبط المربع الأزرق.&#x202C;" FontSize="12" Foreground="{DynamicResource textSecondaryBrush}" TextWrapping="Wrap" />
                                     </StackPanel>
                                 </Grid>
                             </Border>
@@ -903,8 +903,8 @@
                                         <TextBlock Text="4" FontWeight="Bold" FontSize="13" Foreground="{DynamicResource accentBrush}" HorizontalAlignment="Center" VerticalAlignment="Center" />
                                     </Border>
                                     <StackPanel Grid.Column="1">
-                                        <TextBlock Text="Başlat" FontWeight="SemiBold" FontSize="13" Foreground="White" Margin="0,0,0,2" />
-                                        <TextBlock Text="Ana ekrandaki mavi '▶ Çeviriyi Başlat' butonuna tıklayın. Konsol görüntüsü taranıp altyazılar TV'ye Türkçe olarak yansır." FontSize="12" Foreground="{DynamicResource textSecondaryBrush}" TextWrapping="Wrap" />
+                                        <TextBlock Text="&#x202B;ابدأ&#x202C;" FontWeight="SemiBold" FontSize="13" Foreground="White" Margin="0,0,0,2" />
+                                        <TextBlock Text="&#x202B;اضغط الزر الأزرق «▶ ابدأ الترجمة» في الشاشة الرئيسية. تُقرأ صورة الجهاز وتظهر الترجمة بالعربية على التلفزيون.&#x202C;" FontSize="12" Foreground="{DynamicResource textSecondaryBrush}" TextWrapping="Wrap" />
                                     </StackPanel>
                                 </Grid>
                             </Border>
@@ -920,8 +920,8 @@
                                         <TextBlock Text="5" FontWeight="Bold" FontSize="13" Foreground="{DynamicResource accentBrush}" HorizontalAlignment="Center" VerticalAlignment="Center" />
                                     </Border>
                                     <StackPanel Grid.Column="1">
-                                        <TextBlock Text="TV Görünümü" FontWeight="SemiBold" FontSize="13" Foreground="White" Margin="0,0,0,2" />
-                                        <TextBlock Text="Altyazı rengini (sarı/beyaz), boyutunu ve konumunu zevkinize göre ayarlayın; TV ekranına anında yansır!" FontSize="12" Foreground="{DynamicResource textSecondaryBrush}" TextWrapping="Wrap" />
+                                        <TextBlock Text="&#x202B;مظهر التلفزيون&#x202C;" FontWeight="SemiBold" FontSize="13" Foreground="White" Margin="0,0,0,2" />
+                                        <TextBlock Text="&#x202B;اضبط لون الترجمة (أصفر/أبيض) وحجمها وموضعها كما تحب؛ يظهر التغيير على التلفزيون فوراً!&#x202C;" FontSize="12" Foreground="{DynamicResource textSecondaryBrush}" TextWrapping="Wrap" />
                                     </StackPanel>
                                 </Grid>
                             </Border>
@@ -958,7 +958,7 @@
                     <Ellipse Width="128" Height="128" Fill="{DynamicResource cardBrush}" Stroke="{DynamicResource hairlineBrush}" StrokeThickness="1" IsHitTestVisible="False" />
                     <Button x:Name="Toggle" Width="104" Height="104" HorizontalAlignment="Center" VerticalAlignment="Center" Click="OnToggle" Cursor="Hand"
                             IsEnabled="{Binding IsStarting, Converter={StaticResource Not}}" Background="{DynamicResource accentBrush}"
-                            ToolTip="Çeviriyi başlat ya da durdur">
+                            ToolTip="&#x202B;ابدأ الترجمة أو أوقفها&#x202C;">
                         <Button.Template>
                             <ControlTemplate TargetType="Button">
                                 <Grid>
@@ -993,8 +993,8 @@
                         <TextBlock x:Name="ToggleGlyph" Text="{x:Static c:Glyphs.Play}" Style="{StaticResource GlyphText}" FontSize="34" Foreground="White" />
                     </Button>
                 </Grid>
-                <TextBlock x:Name="ToggleText" Text="Çeviriyi Başlat" Style="{StaticResource LargeTitleText}" FontSize="22" TextAlignment="Center" HorizontalAlignment="Center" />
-                <TextBlock x:Name="HomeHint" Text="Oyunda altyazıları aç, sonra başlat." Style="{StaticResource HintText}" FontSize="14"
+                <TextBlock x:Name="ToggleText" Text="&#x202B;ابدأ الترجمة&#x202C;" Style="{StaticResource LargeTitleText}" FontSize="22" TextAlignment="Center" HorizontalAlignment="Center" />
+                <TextBlock x:Name="HomeHint" Text="&#x202B;فعّل الترجمة داخل اللعبة ثم ابدأ.&#x202C;" Style="{StaticResource HintText}" FontSize="14"
                            TextAlignment="Center" HorizontalAlignment="Center" TextWrapping="Wrap" Margin="0,4,0,16" />
 
                 <!-- PS5 → Bilgisayar → TV -->
@@ -1014,7 +1014,7 @@
                             <TextBlock Text="PS5" FontWeight="SemiBold" FontSize="14" HorizontalAlignment="Center" Margin="0,8,0,2" />
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                                 <Ellipse x:Name="HomePs5Dot" Width="7" Height="7" Fill="{DynamicResource idleBrush}" Margin="0,1,5,0" VerticalAlignment="Center" />
-                                <TextBlock x:Name="HomePs5Text" Text="Eşleşmedi" FontSize="12" Foreground="{DynamicResource textSecondaryBrush}" />
+                                <TextBlock x:Name="HomePs5Text" Text="&#x202B;غير مقترن&#x202C;" FontSize="12" Foreground="{DynamicResource textSecondaryBrush}" />
                             </StackPanel>
                         </StackPanel>
                         <TextBlock Grid.Column="1" Text="&#xE76C;" Style="{StaticResource GlyphText}" FontSize="13" Foreground="{DynamicResource textTertiaryBrush}" VerticalAlignment="Top" Margin="0,15,0,0" />
@@ -1025,7 +1025,7 @@
                             <TextBlock Text="Bilgisayar" FontWeight="SemiBold" FontSize="14" HorizontalAlignment="Center" Margin="0,8,0,2" />
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                                 <Ellipse x:Name="HomePcDot" Width="7" Height="7" Fill="{DynamicResource idleBrush}" Margin="0,1,5,0" VerticalAlignment="Center" />
-                                <TextBlock x:Name="HomePcText" Text="Hazır" FontSize="12" Foreground="{DynamicResource textSecondaryBrush}" />
+                                <TextBlock x:Name="HomePcText" Text="&#x202B;جاهز&#x202C;" FontSize="12" Foreground="{DynamicResource textSecondaryBrush}" />
                             </StackPanel>
                         </StackPanel>
                         <TextBlock Grid.Column="3" Text="&#xE76C;" Style="{StaticResource GlyphText}" FontSize="13" Foreground="{DynamicResource textTertiaryBrush}" VerticalAlignment="Top" Margin="0,15,0,0" />
@@ -1036,7 +1036,7 @@
                             <TextBlock Text="TV" FontWeight="SemiBold" FontSize="14" HorizontalAlignment="Center" Margin="0,8,0,2" />
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                                 <Ellipse x:Name="HomeTvDot" Width="7" Height="7" Fill="{DynamicResource idleBrush}" Margin="0,1,5,0" VerticalAlignment="Center" />
-                                <TextBlock x:Name="HomeTvText" Text="Bağlı değil" FontSize="12" Foreground="{DynamicResource textSecondaryBrush}" />
+                                <TextBlock x:Name="HomeTvText" Text="&#x202B;غير متصل&#x202C;" FontSize="12" Foreground="{DynamicResource textSecondaryBrush}" />
                             </StackPanel>
                         </StackPanel>
                     </Grid>
@@ -1061,8 +1061,8 @@
                 <Border Style="{StaticResource Glass}" Padding="16,14" Margin="0,0,0,14" MinHeight="84"
                         Visibility="{Binding IsRunning, Converter={StaticResource VisibleIf}}">
                     <StackPanel>
-                        <TextBlock Text="SON ÇEVİRİ" FontSize="11" FontWeight="SemiBold" Foreground="{DynamicResource textSecondaryBrush}" Margin="0,0,0,8" />
-                        <TextBlock Text="Oyunda altyazı çıkınca çevirisi burada ve TV'de görünür." Style="{StaticResource HintText}" FontSize="14" TextWrapping="Wrap"
+                        <TextBlock Text="&#x202B;آخر ترجمة&#x202C;" FontSize="11" FontWeight="SemiBold" Foreground="{DynamicResource textSecondaryBrush}" Margin="0,0,0,8" />
+                        <TextBlock Text="&#x202B;عند ظهور ترجمة في اللعبة تظهر ترجمتها هنا وعلى التلفزيون.&#x202C;" Style="{StaticResource HintText}" FontSize="14" TextWrapping="Wrap"
                                    Visibility="{Binding LastTranslation, Converter={StaticResource VisibleIf}, ConverterParameter=invert}" />
                         <TextBlock Text="{Binding LastTranslation}" FontSize="17" FontWeight="SemiBold" Foreground="{DynamicResource textPrimaryBrush}" TextWrapping="Wrap" LineHeight="23"
                                    Visibility="{Binding LastTranslation, Converter={StaticResource VisibleIf}}" />
@@ -1073,23 +1073,23 @@
 
                 <!-- Çeviri kapalıyken: nasıl kullanılır -->
                 <StackPanel Visibility="{Binding IsRunning, Converter={StaticResource VisibleIf}, ConverterParameter=invert}">
-                    <TextBlock Text="NASIL KULLANILIR" FontSize="11" FontWeight="SemiBold" Foreground="{DynamicResource textSecondaryBrush}" Margin="16,0,0,8" />
+                    <TextBlock Text="&#x202B;طريقة الاستخدام&#x202C;" FontSize="11" FontWeight="SemiBold" Foreground="{DynamicResource textSecondaryBrush}" Margin="16,0,0,8" />
                     <Border Style="{StaticResource Glass}" Padding="16,6" Margin="0,0,0,14">
                         <StackPanel>
                             <Grid Margin="0,8">
                                 <Grid.ColumnDefinitions><ColumnDefinition Width="Auto" /><ColumnDefinition Width="*" /></Grid.ColumnDefinitions>
                                 <Border Width="24" Height="24" CornerRadius="12" Background="{DynamicResource cardStrongBrush}"><TextBlock Text="1" FontWeight="Bold" FontSize="12" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
-                                <TextBlock Grid.Column="1" Text="Oyunda altyazıları aç." FontSize="14" VerticalAlignment="Center" Margin="12,0,0,0" />
+                                <TextBlock Grid.Column="1" Text="&#x202B;فعّل الترجمة داخل اللعبة.&#x202C;" FontSize="14" VerticalAlignment="Center" Margin="12,0,0,0" />
                             </Grid>
                             <Grid Margin="0,8">
                                 <Grid.ColumnDefinitions><ColumnDefinition Width="Auto" /><ColumnDefinition Width="*" /></Grid.ColumnDefinitions>
                                 <Border Width="24" Height="24" CornerRadius="12" Background="{DynamicResource cardStrongBrush}"><TextBlock Text="2" FontWeight="Bold" FontSize="12" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
-                                <TextBlock Grid.Column="1" Text="Yukarıdaki düğmeyle çeviriyi başlat." FontSize="14" VerticalAlignment="Center" Margin="12,0,0,0" />
+                                <TextBlock Grid.Column="1" Text="&#x202B;ابدأ الترجمة بالزر في الأعلى.&#x202C;" FontSize="14" VerticalAlignment="Center" Margin="12,0,0,0" />
                             </Grid>
                             <Grid Margin="0,8">
                                 <Grid.ColumnDefinitions><ColumnDefinition Width="Auto" /><ColumnDefinition Width="*" /></Grid.ColumnDefinitions>
                                 <Border Width="24" Height="24" CornerRadius="12" Background="{DynamicResource cardStrongBrush}"><TextBlock Text="3" FontWeight="Bold" FontSize="12" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
-                                <TextBlock Grid.Column="1" Text="TV'de GameTranslator'ı aç; çeviri oyunun üstünde görünür." FontSize="14" TextWrapping="Wrap" VerticalAlignment="Center" Margin="12,0,0,0" />
+                                <TextBlock Grid.Column="1" Text="&#x202B;افتح GameTranslator على التلفزيون؛ تظهر الترجمة فوق اللعبة.&#x202C;" FontSize="14" TextWrapping="Wrap" VerticalAlignment="Center" Margin="12,0,0,0" />
                             </Grid>
                         </StackPanel>
                     </Border>
@@ -1112,7 +1112,7 @@
                         <Button Style="{StaticResource RowButton}" Click="OnOcrShortcut">
                             <Grid>
                                 <Grid.ColumnDefinitions><ColumnDefinition Width="*" /><ColumnDefinition Width="Auto" /></Grid.ColumnDefinitions>
-                                <TextBlock Text="Altyazının okunduğu yer" FontSize="14" VerticalAlignment="Center" />
+                                <TextBlock Text="&#x202B;مكان قراءة الترجمة&#x202C;" FontSize="14" VerticalAlignment="Center" />
                                 <StackPanel Grid.Column="1" Orientation="Horizontal">
                                     <TextBlock x:Name="HomePresetText" Text="Otomatik" FontSize="14" Foreground="{DynamicResource textSecondaryBrush}" VerticalAlignment="Center" />
                                     <TextBlock Text="&#xE76C;" Style="{StaticResource GlyphText}" FontSize="11" Margin="8,1,0,0" Foreground="{DynamicResource textTertiaryBrush}" />
@@ -1123,7 +1123,7 @@
                         <Button Style="{StaticResource RowButton}" Click="OnDisplayShortcut">
                             <Grid>
                                 <Grid.ColumnDefinitions><ColumnDefinition Width="*" /><ColumnDefinition Width="Auto" /></Grid.ColumnDefinitions>
-                                <TextBlock Text="TV'deki görünüm" FontSize="14" VerticalAlignment="Center" />
+                                <TextBlock Text="&#x202B;المظهر على التلفزيون&#x202C;" FontSize="14" VerticalAlignment="Center" />
                                 <TextBlock Grid.Column="1" Text="&#xE76C;" Style="{StaticResource GlyphText}" FontSize="11" Margin="8,1,0,0" Foreground="{DynamicResource textTertiaryBrush}" VerticalAlignment="Center" />
                             </Grid>
                         </Button>
@@ -1131,7 +1131,7 @@
                         <Button Style="{StaticResource RowButton}" Click="OnGuideShortcut">
                             <Grid>
                                 <Grid.ColumnDefinitions><ColumnDefinition Width="*" /><ColumnDefinition Width="Auto" /></Grid.ColumnDefinitions>
-                                <TextBlock Text="Rehber ve sorun giderme" FontSize="14" VerticalAlignment="Center" />
+                                <TextBlock Text="&#x202B;الدليل وحل المشاكل&#x202C;" FontSize="14" VerticalAlignment="Center" />
                                 <TextBlock Grid.Column="1" Text="&#xE76C;" Style="{StaticResource GlyphText}" FontSize="11" Margin="8,1,0,0" Foreground="{DynamicResource textTertiaryBrush}" VerticalAlignment="Center" />
                             </Grid>
                         </Button>

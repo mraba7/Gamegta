@@ -42,17 +42,17 @@ public partial class GamePickerWindow : Window
         var selected = CommunityPatchManager.Shared.SelectedGameId;
         List.Children.Clear();
         if (query.Length == 0)
-            Add(null, "Otomatik", "Oyun ilk birkaç cümleden anlaşılır (önerilen)", selected is null);
+            Add(null, "Otomatik", "تُعرف اللعبة من أول بضع جمل (مستحسن)", selected is null);
         foreach (var (id, title, lines) in games)
         {
             if (query.Length > 0 && !Turkish.CompareInfo.IsPrefix(title, query, CompareOptions.IgnoreCase) &&
                 Turkish.CompareInfo.IndexOf(title, query, CompareOptions.IgnoreCase) < 0) continue;
-            Add(id, title, $"{lines.ToString("N0", Turkish)} hazır replik", id == selected);
+            Add(id, title, $"{lines.ToString("N0", Turkish)} جملة جاهزة", id == selected);
         }
         if (List.Children.Count == 0)
             List.Children.Add(new TextBlock
             {
-                Text = "Bu adla bir oyun paketi yok. Paketi olmayan oyunlarda Otomatik'te kal; çeviri modeli çevirir.",
+                Text = "لا توجد حزمة لعبة بهذا الاسم. في الألعاب التي ليس لها حزمة ابقَ على «تلقائي»؛ خدمة الترجمة تترجم.",
                 Style = (Style)FindResource("HintText"), TextWrapping = TextWrapping.Wrap, Margin = new Thickness(12),
             });
     }

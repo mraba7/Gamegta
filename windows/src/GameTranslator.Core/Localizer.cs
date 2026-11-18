@@ -17,15 +17,46 @@ public sealed class Localizer
 
     private Localizer(string language) => this.language = language;
 
-    public static Localizer ForLanguage(string language) => new(language.ToLowerInvariant().StartsWith("tr") ? "tr" : "en");
+    /// <summary>Turkish and Arabic have their own texts; any other language shows English.</summary>
+    public static Localizer ForLanguage(string language)
+    {
+        var code = language.ToLowerInvariant();
+        return new(code.StartsWith("tr") ? "tr" : code.StartsWith("ar") ? "ar" : "en");
+    }
 
-    /// <summary>Windows'un arayüz diline göre: Türkçe değilse İngilizce.</summary>
-    public static Localizer Current { get; } = ForLanguage(CultureInfo.CurrentUICulture.TwoLetterISOLanguageName);
+    /// <summary>
+    /// The language of the interface. This is the Arabic edition: the interface is Arabic whatever language Windows
+    /// uses (the original app followed Windows: Turkish, otherwise English).
+    /// </summary>
+    public static Localizer Current { get; } = ForLanguage("ar");
 
     public string Language => language;
 
     public string this[string key] =>
-        Catalog.Value.TryGetValue(key, out var values) && values.TryGetValue(language, out var value) ? value : key;
+        Catalog.Value.TryGetValue(key, out var values) && values.TryGetValue(language, out var value)
+            ? language == "ar" ? RightToLeft(value) : value
+            : key;
+
+    private const char Embed = '\u202B';
+    private const char Pop = '\u202C';
+
+    /// <summary>
+    /// The windows are laid out left to right. Each line that has Arabic letters is wrapped in a right-to-left
+    /// embedding (U+202B … U+202C) so numbers, punctuation and Latin words at its ends stay on the correct side.
+    /// Lines without Arabic letters, and lines already wrapped, are returned as they are.
+    /// </summary>
+    public static string RightToLeft(string text)
+    {
+        if (text.Length == 0) return text;
+        var lines = text.Split('\n');
+        for (var i = 0; i < lines.Length; i++)
+        {
+            var line = lines[i];
+            if (line.Length == 0 || line[0] == Embed || !line.Any(c => c is >= '\u0600' and <= '\u06FF')) continue;
+            lines[i] = Embed + line + Pop;
+        }
+        return string.Join('\n', lines);
+    }
 
     /// <summary>xcstrings biçim belirteçlerini (%@, %lld, %1$@ …) verilen değerlerle doldurur.</summary>
     public string Format(string key, params object[] args) => Fill(this[key], args);
@@ -33,6 +64,35 @@ public sealed class Localizer
     /// <summary>Türkçesi (ya da verilen dili) eksik anahtarlar.</summary>
     public static IReadOnlyList<string> MissingTranslations(string language) =>
         [.. Catalog.Value.Where(entry => !entry.Value.ContainsKey(language)).Select(entry => entry.Key)];
+
+    /// <summary>
+    /// Entries whose translation in <paramref name="language"/> does not carry exactly the format specifiers of the
+    /// key (%@, %lld, %1$@ …): a lost or added one makes a filled-in value vanish or land in the wrong place.
+    /// </summary>
+    public static IReadOnlyList<string> SpecifierMismatches(string language) =>
+        [.. Catalog.Value
+            .Where(entry => entry.Value.TryGetValue(language, out var value) && !Specifiers(entry.Key).SequenceEqual(Specifiers(value)))
+            .Select(entry => entry.Key)];
+
+    /// <summary>The specifiers of a format string, sorted (a translation may put positional ones in another order).</summary>
+    private static List<string> Specifiers(string format)
+    {
+        var found = new List<string>();
+        for (var i = 0; i < format.Length - 1; i++)
+        {
+            if (format[i] != '%') continue;
+            if (format[i + 1] == '%') { found.Add("%%"); i++; continue; }
+            var j = i + 1;
+            while (j < format.Length && (char.IsDigit(format[j]) || format[j] is '$' or '.' or 'l' or 'h' or 'q' or 'z')) j++;
+            if (j < format.Length && "@dDiuUxXfgs".Contains(format[j]))
+            {
+                found.Add(format[i..(j + 1)]);
+                i = j;
+            }
+        }
+        found.Sort(StringComparer.Ordinal);
+        return found;
+    }
 
     internal static string Fill(string format, object[] args)
     {

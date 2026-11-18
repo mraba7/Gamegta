@@ -53,7 +53,7 @@ public partial class ConsoleStep : UserControl
         catch (Exception)
         {
             NotFound.Visibility = ManualHost.Visibility = Visibility.Visible;
-            Error.Text = "Ağ taramasında konsol bulunamadı. Lütfen PS5 IP adresini elle girin.";
+            Error.Text = "لم يُعثر على الجهاز في بحث الشبكة. أدخل عنوان IP للـPS5 يدوياً.";
         }
         Search.IsEnabled = true;
         UpdateConnect();

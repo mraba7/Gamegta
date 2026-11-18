@@ -151,8 +151,8 @@ public static class WindowCaptureService
                     bool isPrimary = (mi.dwFlags & MONITORINFOF_PRIMARY) != 0;
                     int w = mi.rcMonitor.Width;
                     int h = mi.rcMonitor.Height;
-                    string primaryLabel = isPrimary ? " (Ana Ekran)" : "";
-                    string name = $"🖥️ Monitör {index + 1}: {w}x{h}{primaryLabel}";
+                    string primaryLabel = isPrimary ? " (الشاشة الرئيسية)" : "";
+                    string name = $"🖥️ الشاشة {index + 1}: {w}x{h}{primaryLabel}";
                     list.Add(new DisplayMonitorInfo(index, name, mi.rcMonitor.Left, mi.rcMonitor.Top, w, h, isPrimary));
                     index++;
                 }
@@ -165,7 +165,7 @@ public static class WindowCaptureService
         {
             int sw = GetSystemMetrics(SM_CXSCREEN);
             int sh = GetSystemMetrics(SM_CYSCREEN);
-            list.Add(new DisplayMonitorInfo(0, $"🖥️ Monitör 1: {sw}x{sh} (Ana Ekran)", 0, 0, sw > 0 ? sw : 1920, sh > 0 ? sh : 1080, true));
+            list.Add(new DisplayMonitorInfo(0, $"🖥️ الشاشة 1: {sw}x{sh} (الشاشة الرئيسية)", 0, 0, sw > 0 ? sw : 1920, sh > 0 ? sh : 1080, true));
         }
         return list;
     }

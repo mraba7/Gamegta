@@ -162,8 +162,8 @@ public partial class MainView : UserControl
             SourceWindowPickerCard.Visibility = Visibility.Visible;
             if (QuickSourcePickerCard != null) QuickSourcePickerCard.Visibility = Visibility.Visible;
             PopulateSourceWindows();
-            if (StreamThumbnailTitle != null) StreamThumbnailTitle.Text = "📹 Yakalama Kartı Canlı Akış";
-            if (ThumbnailStatusText != null) ThumbnailStatusText.Text = "Yakalama Kartı Bekleniyor";
+            if (StreamThumbnailTitle != null) StreamThumbnailTitle.Text = "📹 بث كرت الالتقاط المباشر";
+            if (ThumbnailStatusText != null) ThumbnailStatusText.Text = "بانتظار كرت الالتقاط";
         }
         else if (s.VideoSource == VideoSourceType.DesktopScreen)
         {
@@ -171,16 +171,16 @@ public partial class MainView : UserControl
             SourceWindowPickerCard.Visibility = Visibility.Visible;
             if (QuickSourcePickerCard != null) QuickSourcePickerCard.Visibility = Visibility.Visible;
             PopulateSourceWindows();
-            if (StreamThumbnailTitle != null) StreamThumbnailTitle.Text = "🖥️ Masaüstü / OBS Canlı Akış";
-            if (ThumbnailStatusText != null) ThumbnailStatusText.Text = "Masaüstü Akışı Bekleniyor";
+            if (StreamThumbnailTitle != null) StreamThumbnailTitle.Text = "🖥️ بث سطح المكتب / OBS المباشر";
+            if (ThumbnailStatusText != null) ThumbnailStatusText.Text = "بانتظار بث سطح المكتب";
         }
         else
         {
             SourceRadioRemotePlay.IsChecked = true;
             SourceWindowPickerCard.Visibility = Visibility.Collapsed;
             if (QuickSourcePickerCard != null) QuickSourcePickerCard.Visibility = Visibility.Collapsed;
-            if (StreamThumbnailTitle != null) StreamThumbnailTitle.Text = "PS5 görüntüsü";
-            if (ThumbnailStatusText != null) ThumbnailStatusText.Text = "Görüntü bekleniyor";
+            if (StreamThumbnailTitle != null) StreamThumbnailTitle.Text = "صورة الـPS5";
+            if (ThumbnailStatusText != null) ThumbnailStatusText.Text = "بانتظار الصورة";
         }
 
         // A saved key is never shown; dots tell the user one is stored.
@@ -255,7 +255,7 @@ public partial class MainView : UserControl
         Toggle.Background = new SolidColorBrush(
             running ? Color.FromRgb(220, 38, 38) : Color.FromRgb(10, 132, 255));
         ToggleGlyph.Text = running ? Glyphs.Stop : Glyphs.Play;
-        ToggleText.Text = running ? "Çeviriyi Durdur" : "Çeviriyi Başlat";
+        ToggleText.Text = running ? "أوقف الترجمة" : "ابدأ الترجمة";
 
         bool hasFrame = LiveStreamImage?.Source != null;
         bool isStreaming = running && hasFrame;
@@ -263,17 +263,17 @@ public partial class MainView : UserControl
         StreamThumbnailDot.Fill = new SolidColorBrush(isStreaming
             ? Color.FromRgb(16, 185, 129)
             : (running ? Color.FromRgb(245, 158, 11) : Color.FromRgb(156, 163, 175)));
-        StreamThumbnailBadge.Text = isStreaming ? "CANLI" : (running ? "BAĞLANIYOR" : "KAPALI");
+        StreamThumbnailBadge.Text = isStreaming ? "CANLI" : (running ? "جارٍ الاتصال" : "KAPALI");
         StreamThumbnailBadge.Foreground = new SolidColorBrush(isStreaming ? Color.FromRgb(56, 189, 248) : Color.FromArgb(140, 255, 255, 255));
-        ThumbnailStatusText.Text = isStreaming ? "PS5 Canlı Akışı Aktif" : (running ? "PS5 Yayını Bekleniyor..." : "Görüntü bekleniyor");
-        LiveBadgeText.Text = isStreaming ? "Canlı" : (running ? "Bekleniyor" : "Beklemede");
+        ThumbnailStatusText.Text = isStreaming ? "بث الـPS5 المباشر يعمل" : (running ? "بانتظار بث الـPS5..." : "بانتظار الصورة");
+        LiveBadgeText.Text = isStreaming ? "مباشر" : (running ? "Bekleniyor" : "Beklemede");
 
         // PS5 Durum Satırı
         if (Ps5StatusDot != null && Ps5StatusLabel != null)
         {
             var paired = controller.Console != null;
             Ps5StatusDot.Fill = new SolidColorBrush(paired ? Color.FromRgb(16, 185, 129) : Color.FromRgb(156, 163, 175));
-            Ps5StatusLabel.Text = paired ? $"Eşleşti ({controller.Console!.Host})" : "Eşleşmedi";
+            Ps5StatusLabel.Text = paired ? $"مقترن ({controller.Console!.Host})" : "غير مقترن";
         }
 
         // TV Durum Satırı (Bağlandı: Yeşil | Bekleniyor: Sarı)
@@ -282,8 +282,8 @@ public partial class MainView : UserControl
             var tvConnected = controller.TvClients > 0;
             TvStatusDot.Fill = new SolidColorBrush(tvConnected ? Color.FromRgb(16, 185, 129) : (controller.Tv != null ? Color.FromRgb(245, 158, 11) : Color.FromRgb(148, 163, 184)));
             TvStatusLabel.Text = tvConnected
-                ? (controller.TvClients == 1 ? $"{controller.Tv?.Name ?? "TV"} (Bağlandı)" : $"{controller.TvClients} TV Bağlandı")
-                : (controller.Tv != null ? $"{controller.Tv.Name} (Bağlantı Bekleniyor)" : "TV uygulaması bekleniyor");
+                ? (controller.TvClients == 1 ? $"{controller.Tv?.Name ?? "TV"} (متصل)" : $"{controller.TvClients} تلفزيون متصل")
+                : (controller.Tv != null ? $"{controller.Tv.Name} (بانتظار الاتصال)" : "بانتظار تطبيق التلفزيون");
 
             if (TvActionButton != null)
             {
@@ -300,8 +300,8 @@ public partial class MainView : UserControl
             if (StreamPlaceholder != null)
             {
                 StreamPlaceholder.Visibility = Visibility.Visible;
-                if (StreamPlaceholderTitle != null) StreamPlaceholderTitle.Text = "Görüntü yok";
-                if (StreamPlaceholderSubtitle != null) StreamPlaceholderSubtitle.Text = "Görüntüyü görmek için çeviriyi başlat.";
+                if (StreamPlaceholderTitle != null) StreamPlaceholderTitle.Text = "لا توجد صورة";
+                if (StreamPlaceholderSubtitle != null) StreamPlaceholderSubtitle.Text = "ابدأ الترجمة لترى الصورة.";
             }
             if (ThumbnailPlaceholder != null) ThumbnailPlaceholder.Visibility = Visibility.Visible;
         }
@@ -310,8 +310,8 @@ public partial class MainView : UserControl
             if (LiveStreamImage?.Source == null && StreamPlaceholder != null)
             {
                 StreamPlaceholder.Visibility = Visibility.Visible;
-                if (StreamPlaceholderTitle != null) StreamPlaceholderTitle.Text = "PS5 Canlı Yayını Bekleniyor...";
-                if (StreamPlaceholderSubtitle != null) StreamPlaceholderSubtitle.Text = "PS5 konsolunuza bağlanılıyor, görüntü otomatik olarak buraya yansıyacaktır.";
+                if (StreamPlaceholderTitle != null) StreamPlaceholderTitle.Text = "بانتظار بث الـPS5 المباشر...";
+                if (StreamPlaceholderSubtitle != null) StreamPlaceholderSubtitle.Text = "جارٍ الاتصال بالـPS5، وستظهر الصورة هنا تلقائياً.";
             }
         }
     }
@@ -331,27 +331,27 @@ public partial class MainView : UserControl
         var paired = controller.Console != null;
         var tvOn = controller.TvClients > 0;
 
-        ToggleText.Text = running ? "Çeviri açık" : "Çeviri kapalı";
-        (HomePs5Text.Text, HomePs5Dot.Fill) = !paired ? ("Eşleşmedi", red)
-            : streaming || phase == SessionPhase.Streaming ? ("Bağlı", green)
-            : running ? ("Bağlanıyor", orange)
-            : ("Eşleşti", idle);
-        (HomePcText.Text, HomePcDot.Fill) = running ? ("Çeviriyor", green) : ("Hazır", idle);
-        (HomeTvText.Text, HomeTvDot.Fill) = tvOn ? ("Bağlı", green) : running ? ("Bekleniyor", orange) : ("Bağlı değil", idle);
+        ToggleText.Text = running ? "الترجمة تعمل" : "الترجمة متوقفة";
+        (HomePs5Text.Text, HomePs5Dot.Fill) = !paired ? ("غير مقترن", red)
+            : streaming || phase == SessionPhase.Streaming ? ("متصل", green)
+            : running ? ("جارٍ الاتصال", orange)
+            : ("مقترن", idle);
+        (HomePcText.Text, HomePcDot.Fill) = running ? ("يترجم", green) : ("جاهز", idle);
+        (HomeTvText.Text, HomeTvDot.Fill) = tvOn ? ("متصل", green) : running ? ("Bekleniyor", orange) : ("غير متصل", idle);
         HomeTvText.ToolTip = controller.Tv?.Name;
         HomePs5Text.ToolTip = controller.Console?.Host;
 
-        HomeHint.Text = !running ? "Oyunda altyazıları aç, sonra başlat."
-            : !tvOn ? "TV'de GameTranslator'ı aç; çeviri oyunun üstünde görünür."
-            : "Oynayabilirsin; çeviri TV'de oyunun üstünde görünür.";
+        HomeHint.Text = !running ? "فعّل الترجمة داخل اللعبة ثم ابدأ."
+            : !tvOn ? "افتح GameTranslator على التلفزيون؛ تظهر الترجمة فوق اللعبة."
+            : "يمكنك اللعب؛ الترجمة تظهر على التلفزيون فوق اللعبة.";
 
         // Uyarı yalnız bir şey yolunda değilken.
         (string Title, string Text)? notice = !paired
-            ? ("PS5 eşleştirilmedi", "Ayarlar'daki Bağlantı sekmesinden PS5'i bir kez eşleştir.")
+            ? ("الـPS5 غير مقترن", "اقرن الـPS5 مرة واحدة من تبويب «الاتصال» في الإعدادات.")
             : phase == SessionPhase.Disconnected && controller.SessionState.Reason is { Kind: not DisconnectKind.Stopped }
-                ? ("PS5'e bağlanılamadı", controller.Ps5StatusText)
+                ? ("تعذّر الاتصال بالـPS5", controller.Ps5StatusText)
                 : running && !tvOn && controller.Tv is null
-                    ? ("TV seçilmedi", "Ayarlar'daki Bağlantı sekmesinden TV'ni ekle; çeviri şimdilik bilgisayarda görünür.")
+                    ? ("لم يُختر تلفزيون", "أضف تلفزيونك من تبويب «الاتصال» في الإعدادات؛ الترجمة تظهر حالياً على الكمبيوتر.")
                     : null;
         HomeNotice.Visibility = notice is null ? Visibility.Collapsed : Visibility.Visible;
         if (notice is { } n)
@@ -394,19 +394,19 @@ public partial class MainView : UserControl
             if (StreamThumbnailDot != null) StreamThumbnailDot.Fill = new SolidColorBrush(Color.FromRgb(16, 185, 129));
             if (StreamThumbnailBadge != null)
             {
-                StreamThumbnailBadge.Text = "1080p CANLI";
+                StreamThumbnailBadge.Text = "1080p مباشر";
                 StreamThumbnailBadge.Foreground = new SolidColorBrush(Color.FromRgb(56, 189, 248));
             }
             if (ThumbnailStatusText != null)
             {
                 ThumbnailStatusText.Text = controller.Settings.VideoSource switch
                 {
-                    VideoSourceType.DesktopScreen => "Masaüstü Akışı Aktif",
-                    VideoSourceType.CaptureCard => "Yakalama Kartı Aktif",
-                    _ => "PS5 Canlı Akışı Aktif"
+                    VideoSourceType.DesktopScreen => "بث سطح المكتب يعمل",
+                    VideoSourceType.CaptureCard => "كرت الالتقاط يعمل",
+                    _ => "بث الـPS5 المباشر يعمل"
                 };
             }
-            if (LiveBadgeText != null) LiveBadgeText.Text = "Canlı";
+            if (LiveBadgeText != null) LiveBadgeText.Text = "مباشر";
         }
         catch { }
         finally
@@ -441,7 +441,7 @@ public partial class MainView : UserControl
                 {
                     try
                     {
-                        await controller.PairAsync(new LgTv("PC & OBS", "127.0.0.1", TvBrand.AndroidTv));
+                        await controller.PairAsync(new LgTv("الكمبيوتر و OBS", "127.0.0.1", TvBrand.AndroidTv));
                     }
                     catch { }
                 }
@@ -507,7 +507,7 @@ public partial class MainView : UserControl
         var selected = pm.SelectedGameId;
         // Paketler henüz yükleniyor: ad yükleme bitince gelen olayla yazılır, arayüz beklemez.
         // Otomatik'te PS5'in bildirdiği oyun da yazılır ("Otomatik · Mafia: The Old Country").
-        var name = selected is null ? (pm.RunningGame?.Name is { } running ? $"Otomatik · {running}" : "Otomatik")
+        var name = selected is null ? (pm.RunningGame?.Name is { } running ? $"تلقائي · {running}" : "Otomatik")
             : pm.PacksReady ? pm.Games.FirstOrDefault(g => g.Id == selected).Title ?? selected
             : "…";
         if (HomeGameText != null) HomeGameText.Text = name;
@@ -537,31 +537,31 @@ public partial class MainView : UserControl
                 CropBottomSlider.Value = 0.85;
                 CropLeftSlider.Value = 0.16;
                 CropRightSlider.Value = 0.84;
-                ShortcutPresetText.Text = "Alt Orta (Standart)";
+                ShortcutPresetText.Text = "أسفل الوسط (المعتاد)";
                 break;
             case "BottomWide":
                 CropTopSlider.Value = 0.65;
                 CropBottomSlider.Value = 0.94;
                 CropLeftSlider.Value = 0.08;
                 CropRightSlider.Value = 0.92;
-                ShortcutPresetText.Text = "Geniş Alt Bant";
+                ShortcutPresetText.Text = "شريط سفلي عريض";
                 break;
             case "FullBottom":
                 CropTopSlider.Value = 0.50;
                 CropBottomSlider.Value = 0.98;
                 CropLeftSlider.Value = 0.02;
                 CropRightSlider.Value = 0.98;
-                ShortcutPresetText.Text = "Tüm Alt Yarı";
+                ShortcutPresetText.Text = "النصف السفلي كله";
                 break;
             case "TopBanner":
                 CropTopSlider.Value = 0.03;
                 CropBottomSlider.Value = 0.22;
                 CropLeftSlider.Value = 0.08;
                 CropRightSlider.Value = 0.92;
-                ShortcutPresetText.Text = "Üst Bölge (Görevler)";
+                ShortcutPresetText.Text = "المنطقة العليا (المهام)";
                 break;
             case "Custom":
-                ShortcutPresetText.Text = "Özel Kutu";
+                ShortcutPresetText.Text = "مربع مخصّص";
                 break;
         }
 
@@ -578,7 +578,7 @@ public partial class MainView : UserControl
     {
         if (loading) return;
         selectedPreset = "Custom";
-        ShortcutPresetText.Text = "Özel Kutu";
+        ShortcutPresetText.Text = "مربع مخصّص";
 
         controller.Settings = controller.Settings with
         {
@@ -638,15 +638,15 @@ public partial class MainView : UserControl
             if (!ChiakiLauncher.LaunchOrBringToFront(host, name))
             {
                 MessageBox.Show(
-                    "Chiaki uygulaması bulunamadı. Lütfen 'chiaki/chiaki.exe' dosyasının uygulama klasöründe olduğunu kontrol edin.",
-                    "Chiaki Bulunamadı",
+                    "لم يُعثر على تطبيق Chiaki. تأكد من وجود الملف 'chiaki/chiaki.exe' في مجلد البرنامج.",
+                    "Chiaki غير موجود",
                     MessageBoxButton.OK,
                     MessageBoxImage.Warning);
             }
         }
         catch (Exception ex)
         {
-            MessageBox.Show($"Chiaki başlatılamadı: {ex.Message}", "Hata", MessageBoxButton.OK, MessageBoxImage.Warning);
+            MessageBox.Show($"تعذّر تشغيل Chiaki: {ex.Message}", "Hata", MessageBoxButton.OK, MessageBoxImage.Warning);
         }
     }
 
@@ -711,15 +711,15 @@ public partial class MainView : UserControl
             }
 
             MessageBox.Show(
-                "Hedef pencere veya canlı görüntü kaynağı bulunamadı.\n\n" +
-                "Lütfen oyun pencerenizin veya PS5 akışınızın açık olduğundan emin olun.",
-                "Görüntü Alınamadı",
+                "لم يُعثر على النافذة المطلوبة أو مصدر الصورة المباشر.\n\n" +
+                "تأكد أن نافذة اللعبة أو بث الـPS5 مفتوح.",
+                "تعذّر الحصول على الصورة",
                 MessageBoxButton.OK,
                 MessageBoxImage.Information);
         }
         catch (Exception ex)
         {
-            MessageBox.Show($"Görüntü yakalama hatası: {ex.Message}", "Hata", MessageBoxButton.OK, MessageBoxImage.Warning);
+            MessageBox.Show($"خطأ في التقاط الصورة: {ex.Message}", "Hata", MessageBoxButton.OK, MessageBoxImage.Warning);
         }
     }
 
@@ -846,7 +846,7 @@ public partial class MainView : UserControl
     private void UpdatePcSesiButton()
     {
         if (PcSesiButton == null) return;
-        PcSesiButton.Content = isMutePc ? "Sessiz" : "Açık";
+        PcSesiButton.Content = isMutePc ? "Sessiz" : "مفعّل";
         var color = isMutePc ? Color.FromRgb(239, 68, 68) : Color.FromRgb(16, 185, 129);
         PcSesiButton.Foreground = new SolidColorBrush(color);
         PcSesiButton.Background = new SolidColorBrush(Color.FromArgb(31, color.R, color.G, color.B));
@@ -909,7 +909,7 @@ public partial class MainView : UserControl
         }
         if (OverlayToggleButton != null)
         {
-            OverlayToggleButton.Content = enabled ? "Açık (Ekranda)" : "Kapalı";
+            OverlayToggleButton.Content = enabled ? "مفعّل (على الشاشة)" : "مغلق";
         }
     }
 
@@ -937,7 +937,7 @@ public partial class MainView : UserControl
         {
             if (!controller.HasGeminiKey)
             {
-                MessageBox.Show("Google Gemini modelini kullanabilmek için lütfen aşağıya bir Gemini API anahtarı girip 'Kaydet ve Aktif Et' butonuna basın.", "API Anahtarı Gerekli", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show("لاستخدام Google Gemini أدخل مفتاح Gemini في الأسفل ثم اضغط «حفظ وتفعيل».", "مطلوب مفتاح API", MessageBoxButton.OK, MessageBoxImage.Information);
                 UpdateModelSelectionUi();
                 return;
             }
@@ -947,7 +947,7 @@ public partial class MainView : UserControl
         {
             if (!controller.HasDeepLKey)
             {
-                MessageBox.Show("DeepL modelini kullanabilmek için lütfen aşağıya bir DeepL API anahtarı girip 'Kaydet ve Aktif Et' butonuna basın.", "API Anahtarı Gerekli", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show("لاستخدام DeepL أدخل مفتاح DeepL في الأسفل ثم اضغط «حفظ وتفعيل».", "مطلوب مفتاح API", MessageBoxButton.OK, MessageBoxImage.Information);
                 UpdateModelSelectionUi();
                 return;
             }
@@ -972,7 +972,7 @@ public partial class MainView : UserControl
         var key = GeminiKeyInput.Password?.Trim();
         if (string.IsNullOrWhiteSpace(key))
         {
-            MessageBox.Show("Lütfen geçerli bir Google Gemini API anahtarı girin.", "Anahtar Eksik", MessageBoxButton.OK, MessageBoxImage.Warning);
+            MessageBox.Show("أدخل مفتاح Google Gemini صحيحاً.", "المفتاح ناقص", MessageBoxButton.OK, MessageBoxImage.Warning);
             return;
         }
 
@@ -982,11 +982,11 @@ public partial class MainView : UserControl
             controller.Settings = controller.Settings with { Engine = TranslationEngine.Gemini, OnlineTranslation = true };
             UpdateModelSelectionUi();
             controller.SendTestSubtitle();
-            MessageBox.Show("Google Gemini API anahtarı başarıyla doğrulandı ve aktif model olarak ayarlandı!", "Gemini Aktif", MessageBoxButton.OK, MessageBoxImage.Information);
+            MessageBox.Show("تم قبول مفتاح Google Gemini وصار هو خدمة الترجمة الحالية!", "Gemini مفعّل", MessageBoxButton.OK, MessageBoxImage.Information);
         }
         else
         {
-            MessageBox.Show("Girilen Google Gemini API anahtarı geçersiz veya Google sunucusuna bağlanılamadı. Lütfen anahtarınızı kontrol edin.", "Bağlantı Hatası", MessageBoxButton.OK, MessageBoxImage.Error);
+            MessageBox.Show("مفتاح Google Gemini غير صحيح أو تعذّر الاتصال بخادم Google. تأكد من المفتاح.", "خطأ في الاتصال", MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
 
@@ -995,7 +995,7 @@ public partial class MainView : UserControl
         var key = DeepLKeyInput.Password?.Trim();
         if (string.IsNullOrWhiteSpace(key))
         {
-            MessageBox.Show("Lütfen geçerli bir DeepL API anahtarı girin.", "Anahtar Eksik", MessageBoxButton.OK, MessageBoxImage.Warning);
+            MessageBox.Show("أدخل مفتاح DeepL صحيحاً.", "المفتاح ناقص", MessageBoxButton.OK, MessageBoxImage.Warning);
             return;
         }
 
@@ -1005,11 +1005,11 @@ public partial class MainView : UserControl
             controller.Settings = controller.Settings with { Engine = TranslationEngine.DeepL, OnlineTranslation = true };
             UpdateModelSelectionUi();
             controller.SendTestSubtitle();
-            MessageBox.Show("DeepL API anahtarı doğrulandı ve aktif model olarak ayarlandı!", "DeepL Aktif", MessageBoxButton.OK, MessageBoxImage.Information);
+            MessageBox.Show("تم قبول مفتاح DeepL وصار هو خدمة الترجمة الحالية!", "DeepL مفعّل", MessageBoxButton.OK, MessageBoxImage.Information);
         }
         else
         {
-            MessageBox.Show("Girilen DeepL API anahtarı geçersiz veya sunucuya bağlanılamadı.", "Bağlantı Hatası", MessageBoxButton.OK, MessageBoxImage.Error);
+            MessageBox.Show("مفتاح DeepL غير صحيح أو تعذّر الاتصال بالخادم.", "خطأ في الاتصال", MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
 
@@ -1196,15 +1196,15 @@ public partial class MainView : UserControl
     {
         if (history.Count == 0)
         {
-            MessageBox.Show("Dışa aktarılacak altyazı geçmişi henüz yok.", "Geçmiş Boş", MessageBoxButton.OK, MessageBoxImage.Information);
+            MessageBox.Show("لا يوجد سجل ترجمة للتصدير بعد.", "السجل فارغ", MessageBoxButton.OK, MessageBoxImage.Information);
             return;
         }
-        var dlg = new SaveFileDialog { Filter = "Metin Dosyası (*.txt)|*.txt", FileName = "GameTranslator_Altyazi_Gecmisi.txt" };
+        var dlg = new SaveFileDialog { Filter = "ملف نصي (*.txt)|*.txt", FileName = "GameTranslator_Altyazi_Gecmisi.txt" };
         if (dlg.ShowDialog() == true)
         {
             var lines = history.Select(h => $"{h.Time}\tTV: {h.Turkish}\tPS5: {h.English}");
             File.WriteAllLines(dlg.FileName, lines);
-            MessageBox.Show("Altyazı geçmişi başarıyla kaydedildi!", "Dışa Aktarıldı", MessageBoxButton.OK, MessageBoxImage.Information);
+            MessageBox.Show("تم حفظ سجل الترجمة بنجاح!", "تم التصدير", MessageBoxButton.OK, MessageBoxImage.Information);
         }
     }
 
@@ -1212,15 +1212,15 @@ public partial class MainView : UserControl
     {
         if (history.Count == 0)
         {
-            MessageBox.Show("Dışa aktarılacak altyazı geçmişi henüz yok.", "Geçmiş Boş", MessageBoxButton.OK, MessageBoxImage.Information);
+            MessageBox.Show("لا يوجد سجل ترجمة للتصدير بعد.", "السجل فارغ", MessageBoxButton.OK, MessageBoxImage.Information);
             return;
         }
-        var dlg = new SaveFileDialog { Filter = "JSON Dosyası (*.json)|*.json", FileName = "GameTranslator_Altyazi_Gecmisi.json" };
+        var dlg = new SaveFileDialog { Filter = "ملف JSON (*.json)|*.json", FileName = "GameTranslator_Altyazi_Gecmisi.json" };
         if (dlg.ShowDialog() == true)
         {
             var json = JsonSerializer.Serialize(history, new JsonSerializerOptions { WriteIndented = true });
             File.WriteAllText(dlg.FileName, json);
-            MessageBox.Show("Altyazı geçmişi JSON formatında kaydedildi!", "Dışa Aktarıldı", MessageBoxButton.OK, MessageBoxImage.Information);
+            MessageBox.Show("تم حفظ سجل الترجمة بصيغة JSON!", "تم التصدير", MessageBoxButton.OK, MessageBoxImage.Information);
         }
     }
 
@@ -1229,7 +1229,7 @@ public partial class MainView : UserControl
     private void OnCopyObs(object sender, RoutedEventArgs e)
     {
         Clipboard.SetText($"http://localhost:{controller.ServerPort}/obs");
-        MessageBox.Show("OBS URL adresi panoya kopyalandı:\nhttp://localhost:" + controller.ServerPort + "/obs", "Kopyalandı", MessageBoxButton.OK, MessageBoxImage.Information);
+        MessageBox.Show("تم نسخ عنوان OBS:\nhttp://localhost:" + controller.ServerPort + "/obs", "تم النسخ", MessageBoxButton.OK, MessageBoxImage.Information);
     }
 
     private void OnAbout(object sender, RoutedEventArgs e)
@@ -1239,7 +1239,7 @@ public partial class MainView : UserControl
 
     private void OnResetAll(object sender, RoutedEventArgs e)
     {
-        if (MessageBox.Show("GameTranslator ayarları sıfırlansın mı?", "Ayarları Sıfırla",
+        if (MessageBox.Show("هل تريد إعادة ضبط إعدادات GameTranslator؟", "إعادة ضبط الإعدادات",
             MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
         {
             controller.ResetSettings();
@@ -1286,8 +1286,8 @@ public partial class MainView : UserControl
             SourceWindowPickerCard.Visibility = Visibility.Visible;
             if (QuickSourcePickerCard != null) QuickSourcePickerCard.Visibility = Visibility.Visible;
             PopulateSourceWindows();
-            if (StreamThumbnailTitle != null) StreamThumbnailTitle.Text = "📹 Yakalama Kartı Canlı Akış";
-            if (ThumbnailStatusText != null) ThumbnailStatusText.Text = "Yakalama Kartı Bekleniyor";
+            if (StreamThumbnailTitle != null) StreamThumbnailTitle.Text = "📹 بث كرت الالتقاط المباشر";
+            if (ThumbnailStatusText != null) ThumbnailStatusText.Text = "بانتظار كرت الالتقاط";
         }
         else if (SourceRadioDesktop.IsChecked == true)
         {
@@ -1295,16 +1295,16 @@ public partial class MainView : UserControl
             SourceWindowPickerCard.Visibility = Visibility.Visible;
             if (QuickSourcePickerCard != null) QuickSourcePickerCard.Visibility = Visibility.Visible;
             PopulateSourceWindows();
-            if (StreamThumbnailTitle != null) StreamThumbnailTitle.Text = "🖥️ Masaüstü / OBS Canlı Akış";
-            if (ThumbnailStatusText != null) ThumbnailStatusText.Text = "Masaüstü Akışı Bekleniyor";
+            if (StreamThumbnailTitle != null) StreamThumbnailTitle.Text = "🖥️ بث سطح المكتب / OBS المباشر";
+            if (ThumbnailStatusText != null) ThumbnailStatusText.Text = "بانتظار بث سطح المكتب";
         }
         else
         {
             newSource = VideoSourceType.RemotePlay;
             SourceWindowPickerCard.Visibility = Visibility.Collapsed;
             if (QuickSourcePickerCard != null) QuickSourcePickerCard.Visibility = Visibility.Collapsed;
-            if (StreamThumbnailTitle != null) StreamThumbnailTitle.Text = "PS5 görüntüsü";
-            if (ThumbnailStatusText != null) ThumbnailStatusText.Text = "Görüntü bekleniyor";
+            if (StreamThumbnailTitle != null) StreamThumbnailTitle.Text = "صورة الـPS5";
+            if (ThumbnailStatusText != null) ThumbnailStatusText.Text = "بانتظار الصورة";
         }
 
         controller.Settings = controller.Settings with { VideoSource = newSource };
@@ -1333,8 +1333,8 @@ public partial class MainView : UserControl
             var titles = WindowCaptureService.GetTopLevelWindowTitles();
             if (titles.Count > 0)
             {
-                var h1 = new ComboBoxItem { Content = "── 🪟 Açık Oyun Pencereleri & OBS ──", IsEnabled = false, FontWeight = FontWeights.Bold };
-                var h1q = new ComboBoxItem { Content = "── 🪟 Açık Oyun Pencereleri & OBS ──", IsEnabled = false, FontWeight = FontWeights.Bold };
+                var h1 = new ComboBoxItem { Content = "── 🪟 نوافذ الألعاب المفتوحة و OBS ──", IsEnabled = false, FontWeight = FontWeights.Bold };
+                var h1q = new ComboBoxItem { Content = "── 🪟 نوافذ الألعاب المفتوحة و OBS ──", IsEnabled = false, FontWeight = FontWeights.Bold };
                 SourceWindowComboBox?.Items.Add(h1);
                 QuickSourceWindowComboBox?.Items.Add(h1q);
 
@@ -1356,16 +1356,16 @@ public partial class MainView : UserControl
 
             // 2. Fiziksel Monitörler (Tüm Masaüstü)
             var monitors = WindowCaptureService.GetDisplayMonitors();
-            var h2 = new ComboBoxItem { Content = "── 🖥️ Tüm Ekran / Monitörler ──", IsEnabled = false, FontWeight = FontWeights.Bold };
-            var h2q = new ComboBoxItem { Content = "── 🖥️ Tüm Ekran / Monitörler ──", IsEnabled = false, FontWeight = FontWeights.Bold };
+            var h2 = new ComboBoxItem { Content = "── 🖥️ الشاشة الكاملة / الشاشات ──", IsEnabled = false, FontWeight = FontWeights.Bold };
+            var h2q = new ComboBoxItem { Content = "── 🖥️ الشاشة الكاملة / الشاشات ──", IsEnabled = false, FontWeight = FontWeights.Bold };
             SourceWindowComboBox?.Items.Add(h2);
             QuickSourceWindowComboBox?.Items.Add(h2q);
 
             foreach (var mon in monitors)
             {
                 var tag = $"monitor:{mon.Index}";
-                var item1 = new ComboBoxItem { Content = $"🖥️ {mon.Name} (Tüm Ekran)", Tag = tag };
-                var item2 = new ComboBoxItem { Content = $"🖥️ {mon.Name} (Tüm Ekran)", Tag = tag };
+                var item1 = new ComboBoxItem { Content = $"🖥️ {mon.Name} (الشاشة الكاملة)", Tag = tag };
+                var item2 = new ComboBoxItem { Content = $"🖥️ {mon.Name} (الشاشة الكاملة)", Tag = tag };
                 SourceWindowComboBox?.Items.Add(item1);
                 QuickSourceWindowComboBox?.Items.Add(item2);
 
@@ -1516,14 +1516,14 @@ public partial class MainView : UserControl
     {
         try
         {
-            if (PatchStatusText != null) PatchStatusText.Text = "⏳ Paketler taranıyor ve güncellemeler denetleniyor...";
+            if (PatchStatusText != null) PatchStatusText.Text = "⏳ جارٍ فحص الحزم والتحقق من التحديثات...";
             var res = await CommunityPatchManager.Shared.ScanAndReloadAsync();
             UpdatePatchUi();
-            MessageBox.Show(res.Message, "Oyun Paketleri Tarandı", MessageBoxButton.OK, MessageBoxImage.Information);
+            MessageBox.Show(res.Message, "تم فحص حزم الألعاب", MessageBoxButton.OK, MessageBoxImage.Information);
         }
         catch (Exception ex)
         {
-            MessageBox.Show($"Paket tarama hatası: {ex.Message}", "Hata", MessageBoxButton.OK, MessageBoxImage.Warning);
+            MessageBox.Show($"خطأ في فحص الحزم: {ex.Message}", "Hata", MessageBoxButton.OK, MessageBoxImage.Warning);
         }
     }
 
@@ -1533,19 +1533,19 @@ public partial class MainView : UserControl
         {
             var dialog = new Microsoft.Win32.OpenFileDialog
             {
-                Filter = "Oyun Yamaları (*.json;*.txt;*.srt)|*.json;*.txt;*.srt|Tüm Dosyalar (*.*)|*.*",
-                Title = "Oyun Yaması Dosyası Seçin"
+                Filter = "حزم الألعاب (*.json;*.txt;*.srt)|*.json;*.txt;*.srt|كل الملفات (*.*)|*.*",
+                Title = "اختر ملف حزمة اللعبة"
             };
             if (dialog.ShowDialog() == true)
             {
                 var res = CommunityPatchManager.Shared.ImportFile(dialog.FileName);
                 UpdatePatchUi();
-                MessageBox.Show(res.Message, res.Success ? "Yama Başarıyla Yüklendi" : "Yükleme Hatası", MessageBoxButton.OK, res.Success ? MessageBoxImage.Information : MessageBoxImage.Warning);
+                MessageBox.Show(res.Message, res.Success ? "تم تحميل الحزمة بنجاح" : "خطأ في التحميل", MessageBoxButton.OK, res.Success ? MessageBoxImage.Information : MessageBoxImage.Warning);
             }
         }
         catch (Exception ex)
         {
-            MessageBox.Show($"Dosya yükleme hatası: {ex.Message}", "Hata", MessageBoxButton.OK, MessageBoxImage.Warning);
+            MessageBox.Show($"خطأ في تحميل الملف: {ex.Message}", "Hata", MessageBoxButton.OK, MessageBoxImage.Warning);
         }
     }
 }

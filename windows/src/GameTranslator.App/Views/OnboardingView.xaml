@@ -29,13 +29,13 @@
                         <TextBlock Text="{x:Static c:Glyphs.Controller}" Style="{StaticResource GlyphText}" FontSize="18" Foreground="{DynamicResource accentBrush}" Margin="0,0,10,0" VerticalAlignment="Center" />
                         <StackPanel>
                             <TextBlock Text="Kurulum" FontWeight="Bold" FontSize="15" Foreground="{DynamicResource textPrimaryBrush}" />
-                            <TextBlock Text="Birkaç dakikalık, bir kerelik iş" FontSize="12" Foreground="{DynamicResource textSecondaryBrush}" Margin="0,1,0,0" />
+                            <TextBlock Text="&#x202B;دقائق قليلة، ومرة واحدة فقط&#x202C;" FontSize="12" Foreground="{DynamicResource textSecondaryBrush}" Margin="0,1,0,0" />
                         </StackPanel>
                     </StackPanel>
 
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
                         <Border Background="{DynamicResource accentSoftBrush}" CornerRadius="12" Padding="10,3" Margin="0,0,10,0">
-                            <TextBlock x:Name="StepBadgeText" Text="Adım 1 / 5" FontWeight="Bold" FontSize="12" Foreground="{DynamicResource accentTextBrush}" />
+                            <TextBlock x:Name="StepBadgeText" Text="&#x202B;الخطوة 1 / 5&#x202C;" FontWeight="Bold" FontSize="12" Foreground="{DynamicResource accentTextBrush}" />
                         </Border>
                     </StackPanel>
                 </Grid>
@@ -55,7 +55,7 @@
                     <Button x:Name="Pill1" Grid.Column="0" Click="OnPill1" Background="Transparent" BorderThickness="0" Cursor="Hand">
                         <StackPanel>
                             <Border x:Name="PillBar1" Height="4" CornerRadius="2" Background="{DynamicResource accentBrush}" Margin="0,0,0,4" />
-                            <TextBlock x:Name="PillText1" Text="Hoş geldin" FontSize="12" FontWeight="Bold" Foreground="{DynamicResource accentTextBrush}" HorizontalAlignment="Center" />
+                            <TextBlock x:Name="PillText1" Text="&#x202B;أهلاً بك&#x202C;" FontSize="12" FontWeight="Bold" Foreground="{DynamicResource accentTextBrush}" HorizontalAlignment="Center" />
                         </StackPanel>
                     </Button>
 
@@ -88,9 +88,9 @@
         <!-- ========================================================= -->
         <Border DockPanel.Dock="Bottom" Background="{DynamicResource cardBrush}" BorderBrush="{DynamicResource borderBrush}" BorderThickness="0,1,0,0" Padding="24,14">
             <Grid>
-                <Button x:Name="BackButton" Content="← Geri" Click="OnBack" Style="{StaticResource SecondaryButton}" HorizontalAlignment="Left" MinWidth="90" MinHeight="34" />
-                <Button x:Name="SkipButton" Content="Şimdilik atla" Click="OnSkipToMain" Style="{StaticResource SecondaryButton}" HorizontalAlignment="Center" MinHeight="34" Padding="14,0" />
-                <Button x:Name="NextButton" Content="Devam Et " Click="OnNext" Background="{DynamicResource accentBrush}" Foreground="White" FontWeight="Bold" BorderThickness="0" Cursor="Hand" HorizontalAlignment="Right" MinWidth="110" MinHeight="34">
+                <Button x:Name="BackButton" Content="&#x202B;← رجوع&#x202C;" Click="OnBack" Style="{StaticResource SecondaryButton}" HorizontalAlignment="Left" MinWidth="90" MinHeight="34" />
+                <Button x:Name="SkipButton" Content="&#x202B;تخطَّ الآن&#x202C;" Click="OnSkipToMain" Style="{StaticResource SecondaryButton}" HorizontalAlignment="Center" MinHeight="34" Padding="14,0" />
+                <Button x:Name="NextButton" Content="&#x202B;متابعة &#x202C;" Click="OnNext" Background="{DynamicResource accentBrush}" Foreground="White" FontWeight="Bold" BorderThickness="0" Cursor="Hand" HorizontalAlignment="Right" MinWidth="110" MinHeight="34">
                     <Button.Resources>
                         <Style TargetType="Border">
                             <Setter Property="CornerRadius" Value="6" />
@@ -112,8 +112,8 @@
                             <TextBlock Text="{x:Static c:Glyphs.Controller}" Style="{StaticResource GlyphText}" FontSize="20" HorizontalAlignment="Center" Foreground="{DynamicResource accentTextBrush}" />
                         </Border>
                         <StackPanel VerticalAlignment="Center" MaxWidth="500">
-                            <TextBlock Text="GameTranslator'a hoş geldin" FontWeight="Bold" FontSize="18" Foreground="{DynamicResource textPrimaryBrush}" />
-                            <TextBlock Text="PS5 oyunlarındaki İngilizce altyazıları ekrandan okur ve TV'nde anında Türkçe gösterir." TextWrapping="Wrap" FontSize="13" Foreground="{DynamicResource textSecondaryBrush}" Margin="0,2,0,0" />
+                            <TextBlock Text="&#x202B;أهلاً بك في GameTranslator&#x202C;" FontWeight="Bold" FontSize="18" Foreground="{DynamicResource textPrimaryBrush}" />
+                            <TextBlock Text="&#x202B;يقرأ ترجمة ألعاب PS5 الإنجليزية من الشاشة ويعرضها بالعربية على تلفزيونك فوراً.&#x202C;" TextWrapping="Wrap" FontSize="13" Foreground="{DynamicResource textSecondaryBrush}" Margin="0,2,0,0" />
                         </StackPanel>
                     </StackPanel>
 
@@ -129,7 +129,7 @@
                             <TextBlock Text="{x:Static c:Glyphs.Controller}" Style="{StaticResource GlyphText}" FontSize="18" Foreground="{DynamicResource accentTextBrush}" VerticalAlignment="Center" />
                             <StackPanel Grid.Column="1">
                                 <TextBlock Text="PS5" FontWeight="SemiBold" FontSize="15" Foreground="White" />
-                                <TextBlock Text="Açık ve bu bilgisayarla aynı ağda olsun." FontSize="13" Foreground="{DynamicResource textSecondaryBrush}" />
+                                <TextBlock Text="&#x202B;يكون مشغّلاً وعلى نفس شبكة هذا الكمبيوتر.&#x202C;" FontSize="13" Foreground="{DynamicResource textSecondaryBrush}" />
                             </StackPanel>
                         </Grid>
                     </Border>
@@ -143,8 +143,8 @@
                             </Grid.ColumnDefinitions>
                             <TextBlock Text="{x:Static c:Glyphs.Tv}" Style="{StaticResource GlyphText}" FontSize="18" Foreground="{DynamicResource accentTextBrush}" VerticalAlignment="Center" />
                             <StackPanel Grid.Column="1">
-                                <TextBlock Text="TV ya da monitör" FontWeight="SemiBold" FontSize="15" Foreground="White" />
-                                <TextBlock Text="Samsung, LG veya Android TV. TV yoksa çeviri bilgisayar ekranında da gösterilebilir." FontSize="13" Foreground="{DynamicResource textSecondaryBrush}" />
+                                <TextBlock Text="&#x202B;تلفزيون أو شاشة&#x202C;" FontWeight="SemiBold" FontSize="15" Foreground="White" />
+                                <TextBlock Text="&#x202B;سامسونج أو LG أو Android TV. إن لم يوجد تلفزيون يمكن عرض الترجمة على شاشة الكمبيوتر.&#x202C;" FontSize="13" Foreground="{DynamicResource textSecondaryBrush}" />
                             </StackPanel>
                         </Grid>
                     </Border>
@@ -158,8 +158,8 @@
                             </Grid.ColumnDefinitions>
                             <TextBlock Text="{x:Static c:Glyphs.People}" Style="{StaticResource GlyphText}" FontSize="18" Foreground="{DynamicResource accentTextBrush}" VerticalAlignment="Center" />
                             <StackPanel Grid.Column="1">
-                                <TextBlock Text="İkinci bir PSN hesabı (ücretsiz)" FontWeight="SemiBold" FontSize="15" Foreground="White" />
-                                <TextBlock Text="Bilgisayar bu hesapla bağlanır, böylece senin oyunun ve kumandan etkilenmez." FontSize="13" Foreground="{DynamicResource textSecondaryBrush}" />
+                                <TextBlock Text="&#x202B;حساب PSN ثانٍ (مجاني)&#x202C;" FontWeight="SemiBold" FontSize="15" Foreground="White" />
+                                <TextBlock Text="&#x202B;يتصل الكمبيوتر بهذا الحساب، فلا يتأثر لعبك ولا يد التحكم.&#x202C;" FontSize="13" Foreground="{DynamicResource textSecondaryBrush}" />
                             </StackPanel>
                         </Grid>
                     </Border>
@@ -172,8 +172,8 @@
                             <TextBlock Text="{x:Static c:Glyphs.Controller}" Style="{StaticResource GlyphText}" FontSize="20" HorizontalAlignment="Center" Foreground="{DynamicResource accentTextBrush}" />
                         </Border>
                         <StackPanel VerticalAlignment="Center">
-                            <TextBlock Text="PS5'i bağla" FontWeight="Bold" FontSize="18" Foreground="{DynamicResource textPrimaryBrush}" />
-                            <TextBlock Text="İkinci hesapla giriş yap, sonra PS5'teki kodu gir. Bir kere yapılır." FontSize="13" Foreground="{DynamicResource textSecondaryBrush}" Margin="0,2,0,0" />
+                            <TextBlock Text="&#x202B;اربط الـPS5&#x202C;" FontWeight="Bold" FontSize="18" Foreground="{DynamicResource textPrimaryBrush}" />
+                            <TextBlock Text="&#x202B;سجّل الدخول بالحساب الثاني ثم أدخل الرمز الظاهر على الـPS5. يتم مرة واحدة.&#x202C;" FontSize="13" Foreground="{DynamicResource textSecondaryBrush}" Margin="0,2,0,0" />
                         </StackPanel>
                     </StackPanel>
 
@@ -184,7 +184,7 @@
                                 <ColumnDefinition Width="Auto" />
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
-                            <TextBlock Grid.Column="1" Text="Sonrasında uygulama PS5'e kendisi bağlanır; başka bir şey açman gerekmez." FontSize="13" Foreground="{DynamicResource textSecondaryBrush}" TextWrapping="Wrap" LineHeight="16" />
+                            <TextBlock Grid.Column="1" Text="&#x202B;بعدها يتصل البرنامج بالـPS5 تلقائياً، ولا تحتاج لفتح أي شيء آخر.&#x202C;" FontSize="13" Foreground="{DynamicResource textSecondaryBrush}" TextWrapping="Wrap" LineHeight="16" />
                         </Grid>
                     </Border>
 
@@ -193,42 +193,42 @@
                         <StackPanel>
                             <Grid Margin="0,0,0,10">
                                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                    <TextBlock Text="1. İkinci hesapla giriş yap" FontWeight="Bold" FontSize="15" Foreground="{DynamicResource accentTextBrush}" VerticalAlignment="Center" />
+                                    <TextBlock Text="&#x202B;1. سجّل الدخول بالحساب الثاني&#x202C;" FontWeight="Bold" FontSize="15" Foreground="{DynamicResource accentTextBrush}" VerticalAlignment="Center" />
                                 </StackPanel>
-                <Button Content="Kodu elle yapıştır" Click="OnToggleManualPsnCode" HorizontalAlignment="Right" Style="{StaticResource PillButton}" />
+                <Button Content="&#x202B;الصق الرمز يدوياً&#x202C;" Click="OnToggleManualPsnCode" HorizontalAlignment="Right" Style="{StaticResource PillButton}" />
                             </Grid>
 
-                            <TextBlock Text="Şifren doğrudan Sony'nin sayfasına gider, uygulama görmez." FontSize="13" Foreground="{DynamicResource textSecondaryBrush}" Margin="0,0,0,10" TextWrapping="Wrap" LineHeight="15" />
+                            <TextBlock Text="&#x202B;كلمة المرور تذهب مباشرة لصفحة Sony، والبرنامج لا يراها.&#x202C;" FontSize="13" Foreground="{DynamicResource textSecondaryBrush}" Margin="0,0,0,10" TextWrapping="Wrap" LineHeight="15" />
 
                             <Grid Margin="0,0,0,8">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="Auto" />
                                     <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
-                                <Button x:Name="PsnSignInButton" Content="PSN girişini aç" Click="OnOpenSonyLogin" Background="{DynamicResource accentBrush}" Foreground="White" FontWeight="Bold" BorderThickness="0" Padding="16,8" Cursor="Hand">
+                                <Button x:Name="PsnSignInButton" Content="&#x202B;افتح تسجيل دخول PSN&#x202C;" Click="OnOpenSonyLogin" Background="{DynamicResource accentBrush}" Foreground="White" FontWeight="Bold" BorderThickness="0" Padding="16,8" Cursor="Hand">
                                     <Button.Resources>
                                         <Style TargetType="Border">
                                             <Setter Property="CornerRadius" Value="6" />
                                         </Style>
                                     </Button.Resources>
                                 </Button>
-                                <TextBlock Grid.Column="1" x:Name="PsnStatusText" Text="Düğmeye bas, açılan sayfada giriş yap." FontSize="13" Foreground="{DynamicResource textSecondaryBrush}" VerticalAlignment="Center" Margin="12,0,0,0" TextWrapping="Wrap" />
+                                <TextBlock Grid.Column="1" x:Name="PsnStatusText" Text="&#x202B;اضغط الزر وسجّل الدخول في الصفحة التي تفتح.&#x202C;" FontSize="13" Foreground="{DynamicResource textSecondaryBrush}" VerticalAlignment="Center" Margin="12,0,0,0" TextWrapping="Wrap" />
                             </Grid>
 
                             <!-- Alternatif Kod / Token Girişi (İsteğe bağlı açılır) -->
                             <Border x:Name="ManualPsnCard" Background="{DynamicResource wellBrush}" CornerRadius="6" Padding="10" Margin="0,4,0,0" Visibility="Collapsed">
                                 <StackPanel>
                                     <Grid Margin="0,0,0,4">
-                                        <TextBlock Text="Tarayıcıdaki adresi (code=... içeren) buraya yapıştır:" FontSize="12" FontWeight="SemiBold" Foreground="{DynamicResource textSecondaryBrush}" VerticalAlignment="Center" />
-                    <Button Content="Giriş sayfası" Click="OnOpenExternalSonyBrowser" HorizontalAlignment="Right" Style="{StaticResource PillButton}" />
+                                        <TextBlock Text="&#x202B;الصق هنا العنوان الظاهر في المتصفح (الذي يحتوي code=...):&#x202C;" FontSize="12" FontWeight="SemiBold" Foreground="{DynamicResource textSecondaryBrush}" VerticalAlignment="Center" />
+                    <Button Content="&#x202B;صفحة الدخول&#x202C;" Click="OnOpenExternalSonyBrowser" HorizontalAlignment="Right" Style="{StaticResource PillButton}" />
                                     </Grid>
                                     <Grid>
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="*" />
                                             <ColumnDefinition Width="Auto" />
                                         </Grid.ColumnDefinitions>
-                                        <TextBox x:Name="PsnCodeInput" MinHeight="28" VerticalContentAlignment="Center" FontFamily="Consolas" FontSize="12" Margin="0,0,6,0" ToolTip="Yönlendirme linkini veya code=... değerini yapıştırın" />
-                    <Button x:Name="PsnVerifyButton" Grid.Column="1" Content="Doğrula" Click="OnVerifyPsnCode" Style="{StaticResource PillButton}" />
+                                        <TextBox x:Name="PsnCodeInput" MinHeight="28" VerticalContentAlignment="Center" FontFamily="Consolas" FontSize="12" Margin="0,0,6,0" ToolTip="&#x202B;الصق رابط التحويل أو قيمة code=...&#x202C;" />
+                    <Button x:Name="PsnVerifyButton" Grid.Column="1" Content="&#x202B;تحقّق&#x202C;" Click="OnVerifyPsnCode" Style="{StaticResource PillButton}" />
                                     </Grid>
                                 </StackPanel>
                             </Border>
@@ -239,10 +239,10 @@
                     <Border Background="{DynamicResource cardBrush}" BorderBrush="{DynamicResource hairlineBrush}" BorderThickness="1.5" CornerRadius="10" Padding="16" Margin="0,0,0,12">
                         <StackPanel>
                             <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
-                                <TextBlock Text="2. PS5 ile eşleştir" FontWeight="Bold" FontSize="15" Foreground="White" VerticalAlignment="Center" />
+                                <TextBlock Text="&#x202B;2. الإقران مع الـPS5&#x202C;" FontWeight="Bold" FontSize="15" Foreground="White" VerticalAlignment="Center" />
                             </StackPanel>
 
-                            <TextBlock Text="PS5'te ikinci hesaptayken: Ayarlar › Sistem › Uzaktan Oynatma › Cihaz Eşleştir. Ekranda 8 haneli bir kod çıkar." FontSize="13" Foreground="{DynamicResource textSecondaryBrush}" Margin="0,0,0,12" TextWrapping="Wrap" LineHeight="16" />
+                            <TextBlock Text="&#x202B;في الـPS5 وأنت على الحساب الثاني: الإعدادات › النظام › اللعب عن بُعد › ربط جهاز. يظهر رمز من 8 أرقام.&#x202C;" FontSize="13" Foreground="{DynamicResource textSecondaryBrush}" Margin="0,0,0,12" TextWrapping="Wrap" LineHeight="16" />
 
                             <!-- Konsol IP Seçimi & Arama -->
                             <Grid Margin="0,0,0,10">
@@ -251,15 +251,15 @@
                                     <ColumnDefinition Width="*" />
                                     <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
-                                <TextBlock Text="PS5 adresi:" FontSize="13" FontWeight="SemiBold" Foreground="{DynamicResource textPrimaryBrush}" VerticalAlignment="Center" Margin="0,0,10,0" />
+                                <TextBlock Text="&#x202B;عنوان الـPS5:&#x202C;" FontSize="13" FontWeight="SemiBold" Foreground="{DynamicResource textPrimaryBrush}" VerticalAlignment="Center" Margin="0,0,10,0" />
                                 <TextBox Grid.Column="1" x:Name="Ps5HostInput" Text="" MinHeight="32" VerticalContentAlignment="Center" FontFamily="Consolas" FontSize="13" Padding="8,4" Margin="0,0,8,0" />
-                <Button Grid.Column="2" Content="Ağda Ara" Click="OnScanPs5" Style="{StaticResource PillButton}" />
+                <Button Grid.Column="2" Content="&#x202B;ابحث في الشبكة&#x202C;" Click="OnScanPs5" Style="{StaticResource PillButton}" />
                             </Grid>
 
                             <!-- 8 Haneli PIN Kodu -->
                             <Border Background="{DynamicResource wellBrush}" CornerRadius="8" Padding="12" Margin="0,0,0,12">
                                 <StackPanel HorizontalAlignment="Center">
-                                    <TextBlock Text="Ekrandaki 8 haneli kod:" FontSize="13" FontWeight="SemiBold" Foreground="{DynamicResource accentTextBrush}" HorizontalAlignment="Center" Margin="0,0,0,6" />
+                                    <TextBlock Text="&#x202B;الرمز المكوّن من 8 أرقام:&#x202C;" FontSize="13" FontWeight="SemiBold" Foreground="{DynamicResource accentTextBrush}" HorizontalAlignment="Center" Margin="0,0,0,6" />
                                     <TextBox x:Name="Ps5PinInput" Text="" MinHeight="42" Width="220" VerticalContentAlignment="Center" FontFamily="Consolas" FontSize="18" FontWeight="Bold" TextAlignment="Center" MaxLength="8" Padding="4" />
                                 </StackPanel>
                             </Border>
@@ -272,7 +272,7 @@
                                     </Style>
                                 </Button.Resources>
                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                    <TextBlock Text="Eşleştir " VerticalAlignment="Center" />
+                                    <TextBlock Text="&#x202B;إقران &#x202C;" VerticalAlignment="Center" />
                                 </StackPanel>
                             </Button>
 
@@ -286,10 +286,10 @@
                                         <ColumnDefinition Width="Auto" />
                                     </Grid.ColumnDefinitions>
                                     <StackPanel VerticalAlignment="Center">
-                                        <TextBlock Text="Yakalama kartı ya da OBS mi kullanıyorsun?" FontWeight="SemiBold" FontSize="13" Foreground="White" />
-                                        <TextBlock Text="O zaman eşleştirme gerekmez; görüntü karttan veya OBS'ten alınır." FontSize="12" Foreground="{DynamicResource textSecondaryBrush}" />
+                                        <TextBlock Text="&#x202B;هل تستخدم كرت التقاط أو OBS؟&#x202C;" FontWeight="SemiBold" FontSize="13" Foreground="White" />
+                                        <TextBlock Text="&#x202B;إذن لا حاجة للإقران؛ تؤخذ الصورة من الكرت أو من OBS.&#x202C;" FontSize="12" Foreground="{DynamicResource textSecondaryBrush}" />
                                     </StackPanel>
-                  <Button Grid.Column="1" Content="Bunu seç " Click="OnSkipPs5ForCaptureCard" Style="{StaticResource PillButton}" VerticalAlignment="Center" Margin="10,0,0,0" />
+                  <Button Grid.Column="1" Content="&#x202B;اختر هذا &#x202C;" Click="OnSkipPs5ForCaptureCard" Style="{StaticResource PillButton}" VerticalAlignment="Center" Margin="10,0,0,0" />
                                 </Grid>
                             </Border>
                         </StackPanel>
@@ -303,8 +303,8 @@
                             <TextBlock Text="{x:Static c:Glyphs.Controller}" Style="{StaticResource GlyphText}" FontSize="20" HorizontalAlignment="Center" Foreground="{DynamicResource accentTextBrush}" />
                         </Border>
                         <StackPanel VerticalAlignment="Center">
-                            <TextBlock Text="Çeviri nerede görünsün?" FontWeight="Bold" FontSize="18" Foreground="{DynamicResource textPrimaryBrush}" />
-                            <TextBlock Text="TV'ni seç. TV yoksa bilgisayar ekranını seç." FontSize="13" Foreground="{DynamicResource textSecondaryBrush}" Margin="0,2,0,0" />
+                            <TextBlock Text="&#x202B;أين تظهر الترجمة؟&#x202C;" FontWeight="Bold" FontSize="18" Foreground="{DynamicResource textPrimaryBrush}" />
+                            <TextBlock Text="&#x202B;اختر تلفزيونك. إن لم يوجد تلفزيون فاختر شاشة الكمبيوتر.&#x202C;" FontSize="13" Foreground="{DynamicResource textSecondaryBrush}" Margin="0,2,0,0" />
                         </StackPanel>
                     </StackPanel>
 
@@ -320,11 +320,11 @@
                                         <ColumnDefinition Width="Auto" />
                                     </Grid.ColumnDefinitions>
                                     <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                                        <TextBlock Text="Bilgisayar ekranı" FontWeight="Bold" FontSize="13" Foreground="White" />
-                                        <TextBlock Text="Monitörde oynuyorsan ya da OBS ile yayın yapıyorsan." FontSize="12" Foreground="{DynamicResource textSecondaryBrush}" />
+                                        <TextBlock Text="&#x202B;شاشة الكمبيوتر&#x202C;" FontWeight="Bold" FontSize="13" Foreground="White" />
+                                        <TextBlock Text="&#x202B;إذا كنت تلعب على شاشة كمبيوتر أو تبث عبر OBS.&#x202C;" FontSize="12" Foreground="{DynamicResource textSecondaryBrush}" />
                                     </StackPanel>
                                     <Border x:Name="TvBadgePc" Grid.Column="2" Background="{DynamicResource successSoftBrush}" CornerRadius="10" Padding="8,2" VerticalAlignment="Center">
-                                        <TextBlock Text="Seçildi" FontSize="11" FontWeight="Bold" Foreground="{DynamicResource successBrush}" />
+                                        <TextBlock Text="&#x202B;تم الاختيار&#x202C;" FontSize="11" FontWeight="Bold" Foreground="{DynamicResource successBrush}" />
                                     </Border>
                                 </Grid>
                             </Border>
@@ -340,11 +340,11 @@
                                         <ColumnDefinition Width="Auto" />
                                     </Grid.ColumnDefinitions>
                                     <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                                        <TextBlock Text="Samsung TV" FontWeight="SemiBold" FontSize="13" Foreground="White" />
-                                        <TextBlock Text="2018 ve sonrası modeller." FontSize="12" Foreground="{DynamicResource textSecondaryBrush}" />
+                                        <TextBlock Text="&#x202B;تلفزيون سامسونج&#x202C;" FontWeight="SemiBold" FontSize="13" Foreground="White" />
+                                        <TextBlock Text="&#x202B;موديلات 2019 وما بعدها.&#x202C;" FontSize="12" Foreground="{DynamicResource textSecondaryBrush}" />
                                     </StackPanel>
                                     <Border x:Name="TvBadgeSamsung" Grid.Column="2" Background="{DynamicResource successSoftBrush}" CornerRadius="10" Padding="8,2" VerticalAlignment="Center" Visibility="Collapsed">
-                                        <TextBlock Text="Seçildi" FontSize="11" FontWeight="Bold" Foreground="{DynamicResource successBrush}" />
+                                        <TextBlock Text="&#x202B;تم الاختيار&#x202C;" FontSize="11" FontWeight="Bold" Foreground="{DynamicResource successBrush}" />
                                     </Border>
                                 </Grid>
                             </Border>
@@ -360,11 +360,11 @@
                                         <ColumnDefinition Width="Auto" />
                                     </Grid.ColumnDefinitions>
                                     <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                                        <TextBlock Text="LG TV" FontWeight="SemiBold" FontSize="13" Foreground="White" />
-                                        <TextBlock Text="webOS işletim sistemli modeller." FontSize="12" Foreground="{DynamicResource textSecondaryBrush}" />
+                                        <TextBlock Text="&#x202B;تلفزيون LG&#x202C;" FontWeight="SemiBold" FontSize="13" Foreground="White" />
+                                        <TextBlock Text="&#x202B;الموديلات العاملة بنظام webOS.&#x202C;" FontSize="12" Foreground="{DynamicResource textSecondaryBrush}" />
                                     </StackPanel>
                                     <Border x:Name="TvBadgeLg" Grid.Column="2" Background="{DynamicResource successSoftBrush}" CornerRadius="10" Padding="8,2" VerticalAlignment="Center" Visibility="Collapsed">
-                                        <TextBlock Text="Seçildi" FontSize="11" FontWeight="Bold" Foreground="{DynamicResource successBrush}" />
+                                        <TextBlock Text="&#x202B;تم الاختيار&#x202C;" FontSize="11" FontWeight="Bold" Foreground="{DynamicResource successBrush}" />
                                     </Border>
                                 </Grid>
                             </Border>
@@ -381,10 +381,10 @@
                                     </Grid.ColumnDefinitions>
                                     <StackPanel Grid.Column="1" VerticalAlignment="Center">
                                         <TextBlock Text="Android TV / Google TV" FontWeight="SemiBold" FontSize="13" Foreground="White" />
-                                        <TextBlock Text="TCL, Philips, Xiaomi, Sony ve TV kutuları." FontSize="12" Foreground="{DynamicResource textSecondaryBrush}" />
+                                        <TextBlock Text="&#x202B;TCL وPhilips وXiaomi وSony وأجهزة التلفزيون الخارجية.&#x202C;" FontSize="12" Foreground="{DynamicResource textSecondaryBrush}" />
                                     </StackPanel>
                                     <Border x:Name="TvBadgeAndroid" Grid.Column="2" Background="{DynamicResource successSoftBrush}" CornerRadius="10" Padding="8,2" VerticalAlignment="Center" Visibility="Collapsed">
-                                        <TextBlock Text="Seçildi" FontSize="11" FontWeight="Bold" Foreground="{DynamicResource successBrush}" />
+                                        <TextBlock Text="&#x202B;تم الاختيار&#x202C;" FontSize="11" FontWeight="Bold" Foreground="{DynamicResource successBrush}" />
                                     </Border>
                                 </Grid>
                             </Border>
@@ -396,18 +396,18 @@
                         <StackPanel>
                             <!-- Panel: PC / OBS -->
                             <StackPanel x:Name="TvDetailPc" Visibility="Visible">
-                                <TextBlock Text="Bilgisayar ekranı seçildi" FontWeight="Bold" FontSize="13" Foreground="{DynamicResource successBrush}" Margin="0,0,0,4" />
-                                <TextBlock Text="TV kurman gerekmez. OBS kullanıyorsan şu adresi tarayıcı kaynağı olarak ekle:" FontSize="13" Foreground="{DynamicResource textSecondaryBrush}" Margin="0,0,0,8" />
+                                <TextBlock Text="&#x202B;تم اختيار شاشة الكمبيوتر&#x202C;" FontWeight="Bold" FontSize="13" Foreground="{DynamicResource successBrush}" Margin="0,0,0,4" />
+                                <TextBlock Text="&#x202B;لا تحتاج لإعداد تلفزيون. إن كنت تستخدم OBS فأضف هذا العنوان كمصدر متصفح:&#x202C;" FontSize="13" Foreground="{DynamicResource textSecondaryBrush}" Margin="0,0,0,8" />
                                 <Grid Margin="0,0,0,8">
                                     <TextBlock Text="http://localhost:8787/obs" FontFamily="Consolas" FontSize="13" FontWeight="Bold" Foreground="{DynamicResource accentTextBrush}" VerticalAlignment="Center" />
-                  <Button Content="Adresi kopyala" HorizontalAlignment="Right" Click="OnCopyObsUrl" Style="{StaticResource PillButton}" />
+                  <Button Content="&#x202B;انسخ العنوان&#x202C;" HorizontalAlignment="Right" Click="OnCopyObsUrl" Style="{StaticResource PillButton}" />
                                 </Grid>
                             </StackPanel>
 
                             <!-- Panel: Samsung Tizen TV -->
                             <StackPanel x:Name="TvDetailSamsung" Visibility="Collapsed">
-                                <TextBlock Text="Samsung TV" FontWeight="Bold" FontSize="13" Foreground="{DynamicResource accentTextBrush}" Margin="0,0,0,4" />
-                                <TextBlock Text="TV'nin adresini yaz, sonra TV'de GameTranslator'ı aç:" FontSize="13" Foreground="{DynamicResource textSecondaryBrush}" Margin="0,0,0,8" />
+                                <TextBlock Text="&#x202B;تلفزيون سامسونج&#x202C;" FontWeight="Bold" FontSize="13" Foreground="{DynamicResource accentTextBrush}" Margin="0,0,0,4" />
+                                <TextBlock Text="&#x202B;اكتب عنوان التلفزيون، ثم افتح GameTranslator على التلفزيون:&#x202C;" FontSize="13" Foreground="{DynamicResource textSecondaryBrush}" Margin="0,0,0,8" />
                                 <Grid Margin="0,0,0,8">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*" />
@@ -417,30 +417,30 @@
                                     <Button Grid.Column="1" Content="Kaydet" Click="OnSaveSamsung" Background="{DynamicResource accentBrush}" Foreground="White" FontWeight="Bold" BorderThickness="0" Padding="12,4" />
                                 </Grid>
                                 <StackPanel Orientation="Horizontal">
-                  <Button Content="TV uygulama dosyası" Click="OnOpenSamsungWgt" Style="{StaticResource PillButton}" Margin="0,0,8,0" />
-                  <Button Content="TV Kurulum Rehberi (PDF)" Click="OnOpenGuidePdf" Style="{StaticResource PillButton}" />
+                  <Button Content="&#x202B;ملف تطبيق التلفزيون&#x202C;" Click="OnOpenSamsungWgt" Style="{StaticResource PillButton}" Margin="0,0,8,0" />
+                  <Button Content="&#x202B;دليل إعداد التلفزيون (PDF)&#x202C;" Click="OnOpenGuidePdf" Style="{StaticResource PillButton}" />
                                 </StackPanel>
                             </StackPanel>
 
                             <!-- Panel: LG webOS TV -->
                             <StackPanel x:Name="TvDetailLg" Visibility="Collapsed">
-                                <TextBlock Text="LG TV" FontWeight="Bold" FontSize="13" Foreground="{DynamicResource accentTextBrush}" Margin="0,0,0,4" />
-                                <TextBlock Text="TV'nin adresini yaz. TV onay isterse kumandayla kabul et:" FontSize="13" Foreground="{DynamicResource textSecondaryBrush}" Margin="0,0,0,8" />
+                                <TextBlock Text="&#x202B;تلفزيون LG&#x202C;" FontWeight="Bold" FontSize="13" Foreground="{DynamicResource accentTextBrush}" Margin="0,0,0,4" />
+                                <TextBlock Text="&#x202B;اكتب عنوان التلفزيون. إذا طلب التلفزيون الموافقة فاقبل بالريموت:&#x202C;" FontSize="13" Foreground="{DynamicResource textSecondaryBrush}" Margin="0,0,0,8" />
                                 <Grid Margin="0,0,0,8">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*" />
                                         <ColumnDefinition Width="Auto" />
                                     </Grid.ColumnDefinitions>
                                     <TextBox x:Name="LgHostInput" Text="192.168.1.108" MinHeight="32" VerticalContentAlignment="Center" Margin="0,0,8,0" FontFamily="Consolas" FontSize="13" />
-                                    <Button Grid.Column="1" Content="Bağlan" Click="OnSaveLg" Background="{DynamicResource accentBrush}" Foreground="White" FontWeight="Bold" BorderThickness="0" Padding="12,4" />
+                                    <Button Grid.Column="1" Content="&#x202B;اتصال&#x202C;" Click="OnSaveLg" Background="{DynamicResource accentBrush}" Foreground="White" FontWeight="Bold" BorderThickness="0" Padding="12,4" />
                                 </Grid>
-                <Button Content="TV uygulama dosyası" Click="OnOpenLgIpk" Style="{StaticResource PillButton}" HorizontalAlignment="Left" />
+                <Button Content="&#x202B;ملف تطبيق التلفزيون&#x202C;" Click="OnOpenLgIpk" Style="{StaticResource PillButton}" HorizontalAlignment="Left" />
                             </StackPanel>
 
                             <!-- Panel: Android TV -->
                             <StackPanel x:Name="TvDetailAndroid" Visibility="Collapsed">
                                 <TextBlock Text="Android TV" FontWeight="Bold" FontSize="15" Foreground="{DynamicResource accentTextBrush}" Margin="0,0,0,4" />
-                                <TextBlock Text="TV'nin adresini yaz ya da ara, sonra uygulamayı tek tıkla kur:" FontSize="13" Foreground="{DynamicResource textSecondaryBrush}" Margin="0,0,0,8" TextWrapping="Wrap" />
+                                <TextBlock Text="&#x202B;اكتب عنوان التلفزيون أو ابحث عنه، ثم ثبّت التطبيق بضغطة واحدة:&#x202C;" FontSize="13" Foreground="{DynamicResource textSecondaryBrush}" Margin="0,0,0,8" TextWrapping="Wrap" />
 
                                 <Grid Margin="0,0,0,8">
                                     <Grid.ColumnDefinitions>
@@ -449,12 +449,12 @@
                                         <ColumnDefinition Width="Auto" />
                                     </Grid.ColumnDefinitions>
                                     <TextBox x:Name="AndroidHostInput" Text="" MinHeight="34" VerticalContentAlignment="Center" Margin="0,0,8,0" FontFamily="Consolas" FontSize="13" />
-                  <Button x:Name="ScanAndroidTvButton" Grid.Column="1" Content="TV Ara" Click="OnScanAndroidTv" Style="{StaticResource PillButton}" Margin="0,0,8,0" />
-                  <Button Grid.Column="2" Content="Sadece kaydet" Click="OnSaveAndroid" Style="{StaticResource PillButton}" />
+                  <Button x:Name="ScanAndroidTvButton" Grid.Column="1" Content="&#x202B;ابحث عن التلفزيون&#x202C;" Click="OnScanAndroidTv" Style="{StaticResource PillButton}" Margin="0,0,8,0" />
+                  <Button Grid.Column="2" Content="&#x202B;حفظ فقط&#x202C;" Click="OnSaveAndroid" Style="{StaticResource PillButton}" />
                                 </Grid>
 
                                 <!-- TEK TIKLA ADB İLE KURMA BUTONU -->
-                                <Button x:Name="AndroidInstallButton" Content="TV'ye kur ve aç" Click="OnInstallAndroidApp" Background="{DynamicResource successBrush}" Foreground="White" FontWeight="Bold" BorderThickness="0" MinHeight="38" FontSize="15" Cursor="Hand" Margin="0,0,0,8">
+                                <Button x:Name="AndroidInstallButton" Content="&#x202B;ثبّت على التلفزيون وافتح&#x202C;" Click="OnInstallAndroidApp" Background="{DynamicResource successBrush}" Foreground="White" FontWeight="Bold" BorderThickness="0" MinHeight="38" FontSize="15" Cursor="Hand" Margin="0,0,0,8">
                                     <Button.Resources>
                                         <Style TargetType="Border">
                                             <Setter Property="CornerRadius" Value="6" />
@@ -465,16 +465,16 @@
                                 <!-- ADB Durum ve Yönerge Paneli -->
                                 <Border Background="{DynamicResource wellBrush}" CornerRadius="6" Padding="10" Margin="0,0,0,8">
                                     <StackPanel>
-                                        <TextBlock Text="Kurulum çalışmazsa:" FontWeight="SemiBold" FontSize="12" Foreground="{DynamicResource accentTextBrush}" Margin="0,0,0,3" />
-                                        <TextBlock Text="• TV'de Ayarlar › Cihaz Tercihleri › Hakkında › Yapı Numarası'na 7 kez bas." FontSize="12" Foreground="{DynamicResource textSecondaryBrush}" Margin="0,0,0,2" />
-                                        <TextBlock Text="• Geliştirici Seçenekleri'nde 'USB / Ağ hata ayıklama'yı aç." FontSize="12" Foreground="{DynamicResource textSecondaryBrush}" Margin="0,0,0,4" />
+                                        <TextBlock Text="&#x202B;إذا لم ينجح التثبيت:&#x202C;" FontWeight="SemiBold" FontSize="12" Foreground="{DynamicResource accentTextBrush}" Margin="0,0,0,3" />
+                                        <TextBlock Text="&#x202B;• في التلفزيون: الإعدادات › تفضيلات الجهاز › حول › اضغط 7 مرات على رقم الإصدار (Build).&#x202C;" FontSize="12" Foreground="{DynamicResource textSecondaryBrush}" Margin="0,0,0,2" />
+                                        <TextBlock Text="&#x202B;• من خيارات المطوّر فعّل «تصحيح أخطاء USB / الشبكة».&#x202C;" FontSize="12" Foreground="{DynamicResource textSecondaryBrush}" Margin="0,0,0,4" />
                                         <TextBlock x:Name="AndroidInstallStatus" FontSize="13" FontWeight="SemiBold" Foreground="{DynamicResource accentTextBrush}" TextWrapping="Wrap" Visibility="Collapsed" />
                                     </StackPanel>
                                 </Border>
 
                                 <StackPanel Orientation="Horizontal">
-                  <Button Content="TV uygulama dosyası" Click="OnOpenAndroidApk" Style="{StaticResource PillButton}" Margin="0,0,8,0" />
-                  <Button Content="TV Kurulum Rehberi (PDF)" Click="OnOpenGuidePdf" Style="{StaticResource PillButton}" />
+                  <Button Content="&#x202B;ملف تطبيق التلفزيون&#x202C;" Click="OnOpenAndroidApk" Style="{StaticResource PillButton}" Margin="0,0,8,0" />
+                  <Button Content="&#x202B;دليل إعداد التلفزيون (PDF)&#x202C;" Click="OnOpenGuidePdf" Style="{StaticResource PillButton}" />
                                 </StackPanel>
                             </StackPanel>
 
@@ -490,17 +490,17 @@
                             <TextBlock Text="{x:Static c:Glyphs.Controller}" Style="{StaticResource GlyphText}" FontSize="20" HorizontalAlignment="Center" Foreground="{DynamicResource accentTextBrush}" />
                         </Border>
                         <StackPanel VerticalAlignment="Center">
-                            <TextBlock Text="Hazırsın!" FontWeight="Bold" FontSize="18" Foreground="{DynamicResource textPrimaryBrush}" />
-                            <TextBlock Text="Bundan sonra sadece başlat düğmesine basman yeter." FontSize="13" Foreground="{DynamicResource textSecondaryBrush}" Margin="0,2,0,0" />
+                            <TextBlock Text="&#x202B;كل شيء جاهز!&#x202C;" FontWeight="Bold" FontSize="18" Foreground="{DynamicResource textPrimaryBrush}" />
+                            <TextBlock Text="&#x202B;من الآن يكفي أن تضغط زر البدء.&#x202C;" FontSize="13" Foreground="{DynamicResource textSecondaryBrush}" Margin="0,2,0,0" />
                         </StackPanel>
                     </StackPanel>
 
                     <Border Background="{DynamicResource cardBrush}" BorderBrush="{DynamicResource hairlineBrush}" BorderThickness="1" CornerRadius="8" Padding="16" Margin="0,0,0,14">
                         <StackPanel>
-                            <TextBlock Text="Nasıl kullanılır?" FontWeight="Bold" FontSize="15" Foreground="White" Margin="0,0,0,10" />
-                            <TextBlock Text="1. Oyunda altyazıları aç." FontSize="13" Foreground="{DynamicResource textSecondaryBrush}" Margin="0,0,0,6" />
-                            <TextBlock Text="2. Ana ekrandaki büyük düğmeyle çeviriyi başlat." FontSize="13" Foreground="{DynamicResource textSecondaryBrush}" Margin="0,0,0,6" />
-                            <TextBlock Text="3. TV'de GameTranslator'ı aç; çeviri oyunun üstünde görünür." FontSize="13" Foreground="{DynamicResource successBrush}" FontWeight="SemiBold" />
+                            <TextBlock Text="&#x202B;طريقة الاستخدام&#x202C;" FontWeight="Bold" FontSize="15" Foreground="White" Margin="0,0,0,10" />
+                            <TextBlock Text="&#x202B;1. فعّل الترجمة (Subtitles) داخل اللعبة.&#x202C;" FontSize="13" Foreground="{DynamicResource textSecondaryBrush}" Margin="0,0,0,6" />
+                            <TextBlock Text="&#x202B;2. ابدأ الترجمة بالزر الكبير في الشاشة الرئيسية.&#x202C;" FontSize="13" Foreground="{DynamicResource textSecondaryBrush}" Margin="0,0,0,6" />
+                            <TextBlock Text="&#x202B;3. افتح GameTranslator على التلفزيون؛ تظهر الترجمة فوق اللعبة.&#x202C;" FontSize="13" Foreground="{DynamicResource successBrush}" FontWeight="SemiBold" />
                         </StackPanel>
                     </Border>
 
@@ -510,11 +510,11 @@
                             <ColumnDefinition Width="8" />
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
-            <Button Grid.Column="0" Content="Ekranda dene" Click="OnTestDesktopOverlay" Style="{StaticResource PillButton}" MinHeight="36" FontWeight="SemiBold" />
-            <Button Grid.Column="2" Content="TV'de dene" Click="OnTestTv" Style="{StaticResource PillButton}" MinHeight="36" FontWeight="SemiBold" />
+            <Button Grid.Column="0" Content="&#x202B;جرّب على الشاشة&#x202C;" Click="OnTestDesktopOverlay" Style="{StaticResource PillButton}" MinHeight="36" FontWeight="SemiBold" />
+            <Button Grid.Column="2" Content="&#x202B;جرّب على التلفزيون&#x202C;" Click="OnTestTv" Style="{StaticResource PillButton}" MinHeight="36" FontWeight="SemiBold" />
                     </Grid>
 
-                    <Button Content="Ana ekrana geç" Visibility="Collapsed" Click="OnSkipToMain" Background="{DynamicResource accentBrush}" Foreground="White" FontWeight="Bold" FontSize="15" BorderThickness="0" MinHeight="42" Cursor="Hand">
+                    <Button Content="&#x202B;إلى الشاشة الرئيسية&#x202C;" Visibility="Collapsed" Click="OnSkipToMain" Background="{DynamicResource accentBrush}" Foreground="White" FontWeight="Bold" FontSize="15" BorderThickness="0" MinHeight="42" Cursor="Hand">
                         <Button.Resources>
                             <Style TargetType="Border">
                                 <Setter Property="CornerRadius" Value="8" />

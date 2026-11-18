@@ -2,7 +2,7 @@
 <Window x:Class="GameTranslator.App.Views.GameDisplayWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="GameTranslator - Canlı Oyun &amp; TV Ekranı"
+        Title="&#x202B;GameTranslator - اللعبة المباشرة وشاشة التلفزيون&#x202C;"
         Width="1280" Height="750" MinWidth="640" MinHeight="360"
         WindowStartupLocation="CenterScreen"
         Background="#080B11" Foreground="White"
@@ -20,8 +20,8 @@
             <Border Width="64" Height="64" CornerRadius="32" Background="#141A29" HorizontalAlignment="Center" Margin="0,0,0,12">
                 <TextBlock Text="🎮" FontSize="30" HorizontalAlignment="Center" VerticalAlignment="Center" />
             </Border>
-            <TextBlock x:Name="PlaceholderTitle" Text="Canlı Oyun Akışı Bekleniyor" FontSize="16" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center" Margin="0,0,0,6" />
-            <TextBlock x:Name="PlaceholderSubtitle" Text="Görüntüyü başlatmak için GameTranslator ana menüsünden '▶ Çeviriyi Başlat'a basın." FontSize="12" Foreground="#8899AC" HorizontalAlignment="Center" />
+            <TextBlock x:Name="PlaceholderTitle" Text="&#x202B;بانتظار بث اللعبة المباشر&#x202C;" FontSize="16" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center" Margin="0,0,0,6" />
+            <TextBlock x:Name="PlaceholderSubtitle" Text="&#x202B;لبدء الصورة اضغط «▶ ابدأ الترجمة» من الشاشة الرئيسية في GameTranslator.&#x202C;" FontSize="12" Foreground="#8899AC" HorizontalAlignment="Center" />
         </StackPanel>
 
         <!-- Üst Kontrol Çubuğu -->
@@ -29,18 +29,18 @@
             <Grid>
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                     <Ellipse x:Name="StatusDot" Width="8" Height="8" Fill="#10B981" Margin="0,0,8,0" VerticalAlignment="Center" />
-                    <TextBlock Text="🎮 Canlı Oyun &amp; TV Ekranı" FontWeight="Bold" FontSize="13" Foreground="White" VerticalAlignment="Center" Margin="0,0,12,0" />
+                    <TextBlock Text="&#x202B;🎮 اللعبة المباشرة وشاشة التلفزيون&#x202C;" FontWeight="Bold" FontSize="13" Foreground="White" VerticalAlignment="Center" Margin="0,0,12,0" />
                     <Border Background="#2038BDF8" CornerRadius="4" Padding="6,2" Margin="0,0,8,0">
-                        <TextBlock x:Name="SourceBadgeText" Text="🖥️ Masaüstü / OBS" FontSize="10" FontWeight="SemiBold" Foreground="#38BDF8" />
+                        <TextBlock x:Name="SourceBadgeText" Text="&#x202B;🖥️ سطح المكتب / OBS&#x202C;" FontSize="10" FontWeight="SemiBold" Foreground="#38BDF8" />
                     </Border>
                     <Border Background="#2010B981" CornerRadius="4" Padding="6,2">
-                        <TextBlock x:Name="FpsBadgeText" Text="1080p CANLI" FontSize="10" FontFamily="Consolas" FontWeight="SemiBold" Foreground="#10B981" />
+                        <TextBlock x:Name="FpsBadgeText" Text="&#x202B;1080p مباشر&#x202C;" FontSize="10" FontFamily="Consolas" FontWeight="SemiBold" Foreground="#10B981" />
                     </Border>
                 </StackPanel>
 
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
-                    <Button Content="🗖 Tam Ekran (F11)" Click="OnToggleFullscreen" Padding="10,4" FontSize="11" Margin="0,0,8,0" Style="{StaticResource SecondaryButton}" />
-                    <Button Content="❌ Kapat" Click="OnClose" Padding="10,4" FontSize="11" Style="{StaticResource SecondaryButton}" />
+                    <Button Content="&#x202B;🗖 ملء الشاشة (F11)&#x202C;" Click="OnToggleFullscreen" Padding="10,4" FontSize="11" Margin="0,0,8,0" Style="{StaticResource SecondaryButton}" />
+                    <Button Content="&#x202B;❌ إغلاق&#x202C;" Click="OnClose" Padding="10,4" FontSize="11" Style="{StaticResource SecondaryButton}" />
                 </StackPanel>
             </Grid>
         </Border>
@@ -59,7 +59,7 @@
         <!-- Tam Ekran Çıkış İpucu -->
         <Border x:Name="FullscreenHint" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0,20,0,0"
                 Background="#D9000000" CornerRadius="8" Padding="14,6" Visibility="Collapsed">
-            <TextBlock Text="Tam ekrandan çıkmak için F11 veya ESC tuşuna basın" FontSize="11" Foreground="#CBD5E1" />
+            <TextBlock Text="&#x202B;للخروج من ملء الشاشة اضغط F11 أو ESC&#x202C;" FontSize="11" Foreground="#CBD5E1" />
         </Border>
     </Grid>
 </Window>

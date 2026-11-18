@@ -281,14 +281,14 @@ public sealed partial class GameDisplayWindow : Window
         var src = controller.Settings.VideoSource;
         SourceBadgeText.Text = src switch
         {
-            VideoSourceType.DesktopScreen => "🖥️ Masaüstü / OBS",
-            VideoSourceType.CaptureCard => "📹 Yakalama Kartı",
+            VideoSourceType.DesktopScreen => "🖥️ سطح المكتب / OBS",
+            VideoSourceType.CaptureCard => "📹 كرت الالتقاط",
             _ => "🎮 PS5 Remote Play"
         };
 
         bool running = controller.IsRunning;
         StatusDot.Fill = new SolidColorBrush(running ? Color.FromRgb(0x10, 0xB9, 0x81) : Color.FromRgb(0x94, 0xA3, 0xB8));
-        FpsBadgeText.Text = running ? "1080p CANLI" : "BEKLEMEDE";
+        FpsBadgeText.Text = running ? "1080p مباشر" : "BEKLEMEDE";
     }
 
     private void OnHeaderMouseDown(object sender, MouseButtonEventArgs e)
