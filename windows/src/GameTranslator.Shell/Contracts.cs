@@ -22,6 +22,19 @@ public static class StoreKeys
     public const string DeepLKey = "deepLKey";
     /// <summary>Kullanıcının Google Gemini API anahtarı.</summary>
     public const string GeminiKey = "geminiKey";
+    /// <summary>The user's OpenAI API key.</summary>
+    public const string OpenAiKey = "openAiKey";
+    /// <summary>The user's Claude API key.</summary>
+    public const string ClaudeKey = "claudeKey";
+
+    /// <summary>Where a cloud AI service's key is kept; the local model has no stored key.</summary>
+    public static string? ForAi(AiProvider provider) => provider switch
+    {
+        AiProvider.Gemini => GeminiKey,
+        AiProvider.OpenAi => OpenAiKey,
+        AiProvider.Claude => ClaudeKey,
+        _ => null,
+    };
 }
 
 /// <summary>Kullanıcının seçtiği çeviri motoru/modeli.</summary>
@@ -33,7 +46,13 @@ public enum TranslationEngine
     /// <summary>Google Gemini 2.5 / 2.0 Flash (Bulut Yapay Zeka).</summary>
     Gemini,
     /// <summary>DeepL REST API servisi.</summary>
-    DeepL
+    DeepL,
+    /// <summary>
+    /// The AI service in <see cref="UserSettings.Provider"/> (Gemini, OpenAI or Claude) with the model of
+    /// <see cref="UserSettings.Quality"/>. Appended last so settings saved by older versions keep their meaning;
+    /// <see cref="Gemini"/> is read as this with the Gemini provider.
+    /// </summary>
+    Ai
 }
 
 /// <summary>Kalıcı ayarlar (şifreli depo değil, sıradan ayar dosyası).</summary>
@@ -61,7 +80,12 @@ public sealed record UserSettings
     public ResultTarget FreeAreaTarget { get; init; } = ResultTarget.Tv;
     public SubtitleStyle Style { get; init; } = new();
     public string SourceLanguage { get; init; } = "en";
-    public string TargetLanguage { get; init; } = "tr";
+    /// <summary>The language subtitles are translated into; this fork's default is Arabic.</summary>
+    public string TargetLanguage { get; init; } = TargetLanguages.Default;
+    /// <summary>The AI service used when <see cref="Engine"/> is <see cref="TranslationEngine.Ai"/> (or the older Gemini value).</summary>
+    public AiProvider Provider { get; init; } = AiProvider.Gemini;
+    /// <summary>Strongest model of the service, or its fast one.</summary>
+    public QualityMode Quality { get; init; } = QualityMode.Best;
     public DubbingSettings Dubbing { get; init; } = new();
     public bool DubbingEnabled
     {
@@ -210,6 +234,14 @@ public interface IAppServices
     Task<OnlineKeyCheck> CheckOnlineKeyAsync(string key) => Task.FromResult(new OnlineKeyCheck(OnlineKeyState.Unreachable));
     /// <summary>Google Gemini çevirmeni; <paramref name="fallback"/> Gemini'ye ulaşılamayan satırları çevirir.</summary>
     ITextTranslator? MakeGeminiTranslator(string key, ITextTranslator? fallback) => null;
+    /// <summary>
+    /// AI translator for a service, model and target language; <paramref name="fallback"/> translates the lines the
+    /// service could not. Null when this build has none.
+    /// </summary>
+    ITextTranslator? MakeAiTranslator(AiProvider provider, string key, string modelId, string target, ITextTranslator? fallback) => null;
+    /// <summary>Tries the key with one sample line in the target language.</summary>
+    Task<OnlineKeyCheck> CheckAiKeyAsync(AiProvider provider, string key, string target) =>
+        Task.FromResult(new OnlineKeyCheck(OnlineKeyState.Unreachable));
     Task<OnlineKeyCheck> CheckGeminiKeyAsync(string key) => Task.FromResult(new OnlineKeyCheck(OnlineKeyState.Unreachable));
     /// <summary>Türkçe dublaj modeli; bu derlemede yoksa null.</summary>
     IDubbingModel? Dubbing => null;

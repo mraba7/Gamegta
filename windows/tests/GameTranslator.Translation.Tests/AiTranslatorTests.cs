@@ -539,7 +539,10 @@ public class AiTranslatorTests
         var model = AiProvider.Gemini.DefaultModel();
         Assert.True(model.FreeTier);
         Assert.NotNull(model.RequestsPerMinute);
-        Assert.All(AiProvider.Gemini.Models(), m => Assert.True(m.FreeTier && m.RequestsPerMinute > 0));
+        // Arabic edition: the last model is the paid flagship ("Best quality"); every other Gemini model is free tier.
+        Assert.All(AiProvider.Gemini.Models().SkipLast(1), m => Assert.True(m.FreeTier && m.RequestsPerMinute > 0));
+        Assert.False(AiProvider.Gemini.ModelFor(QualityMode.Best).FreeTier);
+        Assert.Null(AiProvider.Gemini.ModelFor(QualityMode.Best).RequestsPerMinute);
         Assert.True(AiProvider.Gemini.HasFreeTier());
         Assert.False(AiProvider.OpenAi.HasFreeTier());
         Assert.False(AiProvider.Claude.HasFreeTier());

@@ -12,8 +12,26 @@ namespace GameTranslator.Core;
 [JsonConverter(typeof(JsonStringEnumConverter<AiProvider>))]
 public enum AiProvider { Gemini, OpenAi, Claude, Local }
 
+/// <summary>
+/// Which model of the chosen service translates: <c>Best</c> is the service's strongest model (slower, costs more),
+/// <c>Fastest</c> its quick and cheap one. The user switches between them at any time.
+/// </summary>
+[JsonConverter(typeof(JsonStringEnumConverter<QualityMode>))]
+public enum QualityMode { Best, Fastest }
+
 public static class AiProviders
 {
+    /// <summary>
+    /// The model for a quality mode: the catalog's first model is the fastest, its last the strongest. The local
+    /// provider has no catalog; its model is the one the user typed.
+    /// </summary>
+    public static AiModel ModelFor(this AiProvider provider, QualityMode mode)
+    {
+        if (provider.IsLocal()) return provider.DefaultModel();
+        var models = provider.Models();
+        return mode == QualityMode.Fastest ? models[0] : models[^1];
+    }
+
     /// <summary>Bulut hizmetleri: model listesi <c>ai-models.json</c>'dan gelir, anahtar gerekir.</summary>
     public static IReadOnlyList<AiProvider> Cloud { get; } = [.. Enum.GetValues<AiProvider>().Where(p => !p.IsLocal())];
 

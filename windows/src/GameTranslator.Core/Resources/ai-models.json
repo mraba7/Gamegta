@@ -1,15 +1,19 @@
 {
+  "_comment_arabic_edition": "The last model of each service is its flagship ('Best quality' mode; the first is 'Fastest'). Ids checked on 2026-11-18 against aistudio.google.com/docs/models (gemini-4-argon), developers.openai.com/api/docs/models (gpt-6-astra: reasoning_effort low..max, no 'none') and platform.claude.com/docs/en/about-claude/models/overview (claude-fable-5-2: thinking always on, so no thinking setting is sent).",
   "_comment": "Yapay zekâ çevirisinde seçilebilen modeller; Mac (CouchSubsCore) ve Windows (CouchSubs.Core, gömülü kaynak) bu tek dosyayı okur. İlk model varsayılandır. label: Localizable.xcstrings anahtarı. effort: OpenAI reasoning_effort / Claude output_config.effort. thinking: Gemini thinkingConfig.thinkingLevel / Claude thinking.type. freeTier: ücretsiz anahtarla kullanılabilir (aistudio.google.com/docs/pricing: 'Free Tier: Free of charge'; ücretsiz katmanda 'Used to improve our products: Yes'). requestsPerMinute: uygulamanın dakikada gönderdiği en çok istek; Google ücretsiz katmanın model başına sayısını belgelerde yayımlamıyor (aistudio.google.com/docs/rate-limits; sınır proje başına, günlük sınır gece yarısı Pasifik saatinde sıfırlanır), değer temkinli seçildi. Kasım 2026'da belgelerden denetlendi: aistudio.google.com/docs/models, /docs/thinking, /docs/pricing, /docs/rate-limits, developers.openai.com/api/docs/models, platform.claude.com/docs/en/about-claude/models/overview ve /docs/en/build-with-claude/effort.",
   "gemini": [
     { "id": "gemini-3.5-flash-lite", "label": "Fast and cheap (recommended)", "freeTier": true, "requestsPerMinute": 15 },
-    { "id": "gemini-3.6-flash", "label": "Better quality, a little slower", "thinking": "LOW", "freeTier": true, "requestsPerMinute": 10 }
+    { "id": "gemini-3.6-flash", "label": "Better quality, a little slower", "thinking": "LOW", "freeTier": true, "requestsPerMinute": 10 },
+    { "id": "gemini-4-argon", "label": "Best quality (strongest, slowest)" }
   ],
   "openai": [
     { "id": "gpt-6-luna", "label": "Fast and cheap (recommended)", "effort": "none" },
-    { "id": "gpt-6.1-terra", "label": "Better quality, a little slower", "effort": "none" }
+    { "id": "gpt-6.1-terra", "label": "Better quality, a little slower", "effort": "none" },
+    { "id": "gpt-6-astra", "label": "Best quality (strongest, slowest)", "effort": "low" }
   ],
   "claude": [
     { "id": "claude-haiku-5-5", "label": "Fast and cheap (recommended)", "effort": "low", "thinking": "disabled" },
-    { "id": "claude-sonnet-5-5", "label": "Better quality, a little slower", "effort": "low", "thinking": "between_tools" }
+    { "id": "claude-sonnet-5-5", "label": "Better quality, a little slower", "effort": "low", "thinking": "between_tools" },
+    { "id": "claude-fable-5-2", "label": "Best quality (strongest, slowest)", "effort": "low" }
   ]
 }

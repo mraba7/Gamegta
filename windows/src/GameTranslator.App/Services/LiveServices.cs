@@ -30,6 +30,18 @@ public sealed class LiveServices : IAppServices
         var result = await AiTranslator.TestAsync(AiProvider.Gemini, key, model: null);
         return new OnlineKeyCheck(result.State);
     }
+    public ITextTranslator? MakeAiTranslator(AiProvider provider, string key, string modelId, string target, ITextTranslator? fallback) =>
+        new AiTranslator(provider, key, modelId, fallback,
+                         cache: TranslationCache.Shared(Path.Combine(AppPaths.Data, "cache"), provider.EngineId(modelId), "en", TargetLanguages.Normalize(target)),
+                         game: () => CommunityPatchManager.Shared.PlayedGameTitle, target: target);
+
+    public async Task<OnlineKeyCheck> CheckAiKeyAsync(AiProvider provider, string key, string target)
+    {
+        // The key is tried with the fast model: a key that works there works for the service's other models.
+        var result = await AiTranslator.TestAsync(provider, key, model: null, target: target);
+        return new OnlineKeyCheck(result.State);
+    }
+
     public IDubbingModel? Dubbing { get; } = PocketDubbingModel.EngineBundled ? new PocketDubbingModel() : null;
     public IDubbingModel? FastDubbing { get; } = WindowsVoiceModel.Available ? new WindowsVoiceModel() : null;
     public IAudioOutput? Audio { get; } = new WindowsAudioOutput();
