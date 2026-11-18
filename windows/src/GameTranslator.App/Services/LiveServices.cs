@@ -203,7 +203,7 @@ public sealed class LiveServices : IAppServices
         get
         {
             var folder = Path.Combine(AppContext.BaseDirectory, "tv-app");
-            return Directory.Exists(folder) ? Directory.EnumerateFiles(folder, "*.ipk").FirstOrDefault() : null;
+            return Directory.Exists(folder) ? TvInstall.Versions.NewestBundled(Directory.EnumerateFiles(folder, "*.ipk")) : null;
         }
     }
 
@@ -264,14 +264,15 @@ public sealed class LiveServices : IAppServices
         string? file = null;
         if (Directory.Exists(folder))
         {
-            file = Directory.EnumerateFiles(folder, pattern).FirstOrDefault();
+            // The newest build wins: an older package next to it must never be the one that reaches the TV.
+            file = TvInstall.Versions.NewestBundled(Directory.EnumerateFiles(folder, pattern));
         }
         if (file is null)
         {
             var fallback = Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "..", "..", "tv", "packages");
             if (Directory.Exists(fallback))
             {
-                file = Directory.EnumerateFiles(fallback, pattern).FirstOrDefault();
+                file = TvInstall.Versions.NewestBundled(Directory.EnumerateFiles(fallback, pattern));
             }
         }
         return file is not null && (TvInstall.Versions.OfBundledFile(file) ?? "1.0.0") is { } version ? new BundledTvApp(file, version) : null;

@@ -19,4 +19,32 @@ public class VersionsTests
         Assert.Equal("0.7.0", Versions.OfBundledFile("gametranslator-samsung_0.7.0.wgt"));
         Assert.Null(Versions.OfBundledFile("gametranslator.apk"));
     }
+
+    /// <summary>
+    /// Several packages of one TV brand can sit side by side (an older build next to the new one): the newest is the
+    /// one to install, whatever order the folder lists them in.
+    /// </summary>
+    [Fact]
+    public void NewestBundledPicksTheHighestVersion()
+    {
+        string[] files = ["tv-app/gametranslator-samsung_1.0.5.wgt", "tv-app/gametranslator-samsung_1.1.0.wgt", "tv-app/gametranslator-samsung_1.0.0.wgt"];
+        Assert.Equal("tv-app/gametranslator-samsung_1.1.0.wgt", Versions.NewestBundled(files));
+        Assert.Equal("tv-app/gametranslator-samsung_1.1.0.wgt", Versions.NewestBundled(files.Reverse()));
+    }
+
+    [Fact]
+    public void NewestBundledComparesNumbersNotText()
+    {
+        string[] files = ["a_0.9.9.wgt", "a_0.10.0.wgt"];
+        Assert.Equal("a_0.10.0.wgt", Versions.NewestBundled(files));
+    }
+
+    [Fact]
+    public void NewestBundledHandlesNoneAndUnversionedFiles()
+    {
+        Assert.Null(Versions.NewestBundled([]));
+        // A file without a version in its name only wins when nothing versioned is there.
+        Assert.Equal("only.wgt", Versions.NewestBundled(["only.wgt"]));
+        Assert.Equal("app_1.0.0.wgt", Versions.NewestBundled(["only.wgt", "app_1.0.0.wgt"]));
+    }
 }

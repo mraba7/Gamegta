@@ -21,6 +21,26 @@ public static class Versions
     private static int[] Parts(string version) =>
         [.. version.Split('.', '-').Select(p => int.TryParse(p, out var n) ? n : 0)];
 
+    /// <summary>
+    /// The package to install when several builds of one TV app sit side by side: the one with the highest version in
+    /// its name, whatever order the folder lists them in. A file without a version only wins when no other is there.
+    /// </summary>
+    public static string? NewestBundled(IEnumerable<string> files)
+    {
+        string? best = null;
+        string? bestVersion = null;
+        foreach (var file in files)
+        {
+            var version = OfBundledFile(file);
+            var better = best is null
+                         || (version is not null && (bestVersion is null || IsNewer(version, bestVersion)));
+            if (!better) continue;
+            best = file;
+            bestVersion = version;
+        }
+        return best;
+    }
+
     /// <summary><c>gametranslator-androidtv_0.7.0.apk</c> → <c>0.7.0</c>; ad bu biçimde değilse null.</summary>
     public static string? OfBundledFile(string fileName)
     {
