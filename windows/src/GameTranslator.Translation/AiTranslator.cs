@@ -49,11 +49,32 @@ public static class AiRequest
         "Reply with only the translation, no explanations, notes, quotes or diacritics.";
 
     /// <summary>The system prompt for a target language: Turkish keeps the original prompt, Arabic has its own, others a generic one.</summary>
-    public static string SystemPromptFor(string? target)
+    /// <summary>The first sentences of the Arabic prompt for a style; the rest (labels, names, line breaks, reply form) is shared.</summary>
+    private static string ArabicRegister(ArabicStyle style) => style switch
+    {
+        ArabicStyle.Colloquial =>
+            "You translate English video game subtitles into Arabic. " +
+            "Write simple colloquial Arabic (the neutral \"white\" dialect understood across the Arab world), the way people really talk; never translate word for word and never use formal Standard Arabic phrasing. ",
+        ArabicStyle.Saudi =>
+            "You translate English video game subtitles into Arabic. " +
+            "Write everyday Saudi dialect, the way young people in Saudi Arabia really talk; never translate word for word and never use formal Standard Arabic phrasing. ",
+        _ =>
+            "You translate English video game subtitles into Arabic. " +
+            "Write clear Modern Standard Arabic that sounds like natural speech, the way good Arabic game and film subtitles read; never translate word for word. ",
+    };
+
+    private const string ArabicRules =
+        "Render slang, street talk, jokes and insults with natural Arabic equivalents that keep the tone. " +
+        "Keep speaker labels such as \"ATREUS:\" at the start of a line exactly as they are, in Latin letters. " +
+        "Write other character and place names in Arabic letters. " +
+        "Keep line breaks. Keep the meaning; do not add or leave out anything. " +
+        "Reply with only the translation, no explanations, notes, quotes or diacritics.";
+
+    public static string SystemPromptFor(string? target, ArabicStyle style = ArabicStyle.Standard)
     {
         var language = TargetLanguages.Normalize(target);
         if (language == TargetLanguages.Turkish) return SystemPrompt;
-        if (language == TargetLanguages.Arabic) return ArabicSystemPrompt;
+        if (language == TargetLanguages.Arabic) return style == ArabicStyle.Standard ? ArabicSystemPrompt : ArabicRegister(style) + ArabicRules;
         return $"You translate English video game subtitles into natural, spoken {TargetLanguages.EnglishName(language)}, the way people really talk. " +
                "Keep character names, place names and speaker labels such as \"ATREUS:\" exactly as they are. " +
                "Keep line breaks. Keep the meaning and tone; do not add or leave out anything. " +
@@ -76,13 +97,30 @@ public static class AiRequest
 
     private static readonly JsonSerializerOptions Compact = new() { Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping };
 
+    /// <summary>
+    /// What the glossary adds to a request: the fixed Arabic spellings of the names that occur in the sentences or in
+    /// the context lines, and the note about the game's tone. null when neither applies.
+    /// </summary>
+    public static string? Guidance(ArabicGlossary glossary, IReadOnlyList<string> sentences, IReadOnlyList<AiContextLine> context, string? game)
+    {
+        var text = string.Join("\n", sentences.Concat(context.Select(line => line.Source)));
+        var terms = glossary.TermsIn(text, game);
+        var notes = glossary.NotesFor(game);
+        if (terms.Count == 0 && notes is null) return null;
+        var parts = new List<string>();
+        if (notes is not null) parts.Add($"About this game: {notes}");
+        if (terms.Count > 0) parts.Add("Always write these names this way: " + string.Join("; ", terms.Select(t => $"{t.English} = {t.Arabic}")));
+        return string.Join("\n", parts);
+    }
+
     /// <summary>Kullanıcı iletisi: önceki satırlar (yalnız bağlam) ve çevrilecek cümleler.</summary>
     public static string UserMessage(IReadOnlyList<string> sentences, IReadOnlyList<AiContextLine> context, string? game = null,
-                                     string target = TargetLanguages.Turkish)
+                                     string target = TargetLanguages.Turkish, string? guidance = null)
     {
         var language = TargetLanguages.EnglishName(target);
         var parts = new List<string>();
         if (!string.IsNullOrEmpty(game)) parts.Add($"Game: {game}");
+        if (!string.IsNullOrEmpty(guidance)) parts.Add(guidance);
         if (context.Count > 0)
         {
             var lines = new List<string> { "Previous subtitles, for context only (do not translate them again):" };
@@ -105,12 +143,13 @@ public static class AiRequest
     /// <summary>Hizmete giden HTTP isteği. <paramref name="server"/>: yerel modelin sunucusu (verilmezse Ollama'nın varsayılan adresi).</summary>
     public static HttpRequestMessage Build(AiProvider provider, string key, AiModel model, IReadOnlyList<string> sentences,
                                            IReadOnlyList<AiContextLine> context, string? game = null, LocalAiServer? server = null,
-                                           int? maxOutputTokens = null, string target = TargetLanguages.Turkish)
+                                           int? maxOutputTokens = null, string target = TargetLanguages.Turkish,
+                                           ArabicStyle style = ArabicStyle.Standard, string? guidance = null)
     {
         key = key.Trim();
         var outputTokens = maxOutputTokens ?? OutputTokensFor(model);
-        var user = UserMessage(sentences, context, game, target);
-        var system = SystemPromptFor(target);
+        var user = UserMessage(sentences, context, game, target, guidance);
+        var system = SystemPromptFor(target, style);
         HttpRequestMessage request;
         JsonObject body;
         switch (provider)
@@ -391,6 +430,14 @@ public sealed class AiTranslator : ITextTranslator, IOnlineTranslator
     internal const int ContextLines = 3;
     /// <summary>Hata sonrası bu süre hizmet denenmez.</summary>
     private static readonly TimeSpan RetryAfter = TimeSpan.FromMinutes(1);
+
+    /// <summary>
+    /// How long the service is left alone after a failure, while the fallback translates. A reply that did not come in
+    /// time is tried again soon (the strongest models are sometimes just slow); a refused key, a refused model or a
+    /// used-up quota does not fix itself in seconds and waits the full time.
+    /// </summary>
+    public static TimeSpan PauseAfter(OnlineKeyState state) =>
+        state == OnlineKeyState.Unreachable ? TimeSpan.FromSeconds(15) : RetryAfter;
     /// <summary>Dakikalık sınır aşılınca en çok bu kadar beklenir (hizmet bekleme önermezse de bu kadar).</summary>
     public static readonly TimeSpan RateLimitPause = TimeSpan.FromSeconds(20);
     /// <summary>Denemede çevrilen örnek satır.</summary>
@@ -440,6 +487,8 @@ public sealed class AiTranslator : ITextTranslator, IOnlineTranslator
     private readonly List<AiContextLine> _recent = [];
     private readonly Func<string?>? _game;
     private readonly string _target;
+    private readonly ArabicStyle _style;
+    private readonly ArabicGlossary? _glossary;
     private DateTimeOffset _pausedUntil = DateTimeOffset.MinValue;
     private OnlineKeyState? _failure;
 
@@ -456,10 +505,14 @@ public sealed class AiTranslator : ITextTranslator, IOnlineTranslator
     /// </param>
     public AiTranslator(AiProvider provider, string key, string? model, ITextTranslator? fallback, HttpClient? http = null,
                         TranslationCache? cache = null, RequestBudget? budget = null, LocalAiServer? server = null,
-                        Func<string?>? game = null, string target = TargetLanguages.Turkish)
+                        Func<string?>? game = null, string target = TargetLanguages.Turkish,
+                        ArabicStyle style = ArabicStyle.Standard, ArabicGlossary? glossary = null)
     {
         _game = game;
         _target = TargetLanguages.Normalize(target);
+        _style = style;
+        // Spellings and notes are Arabic: they are sent only when translating to Arabic.
+        _glossary = _target == TargetLanguages.Arabic ? glossary : null;
         Provider = provider;
         Model = provider.Model(model);
         Server = provider.IsLocal() ? server ?? LocalAiServer.Create(LocalAiServer.OllamaUrl, Model.Id) : null;
@@ -525,8 +578,9 @@ public sealed class AiTranslator : ITextTranslator, IOnlineTranslator
         catch (Exception error) when (error is HttpRequestException or TaskCanceledException or AiException
                                       && !cancellationToken.IsCancellationRequested)
         {
-            Report(error is AiException ai ? ai.State : OnlineKeyState.Unreachable);
-            _pausedUntil = DateTimeOffset.UtcNow + RetryAfter;
+            var failure = error is AiException ai ? ai.State : OnlineKeyState.Unreachable;
+            Report(failure);
+            _pausedUntil = DateTimeOffset.UtcNow + PauseAfter(failure);
             return Remember(await FallbackAsync(text, cancellationToken).ConfigureAwait(false), text);
         }
         for (var i = 0; i < missing.Count; i++)
@@ -568,7 +622,7 @@ public sealed class AiTranslator : ITextTranslator, IOnlineTranslator
             try
             {
                 var sentences = chunk.Select(i => texts[i]).ToList();
-                using var request = AiRequest.Build(Provider, _key, Model, sentences, [], _game?.Invoke(), Server, maxOutputTokens: AiRequest.ScreenOutputTokens, target: _target);
+                using var request = AiRequest.Build(Provider, _key, Model, sentences, [], _game?.Invoke(), Server, maxOutputTokens: AiRequest.ScreenOutputTokens, target: _target, style: _style);
                 using var response = await _screenHttp.SendAsync(request, cancellationToken).ConfigureAwait(false);
                 var body = await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
                 if (!response.IsSuccessStatusCode)
@@ -596,8 +650,9 @@ public sealed class AiTranslator : ITextTranslator, IOnlineTranslator
             catch (Exception error) when (error is HttpRequestException or TaskCanceledException or AiException
                                           && !cancellationToken.IsCancellationRequested)
             {
-                Report(error is AiException ai ? ai.State : OnlineKeyState.Unreachable);
-                _pausedUntil = DateTimeOffset.UtcNow + RetryAfter;
+                var failure = error is AiException ai ? ai.State : OnlineKeyState.Unreachable;
+                Report(failure);
+                _pausedUntil = DateTimeOffset.UtcNow + PauseAfter(failure);
                 failed = true;
             }
         }
@@ -655,7 +710,9 @@ public sealed class AiTranslator : ITextTranslator, IOnlineTranslator
 
     private async Task<string[]> RequestAsync(List<string> sentences, List<AiContextLine> context, CancellationToken cancellationToken)
     {
-        using var request = AiRequest.Build(Provider, _key, Model, sentences, context, _game?.Invoke(), Server, target: _target);
+        var game = _game?.Invoke();
+        var guidance = _glossary is null ? null : AiRequest.Guidance(_glossary, sentences, context, game);
+        using var request = AiRequest.Build(Provider, _key, Model, sentences, context, game, Server, target: _target, style: _style, guidance: guidance);
         using var response = await _http.SendAsync(request, cancellationToken).ConfigureAwait(false);
         var body = await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
         if (!response.IsSuccessStatusCode)

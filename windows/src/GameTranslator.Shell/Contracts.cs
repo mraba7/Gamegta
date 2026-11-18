@@ -102,6 +102,8 @@ public sealed record UserSettings
     public AiProvider Provider { get; init; } = AiProvider.Gemini;
     /// <summary>Strongest model of the service, or its fast one.</summary>
     public QualityMode Quality { get; init; } = QualityMode.Best;
+    /// <summary>How the Arabic translation should sound (standard, colloquial, Saudi).</summary>
+    public ArabicStyle Dialect { get; init; } = ArabicStyle.Standard;
     public DubbingSettings Dubbing { get; init; } = new();
     public bool DubbingEnabled
     {
@@ -254,7 +256,8 @@ public interface IAppServices
     /// AI translator for a service, model and target language; <paramref name="fallback"/> translates the lines the
     /// service could not. Null when this build has none.
     /// </summary>
-    ITextTranslator? MakeAiTranslator(AiProvider provider, string key, string modelId, string target, ITextTranslator? fallback) => null;
+    ITextTranslator? MakeAiTranslator(AiProvider provider, string key, string modelId, string target, ITextTranslator? fallback,
+                                      ArabicStyle style = ArabicStyle.Standard) => null;
     /// <summary>Tries the key with one sample line in the target language, on the model that will translate.</summary>
     Task<OnlineKeyCheck> CheckAiKeyAsync(AiProvider provider, string key, string modelId, string target) =>
         Task.FromResult(new OnlineKeyCheck(OnlineKeyState.Unreachable));

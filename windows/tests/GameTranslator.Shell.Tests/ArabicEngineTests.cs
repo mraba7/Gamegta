@@ -273,4 +273,60 @@ public class ArabicEngineTests
         Assert.Equal(expected, controller.DubbingInstalled);
         controller.Dispose();
     }
+
+    // --- Arabic style and trouble notice ---
+
+    [Fact]
+    public async Task TheChosenArabicStyleReachesTheTranslator()
+    {
+        var (controller, services, _) = Ready();
+        Assert.Equal(ArabicStyle.Standard, controller.Settings.Dialect);
+        await controller.SetAiKeyAsync(AiProvider.Claude, "sk-claude");
+        await controller.StartAsync();
+        Assert.Equal(ArabicStyle.Standard, services.AiStyles[^1]);
+
+        var before = services.AiStyles.Count;
+        controller.SetDialect(ArabicStyle.Saudi);
+
+        Assert.Equal(ArabicStyle.Saudi, controller.Settings.Dialect);
+        Assert.True(services.AiStyles.Count > before);
+        Assert.Equal(ArabicStyle.Saudi, services.AiStyles[^1]);
+        controller.Dispose();
+    }
+
+    /// <summary>
+    /// When the AI service stops answering, lines are translated by the free fallback: the user must be told, or they
+    /// only see worse subtitles without knowing why.
+    /// </summary>
+    [Fact]
+    public async Task TroubleWithTheAiServiceIsShownAndCleared()
+    {
+        var (controller, services, _) = Ready();
+        await controller.SetAiKeyAsync(AiProvider.Claude, "sk-claude");
+        await controller.StartAsync();
+        Assert.Null(controller.TranslationTrouble);
+
+        services.MadeAi[^1].Raise(OnlineKeyState.Unreachable);
+        Assert.Equal(OnlineKeyState.Unreachable, controller.TranslationTrouble);
+
+        services.MadeAi[^1].Raise(null);
+        Assert.Null(controller.TranslationTrouble);
+        controller.Dispose();
+    }
+
+    /// <summary>An old translator's late failure report must not show after the user switched service or mode.</summary>
+    [Fact]
+    public async Task AReplacedTranslatorNoLongerReportsTrouble()
+    {
+        var (controller, services, _) = Ready();
+        await controller.SetAiKeyAsync(AiProvider.Claude, "sk-claude");
+        await controller.StartAsync();
+        var old = services.MadeAi[^1];
+        controller.SetQuality(QualityMode.Fastest);
+        Assert.NotSame(old, services.MadeAi[^1]);
+
+        old.Raise(OnlineKeyState.Unreachable);
+        Assert.Null(controller.TranslationTrouble);
+        controller.Dispose();
+    }
 }

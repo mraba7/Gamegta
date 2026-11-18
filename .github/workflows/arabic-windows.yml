@@ -147,9 +147,12 @@ jobs:
 
           $must = 'GameTranslator.exe', 'gametranslator_native.dll', 'GameTranslator.Core.dll', 'NOTICE', 'LICENSE'
           foreach ($name in $must) { if (-not (Test-Path (Join-Path app $name))) { Write-Host "::error::missing in the package: $name"; exit 1 } }
+          # Exactly one Samsung package, and it is the version of this branch's TV page (tv/tizen/config.xml).
+          $tvVersion = ([xml](Get-Content tv/tizen/config.xml -Raw)).widget.version
+          $expected = "gametranslator-samsung_$tvVersion.wgt"
           $wgt = @(Get-ChildItem app/tv-app -Filter 'gametranslator-samsung_*.wgt')
-          if ($wgt.Count -ne 1 -or $wgt[0].Name -ne 'gametranslator-samsung_1.1.0.wgt') {
-            Write-Host "::error::expected exactly gametranslator-samsung_1.1.0.wgt in tv-app, found: $($wgt.Name -join ', ')"; exit 1
+          if ($wgt.Count -ne 1 -or $wgt[0].Name -ne $expected) {
+            Write-Host "::error::expected exactly $expected in tv-app, found: $($wgt.Name -join ', ')"; exit 1
           }
           $version = (Get-Item app/GameTranslator.Core.dll).VersionInfo.FileVersion
           Write-Host "GameTranslator.Core.dll version: $version"

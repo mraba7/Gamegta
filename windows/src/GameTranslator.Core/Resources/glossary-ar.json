@@ -1,0 +1,41 @@
+{
+  "_comment": "Arabic edition. Fixed Arabic spellings of names (so the AI translator writes a name the same way in every line) and a short note about each game's tone. 'match': any of these inside the game's title selects the entry (case is ignored). The user can add or override entries in %LOCALAPPDATA%\\GameTranslator\\glossary-ar.json with the same shape.",
+  "games": [
+    {
+      "match": ["Grand Theft Auto VI", "GTA VI", "GTA 6", "Grand Theft Auto 6"],
+      "notes": "Open-world crime story set in a fictional state modelled on Florida. Characters speak casual street slang with sarcasm, threats and insults; keep that tone, short and sharp, and never make the lines formal.",
+      "terms": {
+        "Jason": "جيسون",
+        "Jason Duval": "جيسون دوفال",
+        "Lucia": "لوسيا",
+        "Lucia Caminos": "لوسيا كامينوس",
+        "Cal Hampton": "كال هامبتون",
+        "Boobie Ike": "بوبي آيك",
+        "Dre'Quan Priest": "دري كوان بريست",
+        "Real Dimez": "ريل دايمز",
+        "Raul Bautista": "راؤول باوتيستا",
+        "Brian Heder": "براين هيدر",
+        "Vice City": "فايس سيتي",
+        "Leonida": "ليونيدا",
+        "Leonida Keys": "جزر ليونيدا",
+        "Grassrivers": "غراس ريفرز",
+        "Port Gellhorn": "بورت غيلهورن",
+        "Ambrosia": "أمبروزيا",
+        "Mount Kalaga": "جبل كالاغا"
+      }
+    },
+    {
+      "match": ["Grand Theft Auto V", "GTA V", "GTA 5", "Grand Theft Auto 5"],
+      "notes": "Open-world crime satire set in a fictional California. Characters speak casual street slang with sarcasm, threats and insults; keep that tone, short and sharp, and never make the lines formal.",
+      "terms": {
+        "Michael": "مايكل",
+        "Franklin": "فرانكلين",
+        "Trevor": "تريفور",
+        "Lester": "ليستر",
+        "Lamar": "لامار",
+        "Los Santos": "لوس سانتوس",
+        "Blaine County": "مقاطعة بلين"
+      }
+    }
+  ]
+}

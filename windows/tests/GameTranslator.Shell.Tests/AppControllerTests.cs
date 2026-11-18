@@ -84,6 +84,19 @@ internal sealed class FakeTranslation : ITranslationModel
     }
 }
 
+/// <summary>An AI translator stand-in whose failure state a test can change.</summary>
+internal sealed class FakeOnlineTranslator(ITextTranslator inner) : ITextTranslator, IOnlineTranslator
+{
+    public event Action<OnlineKeyState?>? FailureChanged;
+    public OnlineKeyState? LastError { get; private set; }
+    public Task<string> TranslateAsync(string text, CancellationToken cancellationToken = default) => inner.TranslateAsync(text, cancellationToken);
+    public void Raise(OnlineKeyState? state)
+    {
+        LastError = state;
+        FailureChanged?.Invoke(state);
+    }
+}
+
 internal sealed class FakeReader(Reading? lines = null) : ITextReader
 {
     public string Read(Frame image) => lines?.Text ?? "";
@@ -126,14 +139,23 @@ internal sealed class FakeServices : IAppServices
 
     /// <summary>Every AI translator the controller asked for.</summary>
     public List<(AiProvider Provider, string Key, string ModelId, string Target, ITextTranslator? Fallback)> AiTranslators { get; } = [];
+    /// <summary>The Arabic style each AI translator was asked for, in the same order as <see cref="AiTranslators"/>.</summary>
+    public List<ArabicStyle> AiStyles { get; } = [];
+    /// <summary>The AI translators handed out; a test raises their failure state through these.</summary>
+    public List<FakeOnlineTranslator> MadeAi { get; } = [];
     /// <summary>False: this build has no AI translator (the factory returns null).</summary>
     public bool HasAi { get; set; } = true;
     public OnlineKeyCheck AiKeyCheck { get; set; } = new(OnlineKeyState.Valid);
     public List<(AiProvider Provider, string Key, string ModelId, string Target)> CheckedAiKeys { get; } = [];
-    public ITextTranslator? MakeAiTranslator(AiProvider provider, string key, string modelId, string target, ITextTranslator? fallback)
+    public ITextTranslator? MakeAiTranslator(AiProvider provider, string key, string modelId, string target, ITextTranslator? fallback,
+                                             ArabicStyle style = ArabicStyle.Standard)
     {
         AiTranslators.Add((provider, key, modelId, target, fallback));
-        return HasAi ? fallback ?? Translation.Create("en", target) : null;
+        AiStyles.Add(style);
+        if (!HasAi) return null;
+        var made = new FakeOnlineTranslator(fallback ?? Translation.Create("en", target));
+        MadeAi.Add(made);
+        return made;
     }
     public Task<OnlineKeyCheck> CheckAiKeyAsync(AiProvider provider, string key, string modelId, string target)
     {

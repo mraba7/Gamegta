@@ -161,4 +161,91 @@ public class AiArabicTests
         var json = JsonNode.Parse(request.Content!.ReadAsStringAsync().Result)!;
         Assert.Equal(AiRequest.OutputTokensFor(best), json["max_tokens"]!.GetValue<int>());
     }
+
+    // --- Arabic style, fixed spellings and game notes ---
+
+    [Fact]
+    public void StandardStyleIsThePromptAsBefore() =>
+        Assert.Equal(AiRequest.ArabicSystemPrompt, AiRequest.SystemPromptFor("ar", ArabicStyle.Standard));
+
+    [Theory]
+    [InlineData(ArabicStyle.Colloquial, "colloquial")]
+    [InlineData(ArabicStyle.Saudi, "Saudi")]
+    public void OtherStylesAskForTheirOwnRegister(ArabicStyle style, string word)
+    {
+        var prompt = AiRequest.SystemPromptFor("ar", style);
+        Assert.Contains(word, prompt);
+        Assert.DoesNotContain("Modern Standard Arabic that sounds", prompt);
+        // What the pipeline and the TV rely on stays in every style.
+        Assert.Contains("\"ATREUS:\"", prompt);
+        Assert.Contains("Reply with only the translation", prompt);
+    }
+
+    [Fact]
+    public void StyleDoesNotTouchOtherLanguages() =>
+        Assert.Equal(AiRequest.SystemPrompt, AiRequest.SystemPromptFor("tr", ArabicStyle.Saudi));
+
+    private static readonly ArabicGlossary Names = ArabicGlossary.Parse("""
+        { "games": [ { "match": ["Grand Theft Auto VI"], "notes": "Crime satire; street slang.",
+                       "terms": { "Jason": "جيسون", "Vice City": "فايس سيتي" } } ] }
+        """);
+
+    [Fact]
+    public void GuidanceListsTheSpellingsAndTheGameNotes()
+    {
+        var guidance = AiRequest.Guidance(Names, ["Jason, we leave Vice City tonight."], [], "Grand Theft Auto VI");
+        Assert.NotNull(guidance);
+        Assert.Contains("Jason = جيسون", guidance);
+        Assert.Contains("Vice City = فايس سيتي", guidance);
+        Assert.Contains("Crime satire; street slang.", guidance);
+    }
+
+    /// <summary>A name said two lines ago still needs its spelling when the new line refers back to it.</summary>
+    [Fact]
+    public void GuidanceAlsoLooksAtTheContextLines()
+    {
+        var guidance = AiRequest.Guidance(Names, ["He is late."], [new AiContextLine("Where is Jason?", "أين جيسون؟")], null);
+        Assert.Contains("Jason = جيسون", guidance);
+    }
+
+    [Fact]
+    public void NoGuidanceWhenNothingApplies() =>
+        Assert.Null(AiRequest.Guidance(Names, ["Run!"], [], "Unknown Game"));
+
+    [Fact]
+    public void GuidanceSitsBetweenTheGameLineAndTheSentences()
+    {
+        var message = AiRequest.UserMessage(["Run, Jason!"], [], "Grand Theft Auto VI", "ar", "Use these spellings: Jason = جيسون");
+        var game = message.IndexOf("Game: Grand Theft Auto VI", StringComparison.Ordinal);
+        var guidance = message.IndexOf("Use these spellings: Jason = جيسون", StringComparison.Ordinal);
+        var sentences = message.IndexOf("[\"Run, Jason!\"]", StringComparison.Ordinal);
+        Assert.True(game >= 0 && guidance > game && sentences > guidance, message);
+    }
+
+    [Fact]
+    public async Task TheTranslatorSendsSpellingsAndStyleWithTheLine()
+    {
+        var fake = new FixedReply("[\"اركض يا جيسون!\"]");
+        var translator = new AiTranslator(AiProvider.Claude, "key", model: null, fallback: null, new HttpClient(fake),
+                                          budget: new RequestBudget(1000), game: () => "Grand Theft Auto VI", target: "ar",
+                                          style: ArabicStyle.Saudi, glossary: Names);
+        await translator.TranslateAsync("Run, Jason!");
+        var body = JsonNode.Parse(Assert.Single(fake.Bodies))!;
+        Assert.Equal(AiRequest.SystemPromptFor("ar", ArabicStyle.Saudi), body["system"]!.GetValue<string>());
+        var user = body["messages"]!.AsArray()[^1]!["content"]!.GetValue<string>();
+        Assert.Contains("Jason = جيسون", user);
+        Assert.Contains("Crime satire; street slang.", user);
+    }
+
+    /// <summary>
+    /// A service that did not answer in time is tried again soon (the strongest models are sometimes just slow); a
+    /// refused key or a used-up quota does not fix itself in seconds, so those wait the full minute.
+    /// </summary>
+    [Theory]
+    [InlineData(OnlineKeyState.Unreachable, 15)]
+    [InlineData(OnlineKeyState.Invalid, 60)]
+    [InlineData(OnlineKeyState.QuotaExceeded, 60)]
+    [InlineData(OnlineKeyState.ModelRejected, 60)]
+    public void ThePauseAfterAFailureDependsOnItsKind(OnlineKeyState state, int seconds) =>
+        Assert.Equal(TimeSpan.FromSeconds(seconds), AiTranslator.PauseAfter(state));
 }

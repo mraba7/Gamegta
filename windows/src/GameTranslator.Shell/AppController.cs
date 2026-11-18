@@ -274,7 +274,7 @@ public sealed class AppController : INotifyPropertyChanged, IDisposable
             if (old.Dubbing != value.Dubbing) DubbingSettingsChanged(old.Dubbing);
             if (isRunning && (old.SourceLanguage != value.SourceLanguage || old.TargetLanguage != value.TargetLanguage
                               || old.OnlineTranslation != value.OnlineTranslation || old.Engine != value.Engine
-                              || old.Provider != value.Provider || old.Quality != value.Quality))
+                              || old.Provider != value.Provider || old.Quality != value.Quality || old.Dialect != value.Dialect))
             {
                 RefreshTranslatorStatus();
                 MakePipeline();
@@ -1296,17 +1296,52 @@ public sealed class AppController : INotifyPropertyChanged, IDisposable
                line[..colon].All(c => char.IsLetter(c) || c is ' ' or '-' or '.' or '\'' or '’');
     }
 
+    private IOnlineTranslator? watchedTranslator;
+    private OnlineKeyState? translationTrouble;
+
+    /// <summary>
+    /// Why the AI service is not translating right now (unreachable, key refused, quota used up…); null while it works
+    /// or when no AI service is in use. While it is set, lines are translated by the free fallback.
+    /// </summary>
+    public OnlineKeyState? TranslationTrouble { get => translationTrouble; private set => Set(ref translationTrouble, value); }
+
+    /// <summary>
+    /// Follows the failure state of the translator now in use. The one it replaces is let go first: a late report from
+    /// a translator the user already switched away from must not show as trouble.
+    /// </summary>
+    private ITextTranslator Watched(ITextTranslator translator)
+    {
+        Unwatch();
+        if (translator is IOnlineTranslator online)
+        {
+            watchedTranslator = online;
+            online.FailureChanged += OnTranslatorFailure;
+            TranslationTrouble = online.LastError;
+        }
+        return translator;
+    }
+
+    private void Unwatch()
+    {
+        if (watchedTranslator is not null) watchedTranslator.FailureChanged -= OnTranslatorFailure;
+        watchedTranslator = null;
+        TranslationTrouble = null;
+    }
+
+    private void OnTranslatorFailure(OnlineKeyState? state) => post(() => TranslationTrouble = state);
+
     private ITextTranslator MakeTranslator()
     {
+        Unwatch();
         var local = MakeLocalTranslator();
 
         if (ActiveAiProvider is { } provider && HasAiKey(provider))
         {
             if (StoreKeys.ForAi(provider) is { } slot && store.Load<string>(slot) is { Length: > 0 } key &&
                 services.MakeAiTranslator(provider, key, ModelIdFor(provider), TargetLanguages.Normalize(settings.TargetLanguage),
-                                          local is UnavailableTranslator ? null : local) is { } ai)
+                                          local is UnavailableTranslator ? null : local, settings.Dialect) is { } ai)
             {
-                return ai;
+                return Watched(ai);
             }
         }
         // DeepL is wired for English→Turkish only (its translator and settings screen say so).
@@ -1389,6 +1424,9 @@ public sealed class AppController : INotifyPropertyChanged, IDisposable
         if (!HasAiKey(provider)) return;
         Settings = settings with { Engine = TranslationEngine.Ai, Provider = provider, OnlineTranslation = true };
     }
+
+    /// <summary>The Arabic style of the next lines (the setter rebuilds the pipeline).</summary>
+    public void SetDialect(ArabicStyle style) => Settings = settings with { Dialect = style };
 
     /// <summary>"Best quality" or "Fastest": the next line is translated with that model (the setter rebuilds the pipeline).</summary>
     public void SetQuality(QualityMode mode) => Settings = settings with { Quality = mode };

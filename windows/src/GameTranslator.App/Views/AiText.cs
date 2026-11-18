@@ -40,4 +40,20 @@ internal static class AiText
             : "المودل السريع: يظهر النص أسرع وبتكلفة أقل، والجودة أقل قليلاً.";
         return active is { } provider ? $"{what} المودل المستخدم: {provider.ModelFor(mode).Id}" : what + " اختر خدمة ذكاء اصطناعي من الأسفل ليُطبَّق الوضع.";
     }
+
+    public static string DialectHint(ArabicStyle style) => style switch
+    {
+        ArabicStyle.Colloquial => "عامية بسيطة يفهمها الجميع، أقرب لكلام الناس من الفصحى.",
+        ArabicStyle.Saudi => "لهجة سعودية يومية. تناسب كلام الشوارع والمزح أكثر.",
+        _ => "فصحى سهلة مثل ترجمة الأفلام. الأوضح والأثبت.",
+    } + " كل أسلوب له ذاكرة ترجمة خاصة به. ويعمل مع خدمات الذكاء الاصطناعي فقط.";
+
+    /// <summary>Why the AI service is not translating right now, and what the user can do about it.</summary>
+    public static string Trouble(OnlineKeyState state) => state switch
+    {
+        OnlineKeyState.Invalid => "⚠ الخدمة رفضت المفتاح. الترجمة الآن بالترجمة المجانية (جودة أقل). تأكد من المفتاح في الأسفل.",
+        OnlineKeyState.QuotaExceeded => "⚠ انتهى الرصيد أو الحد المسموح في حسابك عند الخدمة. الترجمة الآن بالترجمة المجانية (جودة أقل).",
+        OnlineKeyState.ModelRejected => "⚠ الخدمة لم تقبل هذا المودل بهذا المفتاح. جرّب وضع «أسرع» أو خدمة أخرى. الترجمة الآن بالترجمة المجانية.",
+        _ => "⚠ خدمة الترجمة لا ترد الآن (أو ردّها تأخر). الترجمة مؤقتاً بالترجمة المجانية (جودة أقل) وتعود تلقائياً عند رجوع الخدمة.",
+    };
 }

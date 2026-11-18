@@ -30,10 +30,28 @@ public sealed class LiveServices : IAppServices
         var result = await AiTranslator.TestAsync(AiProvider.Gemini, key, model: null);
         return new OnlineKeyCheck(result.State);
     }
-    public ITextTranslator? MakeAiTranslator(AiProvider provider, string key, string modelId, string target, ITextTranslator? fallback) =>
+    public ITextTranslator? MakeAiTranslator(AiProvider provider, string key, string modelId, string target, ITextTranslator? fallback,
+                                             ArabicStyle style = ArabicStyle.Standard) =>
         new AiTranslator(provider, key, modelId, fallback,
-                         cache: TranslationCache.Shared(Path.Combine(AppPaths.Data, "cache"), provider.EngineId(modelId), "en", TargetLanguages.Normalize(target)),
-                         game: () => CommunityPatchManager.Shared.PlayedGameTitle, target: target);
+                         // One memory per service, model, target and style: a line remembered in one style is not served in another.
+                         cache: TranslationCache.Shared(Path.Combine(AppPaths.Data, "cache"),
+                                                        provider.EngineId(modelId) + (style == ArabicStyle.Standard ? "" : "-" + style.ToString().ToLowerInvariant()),
+                                                        "en", TargetLanguages.Normalize(target)),
+                         game: () => CommunityPatchManager.Shared.PlayedGameTitle, target: target, style: style, glossary: Glossary.Value);
+
+    /// <summary>The built-in name spellings and game notes, with the user's own file (if any) laid over them.</summary>
+    private static readonly Lazy<ArabicGlossary> Glossary = new(() =>
+    {
+        try
+        {
+            var file = Path.Combine(AppPaths.Data, "glossary-ar.json");
+            return File.Exists(file) ? ArabicGlossary.BuiltIn.With(File.ReadAllText(file)) : ArabicGlossary.BuiltIn;
+        }
+        catch (Exception error) when (error is IOException or UnauthorizedAccessException)
+        {
+            return ArabicGlossary.BuiltIn;
+        }
+    });
 
     public async Task<OnlineKeyCheck> CheckAiKeyAsync(AiProvider provider, string key, string modelId, string target)
     {

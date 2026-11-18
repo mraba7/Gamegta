@@ -26,11 +26,22 @@ html, body {
   font-display: block;
   src: url("fonts/NotoSansArabic-Bold.woff2") format("woff2"), url("fonts/NotoSansArabic-Bold.woff") format("woff");
 }
+/* The subtitle's normal weight is 600: without a face at 600 the browser would pick Bold for it too, and the
+   "Bold" setting would change nothing for Arabic. Regular serves 600, Bold serves 700. */
+@font-face {
+  font-family: "Noto Sans Arabic";
+  font-weight: 600;
+  font-style: normal;
+  font-display: block;
+  src: url("fonts/NotoSansArabic-Regular.woff2") format("woff2"), url("fonts/NotoSansArabic-Regular.woff") format("woff");
+}
 [dir="rtl"] {
   font-family: "Noto Sans Arabic", "LG Smart UI", "Museo Sans", Arial, sans-serif;
   /* Arabic letters carry marks above and below the line: a little more room than Latin text. */
   line-height: 1.5;
 }
+/* The subtitle lines set their own line height by id; the Arabic one must win over those rules. */
+#subtitle-text[dir="rtl"], #subtitle-prev-text[dir="rtl"] { line-height: 1.5; }
 #screen .item[dir="rtl"] { line-height: 1.35; }
 #screen .item.paragraphs[dir="rtl"] { text-align: right; }
 .speaker { unicode-bidi: -webkit-isolate; unicode-bidi: isolate; }

@@ -209,6 +209,8 @@ public partial class MainView : UserControl
             Refresh();
         }
 
+        if (e.PropertyName == nameof(AppController.TranslationTrouble)) UpdateTroubleBanner();
+
         if (e.PropertyName == nameof(AppController.LastFrame))
         {
             if (controller.LastFrame != null)
@@ -1125,6 +1127,24 @@ public partial class MainView : UserControl
     private void OnCardOpenAiClick(object sender, MouseButtonEventArgs e) => SelectAiCard(AiProvider.OpenAi, OpenAiKeyInput, e);
     private void OnCardClaudeClick(object sender, MouseButtonEventArgs e) => SelectAiCard(AiProvider.Claude, ClaudeKeyInput, e);
 
+    private void OnDialectSelected(object sender, RoutedEventArgs e)
+    {
+        if (loading) return;
+        controller.SetDialect(RadioDialectSaudi?.IsChecked == true ? ArabicStyle.Saudi
+                              : RadioDialectColloquial?.IsChecked == true ? ArabicStyle.Colloquial
+                              : ArabicStyle.Standard);
+        UpdateModelSelectionUi();
+    }
+
+    /// <summary>Says why the AI service is not translating right now; hidden while it works.</summary>
+    private void UpdateTroubleBanner()
+    {
+        if (TroubleBanner == null || TroubleText == null) return;
+        var trouble = controller.TranslationTrouble;
+        TroubleBanner.Visibility = trouble is null || controller.UsesTurkish ? Visibility.Collapsed : Visibility.Visible;
+        if (trouble is { } state) TroubleText.Text = AiText.Trouble(state);
+    }
+
     private void OnQualitySelected(object sender, RoutedEventArgs e)
     {
         if (loading) return;
@@ -1155,10 +1175,21 @@ public partial class MainView : UserControl
         RadioQualityFastest.IsChecked = quality == QualityMode.Fastest;
         QualityHint.Text = AiText.QualityHint(active, quality);
 
+        var dialect = controller.Settings.Dialect;
+        RadioDialectStandard.IsChecked = dialect == ArabicStyle.Standard;
+        RadioDialectColloquial.IsChecked = dialect == ArabicStyle.Colloquial;
+        RadioDialectSaudi.IsChecked = dialect == ArabicStyle.Saudi;
+        DialectHint.Text = AiText.DialectHint(dialect);
+        UpdateTroubleBanner();
+
         // What exists for Turkish only is hidden for any other target language, and the shared cards say what they do there.
         var turkish = controller.UsesTurkish;
         BorderOpenAi.Visibility = BorderClaude.Visibility = BorderQuality.Visibility = turkish ? Visibility.Collapsed : Visibility.Visible;
         if (BorderDeepL != null) BorderDeepL.Visibility = turkish ? Visibility.Visible : Visibility.Collapsed;
+        // Turkish packs, Turkish dubbing and the line pool do nothing with another target: they are not shown.
+        if (BorderPacks != null) BorderPacks.Visibility = turkish ? Visibility.Visible : Visibility.Collapsed;
+        if (DubbingCheck != null) DubbingCheck.Visibility = turkish ? Visibility.Visible : Visibility.Collapsed;
+        if (SharePoolCheck != null) SharePoolCheck.Visibility = turkish ? Visibility.Visible : Visibility.Collapsed;
         if (!turkish)
         {
             if (LocalModelDescription != null)

@@ -16,6 +16,8 @@
     <EmbeddedResource Include="Resources\packs\*.json.gz" LogicalName="packs/%(Filename)%(Extension)" />
     <!-- Ücretsiz çevirinin terim sözlüğü (adlar ve oyun terimleri korunur); CouchSubs'ta gömülüydü, taşınırken düşmüştü. -->
     <EmbeddedResource Include="Resources\glossary-en-tr.json" LogicalName="glossary-en-tr.json" />
+    <!-- Arabic edition: fixed Arabic spellings of names and per-game notes for the AI translator. -->
+    <EmbeddedResource Include="Resources\glossary-ar.json" LogicalName="glossary-ar.json" />
   </ItemGroup>
 
   <ItemGroup>
