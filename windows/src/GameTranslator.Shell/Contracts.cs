@@ -80,6 +80,22 @@ public sealed record UserSettings
     public ResultTarget FreeAreaTarget { get; init; } = ResultTarget.Tv;
     public SubtitleStyle Style { get; init; } = new();
     public string SourceLanguage { get; init; } = "en";
+    /// <summary>The mark this edition writes into the settings file (see <see cref="Edition"/>).</summary>
+    public const string ArabicEdition = "ar";
+    /// <summary>
+    /// Which edition last saved these settings. The original app keeps its settings in the same file and always writes
+    /// a Turkish target into it; settings without this edition's mark are moved to Arabic once
+    /// (<see cref="ForArabicEdition"/>). null: saved by the original app, or never saved.
+    /// </summary>
+    public string? Edition { get; init; }
+
+    /// <summary>
+    /// These settings as this edition uses them: unmarked settings (the original app's, or a fresh install) get the
+    /// Arabic target and the mark; settings already marked are returned unchanged, whatever their target.
+    /// </summary>
+    public UserSettings ForArabicEdition() =>
+        Edition == ArabicEdition ? this : this with { TargetLanguage = TargetLanguages.Arabic, Edition = ArabicEdition };
+
     /// <summary>The language subtitles are translated into; this fork's default is Arabic.</summary>
     public string TargetLanguage { get; init; } = TargetLanguages.Default;
     /// <summary>The AI service used when <see cref="Engine"/> is <see cref="TranslationEngine.Ai"/> (or the older Gemini value).</summary>
@@ -239,8 +255,8 @@ public interface IAppServices
     /// service could not. Null when this build has none.
     /// </summary>
     ITextTranslator? MakeAiTranslator(AiProvider provider, string key, string modelId, string target, ITextTranslator? fallback) => null;
-    /// <summary>Tries the key with one sample line in the target language.</summary>
-    Task<OnlineKeyCheck> CheckAiKeyAsync(AiProvider provider, string key, string target) =>
+    /// <summary>Tries the key with one sample line in the target language, on the model that will translate.</summary>
+    Task<OnlineKeyCheck> CheckAiKeyAsync(AiProvider provider, string key, string modelId, string target) =>
         Task.FromResult(new OnlineKeyCheck(OnlineKeyState.Unreachable));
     Task<OnlineKeyCheck> CheckGeminiKeyAsync(string key) => Task.FromResult(new OnlineKeyCheck(OnlineKeyState.Unreachable));
     /// <summary>Türkçe dublaj modeli; bu derlemede yoksa null.</summary>

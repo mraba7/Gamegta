@@ -129,15 +129,15 @@ internal sealed class FakeServices : IAppServices
     /// <summary>False: this build has no AI translator (the factory returns null).</summary>
     public bool HasAi { get; set; } = true;
     public OnlineKeyCheck AiKeyCheck { get; set; } = new(OnlineKeyState.Valid);
-    public List<(AiProvider Provider, string Key, string Target)> CheckedAiKeys { get; } = [];
+    public List<(AiProvider Provider, string Key, string ModelId, string Target)> CheckedAiKeys { get; } = [];
     public ITextTranslator? MakeAiTranslator(AiProvider provider, string key, string modelId, string target, ITextTranslator? fallback)
     {
         AiTranslators.Add((provider, key, modelId, target, fallback));
         return HasAi ? fallback ?? Translation.Create("en", target) : null;
     }
-    public Task<OnlineKeyCheck> CheckAiKeyAsync(AiProvider provider, string key, string target)
+    public Task<OnlineKeyCheck> CheckAiKeyAsync(AiProvider provider, string key, string modelId, string target)
     {
-        CheckedAiKeys.Add((provider, key, target));
+        CheckedAiKeys.Add((provider, key, modelId, target));
         return Task.FromResult(AiKeyCheck);
     }
     public LinePool? Pool { get; set; }
@@ -503,7 +503,7 @@ public class AppControllerRunTests
         var services = new FakeServices { Dubbing = new FakeDubbingModel(installed: false), FastDubbing = new FakeDubbingModel(installed: true) };
         var (controller, _, _) = Ready(services);
         // The voices are Turkish: dubbing exists only with a Turkish target (the Arabic edition's default target is Arabic).
-        controller.Settings = controller.Settings with { TargetLanguage = "tr" };
+        controller.Settings = controller.Settings with { TargetLanguage = "tr", Edition = UserSettings.ArabicEdition };
         Assert.True(controller.DubbingAvailable);
         Assert.False(controller.DubbingInstalled);
         controller.Settings = controller.Settings with { Dubbing = controller.Settings.Dubbing with { Engine = DubbingEngine.Fast } };

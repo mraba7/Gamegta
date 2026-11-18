@@ -29,7 +29,8 @@ public class ArabicEngineTests
         var (controller, services, _) = Ready();
         var check = await controller.SetAiKeyAsync(AiProvider.Claude, "  sk-claude  ");
         Assert.Equal(OnlineKeyState.Valid, check.State);
-        Assert.Equal((AiProvider.Claude, "sk-claude", "ar"), Assert.Single(services.CheckedAiKeys));
+        // The key is tried with the model that will translate (default mode: Best), not with another one.
+        Assert.Equal((AiProvider.Claude, "sk-claude", AiProvider.Claude.ModelFor(QualityMode.Best).Id, "ar"), Assert.Single(services.CheckedAiKeys));
         Assert.True(controller.HasAiKey(AiProvider.Claude));
         Assert.False(controller.HasAiKey(AiProvider.OpenAi));
         Assert.Equal(TranslationEngine.Ai, controller.Settings.Engine);
@@ -91,11 +92,61 @@ public class ArabicEngineTests
     [Fact]
     public async Task OlderGeminiSettingStillUsesGemini()
     {
-        var (controller, services, store) = Ready(new UserSettings { Engine = TranslationEngine.Gemini, TargetLanguage = "tr" });
+        var (controller, services, store) = Ready(new UserSettings { Engine = TranslationEngine.Gemini, TargetLanguage = "tr", Edition = UserSettings.ArabicEdition });
         store.Save(StoreKeys.GeminiKey, "g-key");
         await controller.StartAsync();
         var made = Assert.Single(services.AiTranslators);
         Assert.Equal((AiProvider.Gemini, "g-key", "tr"), (made.Provider, made.Key, made.Target));
+        // Turkish keeps the model the original app used (fast, free tier): the quality switch is an Arabic-edition control.
+        Assert.Equal(AiProvider.Gemini.ModelFor(QualityMode.Fastest).Id, made.ModelId);
+        controller.Dispose();
+    }
+
+    /// <summary>
+    /// The original app shares this app's settings file and always wrote "tr" into it. Settings that do not carry this
+    /// edition's mark are moved to Arabic once; nothing Turkish-only (packs, the line pool) stays on.
+    /// </summary>
+    [Fact]
+    public void SettingsLeftByTheOriginalAppAreMovedToArabic()
+    {
+        var file = Path.Combine(Path.GetTempPath(), "gt-pool-" + Guid.NewGuid().ToString("N") + ".json");
+        try
+        {
+            using var pool = new LinePool(file, "test");
+            var services = new FakeServices { Pool = pool };
+            var settings = new MemorySettings();
+            settings.Save(new UserSettings { TargetLanguage = "tr", SharePool = true, Engine = TranslationEngine.DeepL });
+            var store = new MemoryStore();
+            var controller = AppControllerTests.Make(services, store, settings);
+            Assert.Equal("ar", controller.Settings.TargetLanguage);
+            Assert.Equal(UserSettings.ArabicEdition, controller.Settings.Edition);
+            Assert.False(controller.UsesTurkish);
+            Assert.False(pool.IsEnabled);
+            // The move is written back, so it happens once.
+            Assert.Equal("ar", settings.Saved!.TargetLanguage);
+            Assert.Equal(UserSettings.ArabicEdition, settings.Saved.Edition);
+            controller.Dispose();
+        }
+        finally
+        {
+            File.Delete(file);
+        }
+    }
+
+    [Fact]
+    public void ATurkishTargetSetInThisEditionIsKept()
+    {
+        var (controller, _, _) = Ready(new UserSettings { TargetLanguage = "tr", Edition = UserSettings.ArabicEdition });
+        Assert.Equal("tr", controller.Settings.TargetLanguage);
+        controller.Dispose();
+    }
+
+    [Fact]
+    public void AFreshInstallCarriesTheEditionMark()
+    {
+        var (controller, _, _) = Ready();
+        Assert.Equal(UserSettings.ArabicEdition, controller.Settings.Edition);
+        Assert.Equal("ar", controller.Settings.TargetLanguage);
         controller.Dispose();
     }
 
@@ -127,7 +178,7 @@ public class ArabicEngineTests
     [Fact]
     public async Task DeepLIsStillUsedForTurkish()
     {
-        var (controller, services, store) = Ready(new UserSettings { Engine = TranslationEngine.DeepL, OnlineTranslation = true, TargetLanguage = "tr" });
+        var (controller, services, store) = Ready(new UserSettings { Engine = TranslationEngine.DeepL, OnlineTranslation = true, TargetLanguage = "tr", Edition = UserSettings.ArabicEdition });
         store.Save(StoreKeys.DeepLKey, "key:fx");
         await controller.StartAsync();
         Assert.Equal("key:fx", Assert.Single(services.OnlineTranslators).Key);
@@ -145,7 +196,7 @@ public class ArabicEngineTests
         {
             using var pool = new LinePool(file, "test");
             var services = new FakeServices { Pool = pool };
-            var (controller, _, _) = Ready(new UserSettings { TargetLanguage = target, SharePool = true }, services);
+            var (controller, _, _) = Ready(new UserSettings { TargetLanguage = target, SharePool = true, Edition = UserSettings.ArabicEdition }, services);
             Assert.Equal(expected, pool.IsEnabled);
             Assert.Equal(expected, AppController.UsesTurkishFeatures(controller.Settings));
             controller.Dispose();
@@ -181,7 +232,7 @@ public class ArabicEngineTests
     [InlineData("tr", true)]
     public void UsesTurkishFollowsTheTargetLanguage(string target, bool expected)
     {
-        var (controller, _, _) = Ready(new UserSettings { TargetLanguage = target });
+        var (controller, _, _) = Ready(new UserSettings { TargetLanguage = target, Edition = UserSettings.ArabicEdition });
         Assert.Equal(expected, controller.UsesTurkish);
         controller.Dispose();
     }
@@ -203,7 +254,7 @@ public class ArabicEngineTests
     [Fact]
     public void TestSubtitleStaysAsBeforeForTurkish()
     {
-        var (controller, _, _) = Ready(new UserSettings { TargetLanguage = "tr" });
+        var (controller, _, _) = Ready(new UserSettings { TargetLanguage = "tr", Edition = UserSettings.ArabicEdition });
         string? shown = null;
         controller.LiveSubtitleShown += (text, _, _) => shown = text;
         controller.SendTestSubtitle();
@@ -218,7 +269,7 @@ public class ArabicEngineTests
     public void DubbingIsOnlyAvailableForTurkish(string target, bool expected)
     {
         var services = new FakeServices { Dubbing = new FakeDubbingModel(installed: true) };
-        var (controller, _, _) = Ready(new UserSettings { TargetLanguage = target }, services);
+        var (controller, _, _) = Ready(new UserSettings { TargetLanguage = target, Edition = UserSettings.ArabicEdition }, services);
         Assert.Equal(expected, controller.DubbingInstalled);
         controller.Dispose();
     }

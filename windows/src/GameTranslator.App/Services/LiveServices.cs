@@ -35,17 +35,21 @@ public sealed class LiveServices : IAppServices
                          cache: TranslationCache.Shared(Path.Combine(AppPaths.Data, "cache"), provider.EngineId(modelId), "en", TargetLanguages.Normalize(target)),
                          game: () => CommunityPatchManager.Shared.PlayedGameTitle, target: target);
 
-    public async Task<OnlineKeyCheck> CheckAiKeyAsync(AiProvider provider, string key, string target)
+    public async Task<OnlineKeyCheck> CheckAiKeyAsync(AiProvider provider, string key, string modelId, string target)
     {
-        // The key is tried with the fast model: a key that works there works for the service's other models.
-        var result = await AiTranslator.TestAsync(provider, key, model: null, target: target);
+        // The key is tried on the model that will translate: a key can work on the fast model and be refused by the
+        // strongest one (no credit, free tier), and the user must learn that here, not from bad subtitles later.
+        var result = await AiTranslator.TestAsync(provider, key, modelId, target: target);
         return new OnlineKeyCheck(result.State);
     }
 
     public IDubbingModel? Dubbing { get; } = PocketDubbingModel.EngineBundled ? new PocketDubbingModel() : null;
     public IDubbingModel? FastDubbing { get; } = WindowsVoiceModel.Available ? new WindowsVoiceModel() : null;
     public IAudioOutput? Audio { get; } = new WindowsAudioOutput();
-    public IUpdater? Updater { get; } = new Updater();
+    // Arabic edition: no self-update. New builds are published on the fork's Releases page and installed by hand;
+    // an automatic update could bring in a build that is not the Arabic one (the fork also carries the original
+    // project's release-mirroring workflow).
+    public IUpdater? Updater { get; } = null;
     public IFirewall? Firewall { get; } = new WindowsFirewall();
     public string? HistoryFile { get; } = Path.Combine(AppPaths.Data, "history.json");
     public LinePool? Pool { get; } = new(Path.Combine(AppPaths.Data, "pool.json"),

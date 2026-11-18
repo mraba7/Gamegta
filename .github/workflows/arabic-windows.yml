@@ -14,10 +14,15 @@ on:
 permissions:
   contents: write
 
+# One build at a time: two pushes in a row must not publish over each other.
+concurrency:
+  group: arabic-windows
+  cancel-in-progress: false
+
 env:
   UPSTREAM_REPO: D3ATHLY/GameTranslator
   UPSTREAM_TAG: v1.8.0
-  RELEASE_TAG: v1.8.1
+  APP_VERSION: 1.8.1
   ZIP_NAME: GameTranslator-Arabic-windows-x64.zip
 
 jobs:
@@ -33,11 +38,17 @@ jobs:
       - name: Unit tests of the Arabic changes
         shell: pwsh
         run: |
+          # Each command is checked: in PowerShell only the last exit code would decide the step otherwise.
           dotnet test windows/tests/GameTranslator.Translation.Tests -v q
-          dotnet test windows/tests/GameTranslator.Core.Tests --filter "TargetLanguagesTests|AiQualityModeTests" -v q
+          if ($LASTEXITCODE -ne 0) { exit 1 }
+          dotnet test windows/tests/GameTranslator.Core.Tests --filter "TargetLanguagesTests|AiQualityModeTests|LocalizerTests" -v q
+          if ($LASTEXITCODE -ne 0) { exit 1 }
           dotnet test windows/tests/GameTranslator.Shell.Tests --filter "ArabicEngineTests|ArabicSettingsTests" -v q
+          if ($LASTEXITCODE -ne 0) { exit 1 }
           dotnet test windows/tests/GameTranslator.TvInstall.Tests --filter VersionsTests -v q
+          if ($LASTEXITCODE -ne 0) { exit 1 }
           node tv/tests/direction.test.js
+          if ($LASTEXITCODE -ne 0) { exit 1 }
 
       - name: Download the upstream release
         shell: pwsh
@@ -47,7 +58,10 @@ jobs:
           New-Item -ItemType Directory -Force upstream | Out-Null
           gh release view $env:UPSTREAM_TAG -R $env:UPSTREAM_REPO --json assets --jq '.assets[] | "\(.name)  \(.size)"'
           gh release download $env:UPSTREAM_TAG -R $env:UPSTREAM_REPO -D upstream
+          if ($LASTEXITCODE -ne 0) { exit 1 }
           Get-ChildItem upstream | Format-Table Name, Length
+          # The installer's SHA-256 is printed so it can be pinned: the native library taken from it runs on the user's PC.
+          Get-FileHash upstream/GameTranslator-win-Setup.exe -Algorithm SHA256 | Format-List Hash, Path
 
       - name: Find the upstream app folder
         shell: pwsh
@@ -106,6 +120,7 @@ jobs:
           $ErrorActionPreference = 'Stop'
           # The Samsung TV package is rebuilt from this branch's TV page, so the app never ships a stale one.
           bash scripts/package-tizen.sh
+          if ($LASTEXITCODE -ne 0) { exit 1 }
           New-Item -ItemType Directory -Force windows/native/bin | Out-Null
           Copy-Item (Join-Path $env:UPSTREAM_APP 'gametranslator_native.dll') windows/native/bin/ -Force
           dotnet publish windows/src/GameTranslator.App/GameTranslator.App.csproj -c Release -r win-x64 --self-contained -o published
@@ -131,7 +146,7 @@ jobs:
           }
           $version = (Get-Item app/GameTranslator.Core.dll).VersionInfo.FileVersion
           Write-Host "GameTranslator.Core.dll version: $version"
-          if (-not $version.StartsWith('1.8.1')) { Write-Host "::error::the Core dll is not this branch's build ($version)"; exit 1 }
+          if (-not $version.StartsWith($env:APP_VERSION)) { Write-Host "::error::the Core dll is not this branch's build ($version)"; exit 1 }
           Compress-Archive -Path app/* -DestinationPath $env:ZIP_NAME -Force
           Get-Item $env:ZIP_NAME | Format-Table Name, Length
 
@@ -145,11 +160,8 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          $notes = "Arabic edition of GameTranslator (based on upstream $env:UPSTREAM_TAG). Setup guide: docs/arabic-setup.md. Built from commit $env:GITHUB_SHA. Not yet tested on a real PS5 and TV."
-          gh release view $env:RELEASE_TAG -R $env:GITHUB_REPOSITORY 2>$null
-          if ($LASTEXITCODE -eq 0) {
-            gh release upload $env:RELEASE_TAG $env:ZIP_NAME -R $env:GITHUB_REPOSITORY --clobber
-          } else {
-            $global:LASTEXITCODE = 0
-            gh release create $env:RELEASE_TAG $env:ZIP_NAME -R $env:GITHUB_REPOSITORY --target $env:GITHUB_SHA --title "GameTranslator Arabic $env:RELEASE_TAG" --notes $notes
-          }
+          # One release per build: the tag, the notes and the zip always belong to the same commit.
+          $tag = "v$env:APP_VERSION-b$env:GITHUB_RUN_NUMBER"
+          $notes = "Arabic edition of GameTranslator (based on upstream $env:UPSTREAM_TAG). Setup guide: README-arabic.md inside the zip. Built from commit $env:GITHUB_SHA. Not yet tested on a real PS5 and TV."
+          gh release create $tag $env:ZIP_NAME -R $env:GITHUB_REPOSITORY --target $env:GITHUB_SHA --title "GameTranslator Arabic $tag" --notes $notes --latest
+          if ($LASTEXITCODE -ne 0) { exit 1 }

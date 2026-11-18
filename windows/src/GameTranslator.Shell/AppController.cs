@@ -91,6 +91,12 @@ public sealed class AppController : INotifyPropertyChanged, IDisposable
         console = store.Load<RegisteredConsole>(StoreKeys.Console);
         tv = store.Load<LgTv>(StoreKeys.Tv);
         settings = settingsStore.Load();
+        // Settings left by the original app (same file, Turkish target) are moved to this edition once and written back.
+        if (settings.ForArabicEdition() is var moved && !ReferenceEquals(moved, settings))
+        {
+            settings = moved;
+            settingsStore.Save(moved);
+        }
         history = services.HistoryFile is { } historyFile ? SubtitleHistory.Load(historyFile) : new SubtitleHistory();
         var ready = accountId is not null && console is not null && tv is not null && store.Load<string>(StoreKeys.TvKey) is not null;
         step = OnboardingStep.Done;
@@ -1152,6 +1158,10 @@ public sealed class AppController : INotifyPropertyChanged, IDisposable
         // Paket yalnız oynanan oyunun paketiyse kullanılır (başka oyunun genel satırları yanlış çeviri basıyordu).
         var packGate = new PackGate();
         // Packs hold Turkish lines: they are looked up (and their misses offered to the pool) only for Turkish.
+        // Without packs the pipeline must still hold and compare readings (a half-read or misread line waits for a
+        // better reading, a re-read of the line just shown is not sent again): the original app got this as a side
+        // effect of always having a pack lookup.
+        built.HoldWithoutPacks = true;
         if (UsesTurkishFeatures(settings))
         {
             built.PackMissed += OfferToPool;
@@ -1293,7 +1303,7 @@ public sealed class AppController : INotifyPropertyChanged, IDisposable
         if (ActiveAiProvider is { } provider && HasAiKey(provider))
         {
             if (StoreKeys.ForAi(provider) is { } slot && store.Load<string>(slot) is { Length: > 0 } key &&
-                services.MakeAiTranslator(provider, key, provider.ModelFor(settings.Quality).Id, TargetLanguages.Normalize(settings.TargetLanguage),
+                services.MakeAiTranslator(provider, key, ModelIdFor(provider), TargetLanguages.Normalize(settings.TargetLanguage),
                                           local is UnavailableTranslator ? null : local) is { } ai)
             {
                 return ai;
@@ -1330,6 +1340,13 @@ public sealed class AppController : INotifyPropertyChanged, IDisposable
         _ => null,
     };
 
+    /// <summary>
+    /// The model that translates with this service. The quality switch belongs to the Arabic edition's screens; a
+    /// Turkish target keeps the fast model the original app used (free tier, with its per-minute budget).
+    /// </summary>
+    private string ModelIdFor(AiProvider provider) =>
+        provider.ModelFor(UsesTurkishFeatures(settings) ? QualityMode.Fastest : settings.Quality).Id;
+
     /// <summary>Is a key saved for this AI service (the key itself never goes back to the UI).</summary>
     public bool HasAiKey(AiProvider provider) =>
         StoreKeys.ForAi(provider) is { } slot && store.Load<string>(slot) is { Length: > 0 };
@@ -1342,7 +1359,7 @@ public sealed class AppController : INotifyPropertyChanged, IDisposable
     {
         key = key.Trim();
         if (StoreKeys.ForAi(provider) is not { } slot) return new OnlineKeyCheck(OnlineKeyState.Invalid);
-        var check = await services.CheckAiKeyAsync(provider, key, TargetLanguages.Normalize(settings.TargetLanguage));
+        var check = await services.CheckAiKeyAsync(provider, key, ModelIdFor(provider), TargetLanguages.Normalize(settings.TargetLanguage));
         if (check.State is OnlineKeyState.Valid or OnlineKeyState.QuotaExceeded)
         {
             store.Save(slot, key);

@@ -60,6 +60,20 @@ public static class AiRequest
                "Reply with only the translation, no explanations, notes or quotes.";
     }
 
+    /// <summary>The output limit sent with a model: its own (models that always think need room) or the usual one.</summary>
+    public static int OutputTokensFor(AiModel model) => Math.Max(model.MaxOutputTokens ?? MaxOutputTokens, MaxOutputTokens);
+
+    /// <summary>
+    /// Did the service stop because the output limit was reached (Claude "max_tokens", OpenAI "length", Gemini
+    /// "MAX_TOKENS")? Such a reply is a piece of a translation, not a translation: it must not be shown or remembered.
+    /// </summary>
+    private static bool CutOff(AiProvider provider, JsonNode? root) => provider switch
+    {
+        AiProvider.Gemini => root?["candidates"]?.AsArray().FirstOrDefault()?["finishReason"]?.GetValue<string>() == "MAX_TOKENS",
+        AiProvider.OpenAi or AiProvider.Local => root?["choices"]?.AsArray().FirstOrDefault()?["finish_reason"]?.GetValue<string>() == "length",
+        _ => root?["stop_reason"]?.GetValue<string>() == "max_tokens",
+    };
+
     private static readonly JsonSerializerOptions Compact = new() { Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping };
 
     /// <summary>Kullanıcı iletisi: önceki satırlar (yalnız bağlam) ve çevrilecek cümleler.</summary>
@@ -91,9 +105,10 @@ public static class AiRequest
     /// <summary>Hizmete giden HTTP isteği. <paramref name="server"/>: yerel modelin sunucusu (verilmezse Ollama'nın varsayılan adresi).</summary>
     public static HttpRequestMessage Build(AiProvider provider, string key, AiModel model, IReadOnlyList<string> sentences,
                                            IReadOnlyList<AiContextLine> context, string? game = null, LocalAiServer? server = null,
-                                           int maxOutputTokens = MaxOutputTokens, string target = TargetLanguages.Turkish)
+                                           int? maxOutputTokens = null, string target = TargetLanguages.Turkish)
     {
         key = key.Trim();
+        var outputTokens = maxOutputTokens ?? OutputTokensFor(model);
         var user = UserMessage(sentences, context, game, target);
         var system = SystemPromptFor(target);
         HttpRequestMessage request;
@@ -115,7 +130,7 @@ public static class AiRequest
                         ["role"] = "user",
                         ["parts"] = new JsonArray(new JsonObject { ["text"] = user }),
                     }),
-                    ["generationConfig"] = new JsonObject { ["maxOutputTokens"] = maxOutputTokens },
+                    ["generationConfig"] = new JsonObject { ["maxOutputTokens"] = outputTokens },
                 };
                 if (model.Thinking is { } level) body["generationConfig"]!["thinkingConfig"] = new JsonObject { ["thinkingLevel"] = level };
                 break;
@@ -130,7 +145,7 @@ public static class AiRequest
                     ["messages"] = new JsonArray(
                         new JsonObject { ["role"] = "developer", ["content"] = system },
                         new JsonObject { ["role"] = "user", ["content"] = user }),
-                    ["max_completion_tokens"] = maxOutputTokens,
+                    ["max_completion_tokens"] = outputTokens,
                 };
                 if (model.Effort is { } effort) body["reasoning_effort"] = effort;
                 break;
@@ -148,7 +163,7 @@ public static class AiRequest
                         new JsonObject { ["role"] = "system", ["content"] = system },
                         new JsonObject { ["role"] = "user", ["content"] = user }),
                     ["temperature"] = LocalTemperature,
-                    ["max_tokens"] = maxOutputTokens,
+                    ["max_tokens"] = outputTokens,
                     ["stream"] = false,
                 };
                 break;
@@ -162,7 +177,7 @@ public static class AiRequest
                 body = new JsonObject
                 {
                     ["model"] = model.Id,
-                    ["max_tokens"] = maxOutputTokens,
+                    ["max_tokens"] = outputTokens,
                     ["system"] = system,
                     ["messages"] = new JsonArray(new JsonObject { ["role"] = "user", ["content"] = user }),
                 };
@@ -183,6 +198,7 @@ public static class AiRequest
         string? text = null;
         try
         {
+            if (CutOff(provider, root)) throw new AiException(OnlineKeyState.Unreachable);
             switch (provider)
             {
                 case AiProvider.Gemini:
@@ -399,6 +415,13 @@ public sealed class AiTranslator : ITextTranslator, IOnlineTranslator
     /// <summary>Hizmete uygun zaman aşımıyla paylaşılan istemci.</summary>
     public static HttpClient ClientFor(AiProvider provider) => provider.IsLocal() ? LocalClient.Value : SharedClient.Value;
 
+    /// <summary>Longest wait for the strongest models: they think before answering and often need more than the usual wait.</summary>
+    public static readonly TimeSpan SlowModelTimeout = TimeSpan.FromSeconds(20);
+    private static readonly Lazy<HttpClient> SlowClient = new(() => new HttpClient { Timeout = SlowModelTimeout });
+
+    /// <summary>How long a line's request may take with this model before the fallback translates it.</summary>
+    public static TimeSpan TimeoutFor(AiModel model) => model.MaxOutputTokens is > AiRequest.MaxOutputTokens ? SlowModelTimeout : Timeout;
+
     /// <summary>"Ekranı çevir"de bulut hizmetinde beklenen en uzun süre: bütün ekranın çevirisi tek yanıtta gelir.</summary>
     public static readonly TimeSpan ScreenTimeout = TimeSpan.FromSeconds(30);
     /// <summary>Bir istekte giden en çok parça; kalabalık ekran birkaç isteğe bölünür.</summary>
@@ -442,7 +465,7 @@ public sealed class AiTranslator : ITextTranslator, IOnlineTranslator
         Server = provider.IsLocal() ? server ?? LocalAiServer.Create(LocalAiServer.OllamaUrl, Model.Id) : null;
         _key = key.Trim();
         _fallback = fallback;
-        _http = http ?? ClientFor(provider);
+        _http = http ?? (!provider.IsLocal() && TimeoutFor(Model) > Timeout ? SlowClient.Value : ClientFor(provider));
         _screenHttp = http ?? (provider.IsLocal() ? LocalTestClient.Value : ScreenClient.Value);
         _cache = cache ?? new TranslationCache();
         _budget = budget ?? RequestBudget.Shared(provider, Model);
