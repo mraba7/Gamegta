@@ -102,6 +102,13 @@ public sealed record UserSettings
     public AiProvider Provider { get; init; } = AiProvider.Gemini;
     /// <summary>Strongest model of the service, or its fast one.</summary>
     public QualityMode Quality { get; init; } = QualityMode.Best;
+    /// <summary>
+    /// In Best quality: when the strongest model has not answered a line within <see cref="SlowLinePatience"/>, the
+    /// fast model is asked too and whichever answers first is shown.
+    /// </summary>
+    public bool FastWhenSlow { get; init; } = true;
+    /// <summary>How long a line waits for the strongest model before the fast one is asked as well.</summary>
+    public static readonly TimeSpan SlowLinePatience = TimeSpan.FromSeconds(2);
     /// <summary>How the Arabic translation should sound (standard, colloquial, Saudi).</summary>
     public ArabicStyle Dialect { get; init; } = ArabicStyle.Standard;
     public DubbingSettings Dubbing { get; init; } = new();

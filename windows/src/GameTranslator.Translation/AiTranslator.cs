@@ -81,6 +81,35 @@ public static class AiRequest
                "Reply with only the translation, no explanations, notes or quotes.";
     }
 
+    /// <summary>
+    /// The tokens a reply reports as used: (input, output). Thinking tokens count as output (they are billed as
+    /// output). null when the reply carries no usage or cannot be read.
+    /// </summary>
+    public static (int Input, int Output)? Usage(AiProvider provider, string json)
+    {
+        try
+        {
+            var root = JsonNode.Parse(json);
+            switch (provider)
+            {
+                case AiProvider.Gemini:
+                    if (root?["usageMetadata"] is not { } meta) return null;
+                    return (meta["promptTokenCount"]?.GetValue<int>() ?? 0,
+                            (meta["candidatesTokenCount"]?.GetValue<int>() ?? 0) + (meta["thoughtsTokenCount"]?.GetValue<int>() ?? 0));
+                case AiProvider.OpenAi or AiProvider.Local:
+                    if (root?["usage"] is not { } openAi) return null;
+                    return (openAi["prompt_tokens"]?.GetValue<int>() ?? 0, openAi["completion_tokens"]?.GetValue<int>() ?? 0);
+                default:
+                    if (root?["usage"] is not { } claude) return null;
+                    return (claude["input_tokens"]?.GetValue<int>() ?? 0, claude["output_tokens"]?.GetValue<int>() ?? 0);
+            }
+        }
+        catch (Exception error) when (error is JsonException or InvalidOperationException or FormatException)
+        {
+            return null;
+        }
+    }
+
     /// <summary>The output limit sent with a model: its own (models that always think need room) or the usual one.</summary>
     public static int OutputTokensFor(AiModel model) => Math.Max(model.MaxOutputTokens ?? MaxOutputTokens, MaxOutputTokens);
 
@@ -488,6 +517,7 @@ public sealed class AiTranslator : ITextTranslator, IOnlineTranslator
     private readonly Func<string?>? _game;
     private readonly string _target;
     private readonly ArabicStyle _style;
+    private readonly AiUsage? _usage;
     private readonly ArabicGlossary? _glossary;
     private DateTimeOffset _pausedUntil = DateTimeOffset.MinValue;
     private OnlineKeyState? _failure;
@@ -506,11 +536,13 @@ public sealed class AiTranslator : ITextTranslator, IOnlineTranslator
     public AiTranslator(AiProvider provider, string key, string? model, ITextTranslator? fallback, HttpClient? http = null,
                         TranslationCache? cache = null, RequestBudget? budget = null, LocalAiServer? server = null,
                         Func<string?>? game = null, string target = TargetLanguages.Turkish,
-                        ArabicStyle style = ArabicStyle.Standard, ArabicGlossary? glossary = null)
+                        ArabicStyle style = ArabicStyle.Standard, ArabicGlossary? glossary = null, AiUsage? usage = null)
     {
         _game = game;
         _target = TargetLanguages.Normalize(target);
         _style = style;
+        // The local model costs nothing: it is not counted.
+        _usage = provider.IsLocal() ? null : usage ?? AiUsage.Session;
         // Spellings and notes are Arabic: they are sent only when translating to Arabic.
         _glossary = _target == TargetLanguages.Arabic ? glossary : null;
         Provider = provider;
@@ -720,6 +752,8 @@ public sealed class AiTranslator : ITextTranslator, IOnlineTranslator
             if (AiRequest.RateLimit(response.StatusCode, body) is { } limit) throw new AiRateLimitedException(limit);
             throw new AiException(AiRequest.Failure(response.StatusCode, body));
         }
+        // Counted before the reply is judged: a cut-off or malformed answer was still billed.
+        if (_usage is not null && AiRequest.Usage(Provider, body) is { } used) _usage.Add(Model, used.Input, used.Output);
         return AiRequest.Translations(AiRequest.Text(Provider, body), sentences.Count);
     }
 

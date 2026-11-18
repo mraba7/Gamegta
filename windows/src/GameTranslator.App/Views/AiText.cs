@@ -56,4 +56,16 @@ internal static class AiText
         OnlineKeyState.ModelRejected => "⚠ الخدمة لم تقبل هذا المودل بهذا المفتاح. جرّب وضع «أسرع» أو خدمة أخرى. الترجمة الآن بالترجمة المجانية.",
         _ => "⚠ خدمة الترجمة لا ترد الآن (أو ردّها تأخر). الترجمة مؤقتاً بالترجمة المجانية (جودة أقل) وتعود تلقائياً عند رجوع الخدمة.",
     };
+
+    /// <summary>The session's usage line: requests, tokens and the estimated cost.</summary>
+    public static string Usage(AiUsageTotal total)
+    {
+        if (total.Requests == 0) return "الاستخدام في هذه الجلسة: لم يُرسل شيء للخدمة بعد.";
+        var tokens = total.InputTokens + total.OutputTokens;
+        var size = tokens >= 1000 ? $"{tokens / 1000.0:0.#} ألف توكن" : $"{tokens} توكن";
+        var cost = total.Cost == 0m && !total.CostIsComplete
+            ? "السعر غير معروف لهذا المودل"
+            : $"التكلفة تقريباً ${total.Cost:0.00}" + (total.CostIsComplete ? "" : " (جزء من الاستخدام بلا سعر معروف)");
+        return $"الاستخدام في هذه الجلسة: {total.Requests} طلب · {size} · {cost}. تقدير بالأسعار الأساسية، والفاتورة الفعلية عند الخدمة.";
+    }
 }

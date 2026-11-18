@@ -329,4 +329,54 @@ public class ArabicEngineTests
         Assert.Null(controller.TranslationTrouble);
         controller.Dispose();
     }
+
+    // --- Best quality with the fast model as a safety net ---
+
+    [Fact]
+    public async Task BestQualityAlsoPreparesTheFastModelForSlowLines()
+    {
+        var (controller, services, _) = Ready();
+        Assert.True(controller.Settings.FastWhenSlow);
+        await controller.SetAiKeyAsync(AiProvider.Claude, "sk-claude");
+        services.AiTranslators.Clear();
+        await controller.StartAsync();
+        var models = services.AiTranslators.Select(t => t.ModelId).ToList();
+        Assert.Equal([AiProvider.Claude.ModelFor(QualityMode.Fastest).Id, AiProvider.Claude.ModelFor(QualityMode.Best).Id], models);
+        controller.Dispose();
+    }
+
+    [Fact]
+    public async Task WithTheSafetyNetOffOnlyTheStrongModelIsUsed()
+    {
+        var (controller, services, _) = Ready(new UserSettings { FastWhenSlow = false });
+        await controller.SetAiKeyAsync(AiProvider.Claude, "sk-claude");
+        services.AiTranslators.Clear();
+        await controller.StartAsync();
+        Assert.Equal(AiProvider.Claude.ModelFor(QualityMode.Best).Id, Assert.Single(services.AiTranslators).ModelId);
+        controller.Dispose();
+    }
+
+    [Fact]
+    public async Task FastestModeNeedsNoSafetyNet()
+    {
+        var (controller, services, _) = Ready(new UserSettings { Quality = QualityMode.Fastest });
+        await controller.SetAiKeyAsync(AiProvider.Claude, "sk-claude");
+        services.AiTranslators.Clear();
+        await controller.StartAsync();
+        Assert.Equal(AiProvider.Claude.ModelFor(QualityMode.Fastest).Id, Assert.Single(services.AiTranslators).ModelId);
+        controller.Dispose();
+    }
+
+    [Fact]
+    public async Task TurningTheSafetyNetOffRebuildsTheTranslator()
+    {
+        var (controller, services, _) = Ready();
+        await controller.SetAiKeyAsync(AiProvider.Claude, "sk-claude");
+        await controller.StartAsync();
+        services.AiTranslators.Clear();
+        controller.SetFastWhenSlow(false);
+        Assert.False(controller.Settings.FastWhenSlow);
+        Assert.Equal(AiProvider.Claude.ModelFor(QualityMode.Best).Id, Assert.Single(services.AiTranslators).ModelId);
+        controller.Dispose();
+    }
 }

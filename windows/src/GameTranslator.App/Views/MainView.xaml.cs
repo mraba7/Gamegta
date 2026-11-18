@@ -1128,6 +1128,27 @@ public partial class MainView : UserControl
     private void OnCardOpenAiClick(object sender, MouseButtonEventArgs e) => SelectAiCard(AiProvider.OpenAi, OpenAiKeyInput, e);
     private void OnCardClaudeClick(object sender, MouseButtonEventArgs e) => SelectAiCard(AiProvider.Claude, ClaudeKeyInput, e);
 
+    private void OnFastWhenSlow(object sender, RoutedEventArgs e)
+    {
+        if (loading) return;
+        controller.SetFastWhenSlow(CheckFastWhenSlow?.IsChecked == true);
+        UpdateModelSelectionUi();
+    }
+
+    private DispatcherTimer? usageTimer;
+
+    /// <summary>What this run has sent to the paid services so far; refreshed every few seconds while the screen is open.</summary>
+    private void UpdateUsageText()
+    {
+        if (UsageText == null) return;
+        UsageText.Text = AiText.Usage(AiUsage.Session.Total);
+        if (usageTimer is not null) return;
+        usageTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(5) };
+        usageTimer.Tick += (_, _) => { if (UsageText != null) UsageText.Text = AiText.Usage(AiUsage.Session.Total); };
+        usageTimer.Start();
+        Unloaded += (_, _) => usageTimer?.Stop();
+    }
+
     private void OnDialectSelected(object sender, RoutedEventArgs e)
     {
         if (loading) return;
@@ -1175,6 +1196,11 @@ public partial class MainView : UserControl
         RadioQualityBest.IsChecked = quality == QualityMode.Best;
         RadioQualityFastest.IsChecked = quality == QualityMode.Fastest;
         QualityHint.Text = AiText.QualityHint(active, quality);
+
+        CheckFastWhenSlow.IsChecked = controller.Settings.FastWhenSlow;
+        // The safety net only means something in Best quality.
+        CheckFastWhenSlow.IsEnabled = quality == QualityMode.Best;
+        UpdateUsageText();
 
         var dialect = controller.Settings.Dialect;
         RadioDialectStandard.IsChecked = dialect == ArabicStyle.Standard;

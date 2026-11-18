@@ -248,4 +248,32 @@ public class AiArabicTests
     [InlineData(OnlineKeyState.ModelRejected, 60)]
     public void ThePauseAfterAFailureDependsOnItsKind(OnlineKeyState state, int seconds) =>
         Assert.Equal(TimeSpan.FromSeconds(seconds), AiTranslator.PauseAfter(state));
+
+    // --- Usage for the cost counter ---
+
+    [Theory]
+    [InlineData(AiProvider.Claude, """{"content":[{"type":"text","text":"[\"a\"]"}],"stop_reason":"end_turn","usage":{"input_tokens":120,"output_tokens":30}}""", 120, 30)]
+    [InlineData(AiProvider.OpenAi, """{"choices":[{"message":{"content":"[\"a\"]"},"finish_reason":"stop"}],"usage":{"prompt_tokens":110,"completion_tokens":25}}""", 110, 25)]
+    [InlineData(AiProvider.Gemini, """{"candidates":[{"content":{"parts":[{"text":"[\"a\"]"}]},"finishReason":"STOP"}],"usageMetadata":{"promptTokenCount":100,"candidatesTokenCount":20,"thoughtsTokenCount":15}}""", 100, 35)]
+    public void UsageIsReadFromEachServicesReply(AiProvider provider, string json, int input, int output) =>
+        Assert.Equal((input, output), AiRequest.Usage(provider, json));
+
+    [Theory]
+    [InlineData("""{"content":[{"type":"text","text":"x"}]}""")]
+    [InlineData("not json")]
+    public void AReplyWithoutUsageCountsNothing(string json) => Assert.Null(AiRequest.Usage(AiProvider.Claude, json));
+
+    [Fact]
+    public async Task EachAnsweredRequestIsCounted()
+    {
+        var usage = new AiUsage();
+        var fake = new Scripted(_ => """{"content":[{"type":"text","text":"[\"مرحبا.\"]"}],"stop_reason":"end_turn","usage":{"input_tokens":120,"output_tokens":30}}""");
+        var translator = new AiTranslator(AiProvider.Claude, "key", model: null, fallback: null, new HttpClient(fake),
+                                          budget: new RequestBudget(1000), target: "ar", usage: usage);
+        await translator.TranslateAsync("Hello.");
+        Assert.Equal((1, 120L, 30L), (usage.Total.Requests, usage.Total.InputTokens, usage.Total.OutputTokens));
+        // A remembered line costs nothing the second time.
+        await translator.TranslateAsync("Hello.");
+        Assert.Equal(1, usage.Total.Requests);
+    }
 }

@@ -124,7 +124,10 @@ public sealed record AiModel(
     [property: JsonPropertyName("requestsPerMinute")] int? RequestsPerMinute = null,
     // Output limit for models that always think before answering: their thinking counts against the limit, and with
     // the usual small limit the answer itself could be cut off. null: the usual limit.
-    [property: JsonPropertyName("maxOutputTokens")] int? MaxOutputTokens = null)
+    [property: JsonPropertyName("maxOutputTokens")] int? MaxOutputTokens = null,
+    // US dollars per million tokens (base rates, see the catalog's comment); null when the price is not known.
+    [property: JsonPropertyName("inputPrice")] decimal? InputPrice = null,
+    [property: JsonPropertyName("outputPrice")] decimal? OutputPrice = null)
 {
     /// <summary><c>ai-models.json</c>: hizmet adı → modeller.</summary>
     internal static readonly IReadOnlyDictionary<string, IReadOnlyList<AiModel>> Catalog = Load();
@@ -152,7 +155,9 @@ public sealed record AiModel(
                 // Yeni alanlar eksikse varsayılanla okunur.
                 item.TryGetProperty("freeTier", out var free) && free.ValueKind == System.Text.Json.JsonValueKind.True,
                 item.TryGetProperty("requestsPerMinute", out var rpm) && rpm.TryGetInt32(out var perMinute) ? perMinute : null,
-                item.TryGetProperty("maxOutputTokens", out var cap) && cap.TryGetInt32(out var tokens) ? tokens : null)).ToList();
+                item.TryGetProperty("maxOutputTokens", out var cap) && cap.TryGetInt32(out var tokens) ? tokens : null,
+                item.TryGetProperty("inputPrice", out var inPrice) && inPrice.TryGetDecimal(out var input) ? input : null,
+                item.TryGetProperty("outputPrice", out var outPrice) && outPrice.TryGetDecimal(out var output) ? output : null)).ToList();
             if (models.Count > 0) result[property.Name] = models;
         }
         return result;

@@ -274,7 +274,8 @@ public sealed class AppController : INotifyPropertyChanged, IDisposable
             if (old.Dubbing != value.Dubbing) DubbingSettingsChanged(old.Dubbing);
             if (isRunning && (old.SourceLanguage != value.SourceLanguage || old.TargetLanguage != value.TargetLanguage
                               || old.OnlineTranslation != value.OnlineTranslation || old.Engine != value.Engine
-                              || old.Provider != value.Provider || old.Quality != value.Quality || old.Dialect != value.Dialect))
+                              || old.Provider != value.Provider || old.Quality != value.Quality || old.Dialect != value.Dialect
+                              || old.FastWhenSlow != value.FastWhenSlow))
             {
                 RefreshTranslatorStatus();
                 MakePipeline();
@@ -1337,11 +1338,21 @@ public sealed class AppController : INotifyPropertyChanged, IDisposable
 
         if (ActiveAiProvider is { } provider && HasAiKey(provider))
         {
-            if (StoreKeys.ForAi(provider) is { } slot && store.Load<string>(slot) is { Length: > 0 } key &&
-                services.MakeAiTranslator(provider, key, ModelIdFor(provider), TargetLanguages.Normalize(settings.TargetLanguage),
-                                          local is UnavailableTranslator ? null : local, settings.Dialect) is { } ai)
+            if (StoreKeys.ForAi(provider) is { } slot && store.Load<string>(slot) is { Length: > 0 } key)
             {
-                return Watched(ai);
+                var target = TargetLanguages.Normalize(settings.TargetLanguage);
+                var fallback = local is UnavailableTranslator ? null : local;
+                var modelId = ModelIdFor(provider);
+                var fastId = provider.ModelFor(QualityMode.Fastest).Id;
+                // The safety net for slow lines: prepared first, so the translator in use is the last one made.
+                var quick = settings.FastWhenSlow && !UsesTurkishFeatures(settings) && modelId != fastId
+                    ? services.MakeAiTranslator(provider, key, fastId, target, fallback, settings.Dialect)
+                    : null;
+                if (services.MakeAiTranslator(provider, key, modelId, target, fallback, settings.Dialect) is { } ai)
+                {
+                    Watched(ai);
+                    return quick is null ? ai : new RacingTranslator(ai, quick, UserSettings.SlowLinePatience);
+                }
             }
         }
         // DeepL is wired for English→Turkish only (its translator and settings screen say so).
@@ -1424,6 +1435,9 @@ public sealed class AppController : INotifyPropertyChanged, IDisposable
         if (!HasAiKey(provider)) return;
         Settings = settings with { Engine = TranslationEngine.Ai, Provider = provider, OnlineTranslation = true };
     }
+
+    /// <summary>Turns the fast-model safety net for slow lines on or off (the setter rebuilds the pipeline).</summary>
+    public void SetFastWhenSlow(bool on) => Settings = settings with { FastWhenSlow = on };
 
     /// <summary>The Arabic style of the next lines (the setter rebuilds the pipeline).</summary>
     public void SetDialect(ArabicStyle style) => Settings = settings with { Dialect = style };
