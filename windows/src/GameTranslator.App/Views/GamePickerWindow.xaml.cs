@@ -22,6 +22,7 @@ public partial class GamePickerWindow : Window
     internal GamePickerWindow()
     {
         InitializeComponent();
+        ArabicLayout.Apply(this);
         games = CommunityPatchManager.Shared.Games;
         Fill();
         Loaded += (_, _) => Search.Focus();

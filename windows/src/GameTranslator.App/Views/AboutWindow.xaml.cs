@@ -12,6 +12,7 @@ public partial class AboutWindow : Window
     internal AboutWindow()
     {
         InitializeComponent();
+        ArabicLayout.Apply(this);
         Version.Text = Assembly.GetEntryAssembly()?.GetName().Version?.ToString(3) ?? "";
     }
 

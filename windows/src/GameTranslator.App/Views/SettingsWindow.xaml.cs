@@ -26,6 +26,7 @@ public partial class SettingsWindow : Window
     {
         this.controller = controller;
         InitializeComponent();
+        ArabicLayout.Apply(this);
         var settings = controller.Settings;
         TextSize.Value = Math.Clamp(settings.Style.FontSize, TextSize.Minimum, TextSize.Maximum);
         TextSizeValue.Text = ((int)TextSize.Value).ToString();

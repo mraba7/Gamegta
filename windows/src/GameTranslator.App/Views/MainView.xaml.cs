@@ -53,6 +53,7 @@ public partial class MainView : UserControl
         this.controller = controller;
         DataContext = controller;
         InitializeComponent();
+        ArabicLayout.Apply(this);
 
         HistoryListBox.ItemsSource = history;
         controller.PropertyChanged += OnChanged;

@@ -21,6 +21,7 @@ public partial class ShellWindow : Window
     {
         this.controller = controller;
         InitializeComponent();
+        GameTranslator.App.Views.ArabicLayout.Apply(this);
         controller.PropertyChanged += OnChanged;
         // Bilgisayar uykudan uyanınca bağlantılar hemen yenilenir.
         SystemEvents.PowerModeChanged += OnPowerModeChanged;

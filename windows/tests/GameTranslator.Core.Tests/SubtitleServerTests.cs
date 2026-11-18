@@ -156,6 +156,39 @@ public class SubtitleServerTests
         Assert.Contains(lines, l => l.Contains("Kapıyı tut, evlat!"));
     }
 
+    /// <summary>
+    /// Arabic edition: an Arabic subtitle reaches a connected TV intact, as UTF-8, with its right-to-left text and a
+    /// Latin speaker label. Events that are not the subtitle (style, hello…) may come first, so blocks are read until
+    /// the subtitle event arrives.
+    /// </summary>
+    [Fact]
+    public async Task ArabicTextIsSentAsUtf8()
+    {
+        const string line = "JASON: اسمع، ما عندنا وقت!";
+        using var server = new SubtitleServer(0);
+        var port = await server.StartAsync();
+        using var response = await Http.GetAsync($"http://127.0.0.1:{port}/events", HttpCompletionOption.ResponseHeadersRead);
+        Assert.Contains("utf-8", response.Content.Headers.ContentType?.ToString() ?? "", StringComparison.OrdinalIgnoreCase);
+        await WaitUntil(() => server.ConnectedClients == 1);
+        server.SendSubtitle(line, 4000);
+        using var reader = new StreamReader(await response.Content.ReadAsStreamAsync(), System.Text.Encoding.UTF8);
+        var blocks = new List<string>();
+        string? found = null;
+        using var timeout = new CancellationTokenSource(TimeSpan.FromSeconds(10));
+        while (found is null && blocks.Count < 8)
+        {
+            var block = string.Join("\n", await ReadLines(reader, "").WaitAsync(timeout.Token));
+            blocks.Add(block);
+            if (block.Contains("event: subtitle") || block.Contains("\"text\"")) found = block;
+        }
+        Assert.True(found is not null, "no subtitle event in: " + string.Join(" || ", blocks));
+        // The text travels as JSON: either the Arabic letters themselves or their \uXXXX escapes, both of which a
+        // browser reads back as the same string.
+        var data = found!.Split('\n').First(l => l.StartsWith("data:", StringComparison.Ordinal))["data:".Length..].Trim();
+        var text = System.Text.Json.JsonDocument.Parse(data).RootElement.GetProperty("text").GetString();
+        Assert.Equal(line, text);
+    }
+
     [Fact]
     public async Task NewClientReceivesLastStyle()
     {

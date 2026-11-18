@@ -42,6 +42,7 @@ public partial class OnboardingView : UserControl
             selectedTvPlatform = "PC";
         }
         InitializeComponent();
+        ArabicLayout.Apply(this);
         UpdateTvPlatformSelection();
         UpdateStepView();
     }
