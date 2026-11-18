@@ -8,6 +8,12 @@ GameTranslator is a modified version of CouchSubs. It has been modified since
 2026-11-10 (renamed, user interface redesign, reading and translation changes,
 Android phone app). The list of changes is in this repository's git history.
 
+Arabic edition (https://github.com/mraba7/gamegta): modified since 2026-11-18
+(Arabic as the target language with right-to-left subtitles and a bundled
+Arabic font on the TV, choice of AI translation service and quality mode,
+Turkish-only features switched off for other target languages, updates from
+this fork). The list of changes is in this repository's git history.
+
 This program is free software: you can redistribute it and/or modify it under
 the terms of the GNU Affero General Public License version 3 (see LICENSE).
 This notice and the license notices must be kept intact in copies and modified

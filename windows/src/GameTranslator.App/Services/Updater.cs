@@ -13,7 +13,9 @@ namespace GameTranslator.App.Services;
 /// </summary>
 internal sealed class Updater : IUpdater
 {
-    private const string Repository = "https://github.com/Sefflex/GameTranslate";
+    // Arabic edition: updates come from this fork only. Pointing at the original repository would let a newer
+    // upstream (Turkish) build replace the Arabic one.
+    private const string Repository = "https://github.com/mraba7/gamegta";
     private readonly UpdateManager? manager;
     private UpdateInfo? pending;
 
@@ -54,7 +56,7 @@ internal sealed class Updater : IUpdater
             using var http = new HttpClient { Timeout = TimeSpan.FromSeconds(10) };
             http.DefaultRequestHeaders.UserAgent.ParseAdd("GameTranslator");
             using var document = System.Text.Json.JsonDocument.Parse(
-                await http.GetStringAsync("https://api.github.com/repos/Sefflex/gametranslator/releases/latest"));
+                await http.GetStringAsync("https://api.github.com/repos/mraba7/gamegta/releases/latest"));
             var tag = document.RootElement.GetProperty("tag_name").GetString()?.TrimStart('v');
             return tag is not null && AppVersion.IsNewer(tag, AppVersion.Current(typeof(Updater).Assembly)) ? tag : null;
         }
