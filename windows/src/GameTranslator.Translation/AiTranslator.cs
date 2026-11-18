@@ -38,11 +38,35 @@ public static class AiRequest
         "Keep line breaks. Keep the meaning and tone; do not add or leave out anything. " +
         "Reply with only the translation, no explanations, notes or quotes.";
 
+    /// <summary>Arabic: clear standard Arabic that reads like speech; speaker labels stay in Latin letters for the pipeline and the TV.</summary>
+    public const string ArabicSystemPrompt =
+        "You translate English video game subtitles into Arabic. " +
+        "Write clear Modern Standard Arabic that sounds like natural speech, the way good Arabic game and film subtitles read; never translate word for word. " +
+        "Render slang, street talk, jokes and insults with natural Arabic equivalents that keep the tone. " +
+        "Keep speaker labels such as \"ATREUS:\" at the start of a line exactly as they are, in Latin letters. " +
+        "Write other character and place names in Arabic letters. " +
+        "Keep line breaks. Keep the meaning; do not add or leave out anything. " +
+        "Reply with only the translation, no explanations, notes, quotes or diacritics.";
+
+    /// <summary>The system prompt for a target language: Turkish keeps the original prompt, Arabic has its own, others a generic one.</summary>
+    public static string SystemPromptFor(string? target)
+    {
+        var language = TargetLanguages.Normalize(target);
+        if (language == TargetLanguages.Turkish) return SystemPrompt;
+        if (language == TargetLanguages.Arabic) return ArabicSystemPrompt;
+        return $"You translate English video game subtitles into natural, spoken {TargetLanguages.EnglishName(language)}, the way people really talk. " +
+               "Keep character names, place names and speaker labels such as \"ATREUS:\" exactly as they are. " +
+               "Keep line breaks. Keep the meaning and tone; do not add or leave out anything. " +
+               "Reply with only the translation, no explanations, notes or quotes.";
+    }
+
     private static readonly JsonSerializerOptions Compact = new() { Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping };
 
     /// <summary>Kullanıcı iletisi: önceki satırlar (yalnız bağlam) ve çevrilecek cümleler.</summary>
-    public static string UserMessage(IReadOnlyList<string> sentences, IReadOnlyList<AiContextLine> context, string? game = null)
+    public static string UserMessage(IReadOnlyList<string> sentences, IReadOnlyList<AiContextLine> context, string? game = null,
+                                     string target = TargetLanguages.Turkish)
     {
+        var language = TargetLanguages.EnglishName(target);
         var parts = new List<string>();
         if (!string.IsNullOrEmpty(game)) parts.Add($"Game: {game}");
         if (context.Count > 0)
@@ -51,13 +75,13 @@ public static class AiRequest
             foreach (var line in context)
             {
                 lines.Add($"English: {line.Source}");
-                if (line.Translation is { } translation) lines.Add($"Turkish: {translation}");
+                if (line.Translation is { } translation) lines.Add($"{language}: {translation}");
             }
             parts.Add(string.Join("\n", lines));
         }
         var list = new JsonArray([.. sentences.Select(s => (JsonNode?)JsonValue.Create(s))]).ToJsonString(Compact);
-        parts.Add($"Translate each string in this JSON array into Turkish. Reply with only a JSON array of {sentences.Count} " +
-                  $"Turkish strings in the same order.\n{list}");
+        parts.Add($"Translate each string in this JSON array into {language}. Reply with only a JSON array of {sentences.Count} " +
+                  $"{language} strings in the same order.\n{list}");
         return string.Join("\n\n", parts);
     }
 
@@ -67,10 +91,11 @@ public static class AiRequest
     /// <summary>Hizmete giden HTTP isteği. <paramref name="server"/>: yerel modelin sunucusu (verilmezse Ollama'nın varsayılan adresi).</summary>
     public static HttpRequestMessage Build(AiProvider provider, string key, AiModel model, IReadOnlyList<string> sentences,
                                            IReadOnlyList<AiContextLine> context, string? game = null, LocalAiServer? server = null,
-                                           int maxOutputTokens = MaxOutputTokens)
+                                           int maxOutputTokens = MaxOutputTokens, string target = TargetLanguages.Turkish)
     {
         key = key.Trim();
-        var user = UserMessage(sentences, context, game);
+        var user = UserMessage(sentences, context, game, target);
+        var system = SystemPromptFor(target);
         HttpRequestMessage request;
         JsonObject body;
         switch (provider)
@@ -84,7 +109,7 @@ public static class AiRequest
                 request.Headers.Add("x-goog-api-key", key);
                 body = new JsonObject
                 {
-                    ["systemInstruction"] = new JsonObject { ["parts"] = new JsonArray(new JsonObject { ["text"] = SystemPrompt }) },
+                    ["systemInstruction"] = new JsonObject { ["parts"] = new JsonArray(new JsonObject { ["text"] = system }) },
                     ["contents"] = new JsonArray(new JsonObject
                     {
                         ["role"] = "user",
@@ -103,7 +128,7 @@ public static class AiRequest
                 {
                     ["model"] = model.Id,
                     ["messages"] = new JsonArray(
-                        new JsonObject { ["role"] = "developer", ["content"] = SystemPrompt },
+                        new JsonObject { ["role"] = "developer", ["content"] = system },
                         new JsonObject { ["role"] = "user", ["content"] = user }),
                     ["max_completion_tokens"] = maxOutputTokens,
                 };
@@ -120,7 +145,7 @@ public static class AiRequest
                 {
                     ["model"] = model.Id,
                     ["messages"] = new JsonArray(
-                        new JsonObject { ["role"] = "system", ["content"] = SystemPrompt },
+                        new JsonObject { ["role"] = "system", ["content"] = system },
                         new JsonObject { ["role"] = "user", ["content"] = user }),
                     ["temperature"] = LocalTemperature,
                     ["max_tokens"] = maxOutputTokens,
@@ -138,7 +163,7 @@ public static class AiRequest
                 {
                     ["model"] = model.Id,
                     ["max_tokens"] = maxOutputTokens,
-                    ["system"] = SystemPrompt,
+                    ["system"] = system,
                     ["messages"] = new JsonArray(new JsonObject { ["role"] = "user", ["content"] = user }),
                 };
                 if (model.Effort is { } claudeEffort) body["output_config"] = new JsonObject { ["effort"] = claudeEffort };
@@ -391,6 +416,7 @@ public sealed class AiTranslator : ITextTranslator, IOnlineTranslator
     private readonly ConcurrentDictionary<string, byte> _names = new(StringComparer.Ordinal);
     private readonly List<AiContextLine> _recent = [];
     private readonly Func<string?>? _game;
+    private readonly string _target;
     private DateTimeOffset _pausedUntil = DateTimeOffset.MinValue;
     private OnlineKeyState? _failure;
 
@@ -407,9 +433,10 @@ public sealed class AiTranslator : ITextTranslator, IOnlineTranslator
     /// </param>
     public AiTranslator(AiProvider provider, string key, string? model, ITextTranslator? fallback, HttpClient? http = null,
                         TranslationCache? cache = null, RequestBudget? budget = null, LocalAiServer? server = null,
-                        Func<string?>? game = null)
+                        Func<string?>? game = null, string target = TargetLanguages.Turkish)
     {
         _game = game;
+        _target = TargetLanguages.Normalize(target);
         Provider = provider;
         Model = provider.Model(model);
         Server = provider.IsLocal() ? server ?? LocalAiServer.Create(LocalAiServer.OllamaUrl, Model.Id) : null;
@@ -518,7 +545,7 @@ public sealed class AiTranslator : ITextTranslator, IOnlineTranslator
             try
             {
                 var sentences = chunk.Select(i => texts[i]).ToList();
-                using var request = AiRequest.Build(Provider, _key, Model, sentences, [], _game?.Invoke(), Server, maxOutputTokens: AiRequest.ScreenOutputTokens);
+                using var request = AiRequest.Build(Provider, _key, Model, sentences, [], _game?.Invoke(), Server, maxOutputTokens: AiRequest.ScreenOutputTokens, target: _target);
                 using var response = await _screenHttp.SendAsync(request, cancellationToken).ConfigureAwait(false);
                 var body = await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
                 if (!response.IsSuccessStatusCode)
@@ -605,7 +632,7 @@ public sealed class AiTranslator : ITextTranslator, IOnlineTranslator
 
     private async Task<string[]> RequestAsync(List<string> sentences, List<AiContextLine> context, CancellationToken cancellationToken)
     {
-        using var request = AiRequest.Build(Provider, _key, Model, sentences, context, _game?.Invoke(), Server);
+        using var request = AiRequest.Build(Provider, _key, Model, sentences, context, _game?.Invoke(), Server, target: _target);
         using var response = await _http.SendAsync(request, cancellationToken).ConfigureAwait(false);
         var body = await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
         if (!response.IsSuccessStatusCode)
@@ -621,14 +648,15 @@ public sealed class AiTranslator : ITextTranslator, IOnlineTranslator
     /// anahtar isteğe bağlıdır ve model belleğe yüklenirken uzun beklenir.
     /// </summary>
     public static async Task<AiTestResult> TestAsync(AiProvider provider, string key, string? model, HttpClient? http = null,
-                                                     CancellationToken cancellationToken = default, LocalAiServer? server = null)
+                                                     CancellationToken cancellationToken = default, LocalAiServer? server = null,
+                                                     string target = TargetLanguages.Turkish)
     {
         key = key.Trim();
         if (key.Length == 0 && !provider.IsLocal()) return new(OnlineKeyState.Invalid);
         http ??= provider.IsLocal() ? LocalTestClient.Value : SharedClient.Value;
         // Deneme tek istektir; çeviri hattının dakikalık hakkından yemez.
         var translator = new AiTranslator(provider, key, model, new FailingTranslator(), http, budget: new RequestBudget(int.MaxValue),
-                                          server: server);
+                                          server: server, target: target);
         try
         {
             return new(OnlineKeyState.Valid, await translator.TranslateAsync(Sample, cancellationToken).ConfigureAwait(false));
