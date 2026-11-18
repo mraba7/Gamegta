@@ -23,6 +23,9 @@ env:
   UPSTREAM_REPO: D3ATHLY/GameTranslator
   UPSTREAM_TAG: v1.8.0
   APP_VERSION: 1.8.1
+  # SHA-256 of GameTranslator-win-Setup.exe in the upstream release above (read from build 3, 2026-11-18). The native
+  # library taken from this file runs on the user's PC: a different file under the same tag stops the build.
+  UPSTREAM_SETUP_SHA256: B5F6E89DFD6B1923EA329FD7C2F01B6D3042CF5E17691696C31BBE1B12703068
   ZIP_NAME: GameTranslator-Arabic-windows-x64.zip
 
 jobs:
@@ -60,8 +63,12 @@ jobs:
           gh release download $env:UPSTREAM_TAG -R $env:UPSTREAM_REPO -D upstream
           if ($LASTEXITCODE -ne 0) { exit 1 }
           Get-ChildItem upstream | Format-Table Name, Length
-          # The installer's SHA-256 is printed so it can be pinned: the native library taken from it runs on the user's PC.
-          Get-FileHash upstream/GameTranslator-win-Setup.exe -Algorithm SHA256 | Format-List Hash, Path
+          $hash = (Get-FileHash upstream/GameTranslator-win-Setup.exe -Algorithm SHA256).Hash
+          Write-Host "GameTranslator-win-Setup.exe SHA-256: $hash"
+          if ($hash -ne $env:UPSTREAM_SETUP_SHA256) {
+            Write-Host "::error::the upstream installer is not the file this build was pinned to (expected $env:UPSTREAM_SETUP_SHA256)"
+            exit 1
+          }
 
       - name: Find the upstream app folder
         shell: pwsh
