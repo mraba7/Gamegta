@@ -101,6 +101,13 @@ synthetic and are not recordings of real people.
 
 Text recognition (Vision) and translation (Translation framework) are provided by macOS.
 
+## TV app font (Arabic edition)
+
+The TV app bundles **Noto Sans Arabic** (Regular and Bold, Arabic subset, from the `@fontsource/noto-sans-arabic`
+package, version 5.3.0) for right-to-left subtitles. Copyright 2022 The Noto Project Authors
+(https://github.com/notofonts/arabic). Licensed under the SIL Open Font License, Version 1.1; the full text is in
+`tv/webos/fonts/OFL.txt` and ships inside the TV app. The font files are used unmodified.
+
 ## Trademarks
 
 GameTranslator is not affiliated with or endorsed by Sony Interactive Entertainment. "PlayStation" and "PS5"

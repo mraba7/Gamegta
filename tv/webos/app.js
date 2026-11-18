@@ -10,6 +10,8 @@
   var t = window.t;
   var config = window.GAMETRANSLATOR_CONFIG || window.GAMETRANSLATOR_CONFIG || {};
   var platform = window.GAMETRANSLATOR_PLATFORM || window.GAMETRANSLATOR_PLATFORM;
+  // Arabic (and other right-to-left) translations are laid out right to left; decided from the text (direction.js).
+  var directionOf = (window.GAMETRANSLATOR_DIRECTION || { directionOf: function () { return 'ltr'; } }).directionOf;
   var KEY = { RED: 403, GREEN: 404, BLUE: 406, LEFT: 37, UP: 38, RIGHT: 39, DOWN: 40, OK: 13, BACK: platform.backKey };
 
   var server = null;
@@ -179,9 +181,11 @@
     shownAt = Date.now();
     holdUntil = shownAt + Math.min(HOLD_MAX_MS, 2000 + text.length * 60);
     currentBox = validBox(box);
+    var direction = directionOf(text);
+    $('subtitle-text').dir = direction;
     setSubtitleText($('subtitle-text'), text, paragraphs);
     $('subtitle-text').style.whiteSpace = paragraphs ? 'pre-line' : '';
-    $('subtitle-text').style.textAlign = paragraphs ? 'left' : '';
+    $('subtitle-text').style.textAlign = paragraphs ? (direction === 'rtl' ? 'right' : 'left') : '';
     $('subtitle').className = '';
     layout();
     setStatus('st-last', text.length > 40 ? text.slice(0, 40) + '…' : text);
@@ -208,6 +212,9 @@
       if (nameStart > last) el.appendChild(document.createTextNode(text.slice(last, nameStart)));
       var name = document.createElement('span');
       name.style.color = speakerColor;
+      // The Latin label keeps its own direction inside a right-to-left line ("JASON:" stays readable, at the right).
+      name.className = 'speaker';
+      name.dir = 'ltr';
       name.textContent = match[2] + ':';
       el.appendChild(name);
       last = SPEAKER.lastIndex;
@@ -248,6 +255,7 @@
   }
 
   function showPrevious(text) {
+    $('subtitle-prev-text').dir = directionOf(text);
     $('subtitle-prev-text').textContent = text;
     $('subtitle-prev').className = '';
     clearTimeout(previousTimer);
@@ -281,6 +289,7 @@
       if (!box || !item.text) continue;
       var el = document.createElement('div');
       el.className = item.paragraphs === true ? 'item paragraphs' : 'item';
+      el.dir = directionOf(item.text);
       el.textContent = item.text;
       var left = Math.max(0, box.left - SCREEN_PAD);
       var top = Math.max(0, box.top - SCREEN_PAD);

@@ -10,6 +10,31 @@ html, body {
   font-family: "LG Smart UI", "Museo Sans", Arial, sans-serif;
 }
 
+/* Arabic edition: a bundled Arabic face so right-to-left subtitles look the same on every TV (Noto Sans Arabic,
+   SIL Open Font License 1.1, fonts/OFL.txt). Only right-to-left text uses it. */
+@font-face {
+  font-family: "Noto Sans Arabic";
+  font-weight: 400;
+  font-style: normal;
+  font-display: block;
+  src: url("fonts/NotoSansArabic-Regular.woff2") format("woff2"), url("fonts/NotoSansArabic-Regular.woff") format("woff");
+}
+@font-face {
+  font-family: "Noto Sans Arabic";
+  font-weight: 700;
+  font-style: normal;
+  font-display: block;
+  src: url("fonts/NotoSansArabic-Bold.woff2") format("woff2"), url("fonts/NotoSansArabic-Bold.woff") format("woff");
+}
+[dir="rtl"] {
+  font-family: "Noto Sans Arabic", "LG Smart UI", "Museo Sans", Arial, sans-serif;
+  /* Arabic letters carry marks above and below the line: a little more room than Latin text. */
+  line-height: 1.5;
+}
+#screen .item[dir="rtl"] { line-height: 1.35; }
+#screen .item.paragraphs[dir="rtl"] { text-align: right; }
+.speaker { unicode-bidi: -webkit-isolate; unicode-bidi: isolate; }
+
 #video-host, #video-host video {
   position: absolute;
   top: 0;

@@ -8,7 +8,9 @@ cd "$(dirname "$0")/.."
 OUT=dist/tv-tizen/app
 rm -rf dist/tv-tizen
 mkdir -p "$OUT"
-cp tv/webos/app.js tv/webos/i18n.js tv/webos/config.js tv/webos/style.css tv/webos/largeIcon.png "$OUT/"
+cp tv/webos/app.js tv/webos/i18n.js tv/webos/direction.js tv/webos/config.js tv/webos/style.css tv/webos/largeIcon.png "$OUT/"
+# Arabic edition: bundled Arabic font (Noto Sans Arabic, OFL-1.1).
+cp -R tv/webos/fonts "$OUT/fonts"
 cp tv/webos/icon.png "$OUT/panel-icon.png"
 cp tv/tizen/platform.js tv/tizen/config.xml tv/tizen/icon.png "$OUT/"
 # Panel başlığındaki küçük simge webOS'taki gibi icon.png adını kullanamaz: Tizen'in simgesi büyüktür.
