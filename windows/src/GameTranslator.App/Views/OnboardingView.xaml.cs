@@ -551,8 +551,20 @@ public partial class OnboardingView : UserControl
             await controller.PairAsync(new LgTv("تلفزيون سامسونج الذكي", host, TvBrand.Samsung));
         }
         catch { }
-        TvStatusFeedback.Text = $"✓ تم حفظ تلفزيون سامسونج ({host}). افتح GameTranslator على التلفزيون.";
-        TvStatusFeedback.Foreground = new SolidColorBrush(Color.FromRgb(16, 185, 129));
+        // Saving the address does not put anything on the TV. The TV app is installed by the step below: with
+        // developer mode on, it is signed, installed and opened; with it off, the card shows how to turn it on and
+        // continues by itself. What happened is shown by the card, not assumed here.
+        TvStatusFeedback.Text = $"تم حفظ عنوان التلفزيون ({host}). تابع البطاقة بالأسفل: منها يُثبَّت تطبيق التلفزيون.";
+        TvStatusFeedback.Foreground = new SolidColorBrush(Color.FromRgb(56, 189, 248));
+        try
+        {
+            await controller.RefreshTvAppAsync();
+        }
+        catch (Exception error)
+        {
+            TvStatusFeedback.Text = $"تعذّر تثبيت تطبيق التلفزيون: {error.Message}";
+            TvStatusFeedback.Foreground = new SolidColorBrush(Color.FromRgb(248, 113, 113));
+        }
     }
 
     private async void OnSaveLg(object sender, RoutedEventArgs e)
@@ -682,7 +694,11 @@ public partial class OnboardingView : UserControl
 
     private void OnOpenSamsungWgt(object sender, RoutedEventArgs e)
     {
-        var path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "tv-app", "gametranslator-samsung_1.0.0.wgt");
+        // The newest Samsung package shipped with the app (the file name carries its version).
+        var folder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "tv-app");
+        var path = Directory.Exists(folder)
+            ? GameTranslator.TvInstall.Versions.NewestBundled(Directory.EnumerateFiles(folder, "gametranslator-samsung_*.wgt")) ?? ""
+            : "";
         if (File.Exists(path))
             Process.Start("explorer.exe", $"/select,\"{path}\"");
         else

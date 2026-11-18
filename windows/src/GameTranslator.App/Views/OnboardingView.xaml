@@ -3,6 +3,7 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:c="clr-namespace:GameTranslator.App.Controls"
+             xmlns:s="clr-namespace:GameTranslator.App.Views.Steps"
              xmlns:t="clr-namespace:GameTranslator.App.Theme"
              Background="Transparent" Foreground="{DynamicResource textPrimaryBrush}">
     <UserControl.Resources>
@@ -407,19 +408,23 @@
                             <!-- Panel: Samsung Tizen TV -->
                             <StackPanel x:Name="TvDetailSamsung" Visibility="Collapsed">
                                 <TextBlock Text="&#x202B;تلفزيون سامسونج&#x202C;" FontWeight="Bold" FontSize="13" Foreground="{DynamicResource accentTextBrush}" Margin="0,0,0,4" />
-                                <TextBlock Text="&#x202B;اكتب عنوان التلفزيون، ثم افتح GameTranslator على التلفزيون:&#x202C;" FontSize="13" Foreground="{DynamicResource textSecondaryBrush}" Margin="0,0,0,8" />
+                                <TextBlock Text="&#x202B;اكتب عنوان التلفزيون واضغط «حفظ واتصال». البرنامج يثبّت تطبيق التلفزيون بنفسه ويفتحه:&#x202C;" FontSize="13" Foreground="{DynamicResource textSecondaryBrush}" Margin="0,0,0,8" />
                                 <Grid Margin="0,0,0,8">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*" />
                                         <ColumnDefinition Width="Auto" />
                                     </Grid.ColumnDefinitions>
                                     <TextBox x:Name="SamsungHostInput" Text="192.168.1.108" MinHeight="32" VerticalContentAlignment="Center" Margin="0,0,8,0" FontFamily="Consolas" FontSize="13" />
-                                    <Button Grid.Column="1" Content="Kaydet" Click="OnSaveSamsung" Background="{DynamicResource accentBrush}" Foreground="White" FontWeight="Bold" BorderThickness="0" Padding="12,4" />
+                                    <Button Grid.Column="1" Content="حفظ واتصال" Click="OnSaveSamsung" Background="{DynamicResource accentBrush}" Foreground="White" FontWeight="Bold" BorderThickness="0" Padding="12,4" />
                                 </Grid>
                                 <StackPanel Orientation="Horizontal">
                   <Button Content="&#x202B;ملف تطبيق التلفزيون&#x202C;" Click="OnOpenSamsungWgt" Style="{StaticResource PillButton}" Margin="0,0,8,0" />
                   <Button Content="&#x202B;دليل إعداد التلفزيون (PDF)&#x202C;" Click="OnOpenGuidePdf" Style="{StaticResource PillButton}" />
                                 </StackPanel>
+                                <!-- Arabic edition: the card that installs the TV app (developer mode steps, Samsung sign-in,
+                                     progress, errors). The redesigned setup screen only saved the TV's address and never
+                                     installed anything, so nothing could appear on the TV. -->
+                                <s:TvAppCard x:Name="SamsungTvAppCard" Margin="0,12,0,0" />
                             </StackPanel>
 
                             <!-- Panel: LG webOS TV -->

@@ -2,6 +2,7 @@
 
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 using GameTranslator.App.Controls;
 
 namespace GameTranslator.App.Views;
@@ -18,6 +19,9 @@ internal static class ArabicLayout
     public static void Apply(FrameworkElement root)
     {
         root.FlowDirection = FlowDirection.RightToLeft;
+        // Addresses, codes and numbers keep Western digits: with a right-to-left layout WPF would swap them for
+        // Arabic-Indic digits and draw the dots of an IP address as boxes.
+        NumberSubstitution.SetSubstitution(root, NumberSubstitutionMethod.European);
         KeepPicturesAndInputsLeftToRight(root);
         root.Loaded += (_, _) => KeepPicturesAndInputsLeftToRight(root);
     }
