@@ -83,6 +83,23 @@ jobs:
           Write-Host "upstream app folder: $base"
           "UPSTREAM_APP=$base" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
 
+      # Informational: is the upstream release built from the same source this branch started from? A difference in
+      # the Windows app or the native bridge would mean this branch's app is laid over a newer upstream build.
+      - name: Compare the upstream release source with this branch's base
+        if: always()
+        continue-on-error: true
+        shell: bash
+        run: |
+          BASE=30d2639e3d91d97520eb2a27fd8d6c5c12f7723d
+          git fetch --depth=1 origin "$BASE" && git worktree add -f ../base-src FETCH_HEAD >/dev/null 2>&1
+          mkdir -p ../upstream-src && 7z x upstream/source-v1.8.0.zip -o../upstream-src -y >/dev/null
+          ROOT=$(dirname "$(find ../upstream-src -maxdepth 3 -name NOTICE | head -1)")
+          echo "upstream source root: $ROOT"
+          for part in windows/src windows/native tv/webos tv/tizen windows/Directory.Build.props; do
+            echo "== $part"
+            git diff --no-index --stat "../base-src/$part" "$ROOT/$part" | tail -15 || true
+          done
+
       - name: Build the Arabic app
         shell: pwsh
         run: |

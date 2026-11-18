@@ -43,7 +43,12 @@
 
   <!-- TV uygulaması paketleri: dist/tv-app ve tv/packages altındaki paketleri tv-app/ klasörüne kopyalar -->
   <ItemGroup>
-    <Content Include="..\..\..\dist\tv-app\*.ipk;..\..\..\dist\tv-app\*.wgt;..\..\..\dist\tv-app\*.apk;..\..\..\tv\packages\*.ipk;..\..\..\tv\packages\*.wgt;..\..\..\tv\packages\*.apk" Link="tv-app\%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+    <!-- A package just built into dist/tv-app replaces the committed one of the same name (tv/packages); shipping both
+         under one output path stops the publish (NETSDK1152). -->
+    <TvAppBuilt Include="..\..\..\dist\tv-app\*.ipk;..\..\..\dist\tv-app\*.wgt;..\..\..\dist\tv-app\*.apk" />
+    <TvAppCommitted Include="..\..\..\tv\packages\*.ipk;..\..\..\tv\packages\*.wgt;..\..\..\tv\packages\*.apk"
+                    Exclude="@(TvAppBuilt->'..\..\..\tv\packages\%(Filename)%(Extension)')" />
+    <Content Include="@(TvAppBuilt);@(TvAppCommitted)" Link="tv-app\%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
   </ItemGroup>
 
   <!-- PS5 Otomatik Eşleştirme Yardımcıları (Node.js & playactor betiği) -->
