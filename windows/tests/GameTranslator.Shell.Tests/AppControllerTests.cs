@@ -70,7 +70,13 @@ internal sealed class FakeTranslation : ITranslationModel
         Installed = true;
         progress.Report(1);
     }
-    public ITextTranslator Create(string source, string target) => new EchoTranslator();
+    /// <summary>Every (source, target) pair a local translator was created for.</summary>
+    public List<(string Source, string Target)> Created { get; } = [];
+    public ITextTranslator Create(string source, string target)
+    {
+        Created.Add((source, target));
+        return new EchoTranslator();
+    }
 
     private sealed class EchoTranslator : ITextTranslator
     {
@@ -117,6 +123,24 @@ internal sealed class FakeServices : IAppServices
         OnlineTranslators.Add((key, fallback));
         return fallback ?? Translation.Create("en", "tr");
     }
+
+    /// <summary>Every AI translator the controller asked for.</summary>
+    public List<(AiProvider Provider, string Key, string ModelId, string Target, ITextTranslator? Fallback)> AiTranslators { get; } = [];
+    /// <summary>False: this build has no AI translator (the factory returns null).</summary>
+    public bool HasAi { get; set; } = true;
+    public OnlineKeyCheck AiKeyCheck { get; set; } = new(OnlineKeyState.Valid);
+    public List<(AiProvider Provider, string Key, string Target)> CheckedAiKeys { get; } = [];
+    public ITextTranslator? MakeAiTranslator(AiProvider provider, string key, string modelId, string target, ITextTranslator? fallback)
+    {
+        AiTranslators.Add((provider, key, modelId, target, fallback));
+        return HasAi ? fallback ?? Translation.Create("en", target) : null;
+    }
+    public Task<OnlineKeyCheck> CheckAiKeyAsync(AiProvider provider, string key, string target)
+    {
+        CheckedAiKeys.Add((provider, key, target));
+        return Task.FromResult(AiKeyCheck);
+    }
+    public LinePool? Pool { get; set; }
 
     public Task<IReadOnlyList<ConsoleInfo>> DiscoverConsolesAsync() => Task.FromResult<IReadOnlyList<ConsoleInfo>>(Consoles);
     public Task<byte[]> AccountIdFromRedirectAsync(Uri redirect) => Task.FromResult(Enumerable.Repeat((byte)1, 8).ToArray());
@@ -478,6 +502,8 @@ public class AppControllerRunTests
     {
         var services = new FakeServices { Dubbing = new FakeDubbingModel(installed: false), FastDubbing = new FakeDubbingModel(installed: true) };
         var (controller, _, _) = Ready(services);
+        // The voices are Turkish: dubbing exists only with a Turkish target (the Arabic edition's default target is Arabic).
+        controller.Settings = controller.Settings with { TargetLanguage = "tr" };
         Assert.True(controller.DubbingAvailable);
         Assert.False(controller.DubbingInstalled);
         controller.Settings = controller.Settings with { Dubbing = controller.Settings.Dubbing with { Engine = DubbingEngine.Fast } };

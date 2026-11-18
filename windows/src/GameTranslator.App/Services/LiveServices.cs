@@ -597,6 +597,8 @@ public sealed class LiveServices : IAppServices
         // Yerel model indirilmişse Marian motorunu kullan; indirilmemişse anında Google GTX motoruna dön.
         public ITextTranslator Create(string source, string target)
         {
+            // The on-device model is English→Turkish; any other target is translated by the built-in Google GTX engine.
+            if (!TargetLanguages.IsTurkish(target)) return new GoogleGtxTranslator(source, TargetLanguages.Normalize(target));
             if (englishTurkish.IsInstalled)
             {
                 if (translator is not null) return translator;

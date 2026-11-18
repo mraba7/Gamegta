@@ -153,14 +153,24 @@ public sealed class AppController : INotifyPropertyChanged, IDisposable
     private void StartPool()
     {
         if (services.Pool is not { } pool) return;
-        pool.SetEnabled(settings.SharePool);
+        pool.SetEnabled(PoolAllowed(settings));
         // Beş dakikada bir gönderilir; sunucuya ulaşılamazsa kuyruk diskte bekler, sonra yeniden denenir.
         poolTimer = new Timer(_ => _ = pool.FlushAsync(), null, LinePool.FlushInterval, LinePool.FlushInterval);
     }
 
     /// <summary>Pakette olmayan İngilizce satır havuza önerilir; herhangi bir pakette olan (başka oyunun bile) gönderilmez.</summary>
+    /// <summary>
+    /// Game packs, the short-phrase table, DeepL, dubbing and the shared line pool exist for Turkish only. With any other
+    /// target language (this fork's default is Arabic) none of them runs: no Turkish text reaches the user and no game
+    /// line is sent to the pool that feeds the Turkish packs.
+    /// </summary>
+    public static bool UsesTurkishFeatures(UserSettings settings) => TargetLanguages.IsTurkish(settings.TargetLanguage);
+
+    private static bool PoolAllowed(UserSettings settings) => settings.SharePool && UsesTurkishFeatures(settings);
+
     private void OfferToPool(string text)
     {
+        if (!PoolAllowed(settings)) return;
         if (settings.SourceLanguage != "en" || services.Pool is not { } pool) return;
         if (CommunityPatchManager.Shared.Match(text) is not null) return;
         pool.Offer(text);
@@ -247,11 +257,12 @@ public sealed class AppController : INotifyPropertyChanged, IDisposable
             var old = settings;
             if (!Set(ref settings, value)) return;
             settingsStore.Save(value);
-            if (old.SharePool != value.SharePool) services.Pool?.SetEnabled(value.SharePool);
+            if (PoolAllowed(old) != PoolAllowed(value)) services.Pool?.SetEnabled(PoolAllowed(value));
             server.SendStyle(value.Style);
             if (old.Dubbing != value.Dubbing) DubbingSettingsChanged(old.Dubbing);
             if (isRunning && (old.SourceLanguage != value.SourceLanguage || old.TargetLanguage != value.TargetLanguage
-                              || old.OnlineTranslation != value.OnlineTranslation || old.Engine != value.Engine))
+                              || old.OnlineTranslation != value.OnlineTranslation || old.Engine != value.Engine
+                              || old.Provider != value.Provider || old.Quality != value.Quality))
             {
                 RefreshTranslatorStatus();
                 MakePipeline();
@@ -1132,11 +1143,15 @@ public sealed class AppController : INotifyPropertyChanged, IDisposable
         }, server, new ReadScheduler());
         // Paket yalnız oynanan oyunun paketiyse kullanılır (başka oyunun genel satırları yanlış çeviri basıyordu).
         var packGate = new PackGate();
-        built.PackMissed += OfferToPool;
-        // Oyun elle seçildiyse paket ilk satırdan kullanılır (oyunun tanınması beklenmez).
-        built.PackLookup = text => CommunityPatchManager.Shared.GameKnown
-            ? CommunityPatchManager.Shared.Match(text)
-            : packGate.Filter(text, CommunityPatchManager.Shared.Match(text));
+        // Packs hold Turkish lines: they are looked up (and their misses offered to the pool) only for Turkish.
+        if (UsesTurkishFeatures(settings))
+        {
+            built.PackMissed += OfferToPool;
+            // Oyun elle seçildiyse paket ilk satırdan kullanılır (oyunun tanınması beklenmez).
+            built.PackLookup = text => CommunityPatchManager.Shared.GameKnown
+                ? CommunityPatchManager.Shared.Match(text)
+                : packGate.Filter(text, CommunityPatchManager.Shared.Match(text));
+        }
         // Paket beklemesi kısa tutulur: 1.5.1'deki 300 / 800 ms her satıra gecikme ekliyordu. Tam cümle zaten
         // beklemez; yarım görünen satır ve bozuk görünen okuma yalnız daha iyisine fırsat verecek kadar bekler.
         // (Başka oyunların paketleri genel satırlarda ("Leave me alone!") isabet verdiği için isabete göre ayarlanmaz.)
@@ -1267,15 +1282,17 @@ public sealed class AppController : INotifyPropertyChanged, IDisposable
     {
         var local = MakeLocalTranslator();
 
-        if (settings.Engine == TranslationEngine.Gemini && HasGeminiKey)
+        if (ActiveAiProvider is { } provider && HasAiKey(provider))
         {
-            if (store.Load<string>(StoreKeys.GeminiKey) is { Length: > 0 } key &&
-                services.MakeGeminiTranslator(key, local is UnavailableTranslator ? null : local) is { } gemini)
+            if (StoreKeys.ForAi(provider) is { } slot && store.Load<string>(slot) is { Length: > 0 } key &&
+                services.MakeAiTranslator(provider, key, provider.ModelFor(settings.Quality).Id, TargetLanguages.Normalize(settings.TargetLanguage),
+                                          local is UnavailableTranslator ? null : local) is { } ai)
             {
-                return gemini;
+                return ai;
             }
         }
-        else if (settings.Engine == TranslationEngine.DeepL && HasDeepLKey)
+        // DeepL is wired for English→Turkish only (its translator and settings screen say so).
+        else if (settings.Engine == TranslationEngine.DeepL && HasDeepLKey && UsesTurkishFeatures(settings))
         {
             if (store.Load<string>(StoreKeys.DeepLKey) is { Length: > 0 } key &&
                 services.MakeOnlineTranslator(key, local is UnavailableTranslator ? null : local) is { } online)
@@ -1294,33 +1311,70 @@ public sealed class AppController : INotifyPropertyChanged, IDisposable
         return translation.Create(source, target);
     }
 
-    /// <summary>Kayıtlı bir Google Gemini anahtarı var mı.</summary>
-    public bool HasGeminiKey => store.Load<string>(StoreKeys.GeminiKey) is { Length: > 0 };
+    /// <summary>
+    /// The AI service that translates now: the one in settings when the engine is <see cref="TranslationEngine.Ai"/>;
+    /// Gemini for settings saved by older versions (engine "Gemini"); null for the local model and DeepL.
+    /// </summary>
+    private AiProvider? ActiveAiProvider => settings.Engine switch
+    {
+        TranslationEngine.Ai => settings.Provider,
+        TranslationEngine.Gemini => AiProvider.Gemini,
+        _ => null,
+    };
 
-    /// <summary>Gemini anahtarını dener; geçerliyse kaydeder ve Gemini'yi aktif model yapar.</summary>
-    public async Task<OnlineKeyCheck> SetGeminiKeyAsync(string key)
+    /// <summary>Is a key saved for this AI service (the key itself never goes back to the UI).</summary>
+    public bool HasAiKey(AiProvider provider) =>
+        StoreKeys.ForAi(provider) is { } slot && store.Load<string>(slot) is { Length: > 0 };
+
+    /// <summary>
+    /// Tries the key with a sample line in the target language; if the service accepts it (even with its quota used
+    /// up) the key is saved and the service becomes the active translator.
+    /// </summary>
+    public async Task<OnlineKeyCheck> SetAiKeyAsync(AiProvider provider, string key)
     {
         key = key.Trim();
-        var check = await services.CheckGeminiKeyAsync(key);
+        if (StoreKeys.ForAi(provider) is not { } slot) return new OnlineKeyCheck(OnlineKeyState.Invalid);
+        var check = await services.CheckAiKeyAsync(provider, key, TargetLanguages.Normalize(settings.TargetLanguage));
         if (check.State is OnlineKeyState.Valid or OnlineKeyState.QuotaExceeded)
         {
-            store.Save(StoreKeys.GeminiKey, key);
+            store.Save(slot, key);
             Changed(nameof(HasGeminiKey));
-            Settings = settings with { Engine = TranslationEngine.Gemini, OnlineTranslation = true };
+            Settings = settings with { Engine = TranslationEngine.Ai, Provider = provider, OnlineTranslation = true };
             if (isRunning) MakePipeline();
             RefreshTranslatorStatus();
         }
         return check;
     }
 
-    public void RemoveGeminiKey()
+    /// <summary>Forgets the service's key; if it was the active translator, translation goes back to the local one.</summary>
+    public void RemoveAiKey(AiProvider provider)
     {
-        store.Remove(StoreKeys.GeminiKey);
+        if (StoreKeys.ForAi(provider) is not { } slot) return;
+        var wasActive = ActiveAiProvider == provider;
+        store.Remove(slot);
         Changed(nameof(HasGeminiKey));
-        Settings = settings with { Engine = TranslationEngine.DirectML };
+        if (wasActive) Settings = settings with { Engine = TranslationEngine.DirectML };
         if (isRunning) MakePipeline();
         RefreshTranslatorStatus();
     }
+
+    /// <summary>Uses the service saved for an AI key that is already stored (the user picks between saved services).</summary>
+    public void UseAiProvider(AiProvider provider)
+    {
+        if (!HasAiKey(provider)) return;
+        Settings = settings with { Engine = TranslationEngine.Ai, Provider = provider, OnlineTranslation = true };
+    }
+
+    /// <summary>"Best quality" or "Fastest": the next line is translated with that model (the setter rebuilds the pipeline).</summary>
+    public void SetQuality(QualityMode mode) => Settings = settings with { Quality = mode };
+
+    /// <summary>Kayıtlı bir Google Gemini anahtarı var mı.</summary>
+    public bool HasGeminiKey => HasAiKey(AiProvider.Gemini);
+
+    /// <summary>Gemini anahtarını dener; geçerliyse kaydeder ve Gemini'yi aktif model yapar.</summary>
+    public Task<OnlineKeyCheck> SetGeminiKeyAsync(string key) => SetAiKeyAsync(AiProvider.Gemini, key);
+
+    public void RemoveGeminiKey() => RemoveAiKey(AiProvider.Gemini);
 
     /// <summary>DeepL yalnız İngilizce→Türkçe için açılır (ayar ekranındaki dil seçenekleri de bunlar).</summary>
     private bool OnlineTranslationActive =>
@@ -1701,6 +1755,8 @@ public sealed class AppController : INotifyPropertyChanged, IDisposable
     public bool FastDubbingAvailable => services.FastDubbing is not null;
     /// <summary>Ayarlarda seçili motor; hızlı ses yoksa doğal sese düşer.</summary>
     private IDubbingModel? ActiveDubbing =>
+        // The voices are Turkish; another target language has no dubbing.
+        !UsesTurkishFeatures(settings) ? null :
         settings.Dubbing.Engine == DubbingEngine.Fast && services.FastDubbing is { } fast ? fast : services.Dubbing;
     public bool DubbingInstalled => ActiveDubbing?.IsInstalled == true;
     public long DubbingDownloadBytes => services.Dubbing?.DownloadBytes ?? 0;
