@@ -1,0 +1,138 @@
+# SPDX-License-Identifier: AGPL-3.0-only
+# Arabic edition: builds the Windows app from this branch and publishes it as a zip on this fork's Releases page.
+#
+# The native library (gametranslator_native.dll: chiaki-ng + FFmpeg) and a few bundled helpers are not in the
+# repository; upstream builds them in its own CI. This workflow takes them from the upstream release the Arabic
+# edition is based on and lays this branch's freshly built app on top of that folder.
+name: Arabic Windows build
+
+on:
+  push:
+    branches: [arabic]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+env:
+  UPSTREAM_REPO: D3ATHLY/GameTranslator
+  UPSTREAM_TAG: v1.8.0
+  RELEASE_TAG: v1.8.1
+  ZIP_NAME: GameTranslator-Arabic-windows-x64.zip
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Unit tests of the Arabic changes
+        shell: pwsh
+        run: |
+          dotnet test windows/tests/GameTranslator.Translation.Tests -v q
+          dotnet test windows/tests/GameTranslator.Core.Tests --filter "TargetLanguagesTests|AiQualityModeTests" -v q
+          dotnet test windows/tests/GameTranslator.Shell.Tests --filter "ArabicEngineTests|ArabicSettingsTests" -v q
+          dotnet test windows/tests/GameTranslator.TvInstall.Tests --filter VersionsTests -v q
+          node tv/tests/direction.test.js
+
+      - name: Download the upstream release
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          New-Item -ItemType Directory -Force upstream | Out-Null
+          gh release view $env:UPSTREAM_TAG -R $env:UPSTREAM_REPO --json assets --jq '.assets[] | "\(.name)  \(.size)"'
+          gh release download $env:UPSTREAM_TAG -R $env:UPSTREAM_REPO -D upstream
+          Get-ChildItem upstream | Format-Table Name, Length
+
+      - name: Find the upstream app folder
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          New-Item -ItemType Directory -Force unpacked | Out-Null
+          $n = 0
+          foreach ($file in Get-ChildItem upstream -File) {
+            $n++
+            $dest = "unpacked/$n"
+            # zip, nupkg (a zip) and most installers open with 7-Zip; a file it cannot open is skipped.
+            & 7z x $file.FullName "-o$dest" -y | Out-Null
+            if ($LASTEXITCODE -ne 0) { Write-Host "skipped (not an archive): $($file.Name)"; $global:LASTEXITCODE = 0 }
+          }
+          # A nupkg found inside an installer is opened too.
+          foreach ($inner in Get-ChildItem unpacked -Recurse -Include *.nupkg, *.zip -File) {
+            $n++
+            & 7z x $inner.FullName "-ounpacked/$n" -y | Out-Null
+            $global:LASTEXITCODE = 0
+          }
+          $native = Get-ChildItem unpacked -Recurse -Filter gametranslator_native.dll -File | Select-Object -First 1
+          if (-not $native) {
+            Write-Host "::error::gametranslator_native.dll was not found in any asset of $env:UPSTREAM_REPO $env:UPSTREAM_TAG"
+            Get-ChildItem unpacked -Recurse -File | Select-Object -First 200 FullName | Format-Table -AutoSize
+            exit 1
+          }
+          $base = $native.Directory.FullName
+          if (-not (Test-Path (Join-Path $base 'GameTranslator.exe'))) {
+            Write-Host "::error::the folder with the native library has no GameTranslator.exe: $base"
+            Get-ChildItem $base | Format-Table Name, Length
+            exit 1
+          }
+          Write-Host "upstream app folder: $base"
+          "UPSTREAM_APP=$base" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+
+      - name: Build the Arabic app
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          # The Samsung TV package is rebuilt from this branch's TV page, so the app never ships a stale one.
+          bash scripts/package-tizen.sh
+          New-Item -ItemType Directory -Force windows/native/bin | Out-Null
+          Copy-Item (Join-Path $env:UPSTREAM_APP 'gametranslator_native.dll') windows/native/bin/ -Force
+          dotnet publish windows/src/GameTranslator.App/GameTranslator.App.csproj -c Release -r win-x64 --self-contained -o published
+          if ($LASTEXITCODE -ne 0) { exit 1 }
+
+      - name: Lay the Arabic app over the upstream folder
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          New-Item -ItemType Directory -Force app | Out-Null
+          Copy-Item (Join-Path $env:UPSTREAM_APP '*') app -Recurse -Force
+          # Older Samsung TV packages from upstream are removed: only this branch's package may reach the TV.
+          Get-ChildItem app/tv-app -Filter *.wgt -ErrorAction SilentlyContinue | Remove-Item -Force
+          Copy-Item published/* app -Recurse -Force
+          Copy-Item NOTICE, LICENSE, THIRD-PARTY-NOTICES.md app -Force
+          Copy-Item docs/arabic-setup.md app/README-arabic.md -Force
+
+          $must = 'GameTranslator.exe', 'gametranslator_native.dll', 'GameTranslator.Core.dll', 'NOTICE', 'LICENSE'
+          foreach ($name in $must) { if (-not (Test-Path (Join-Path app $name))) { Write-Host "::error::missing in the package: $name"; exit 1 } }
+          $wgt = @(Get-ChildItem app/tv-app -Filter 'gametranslator-samsung_*.wgt')
+          if ($wgt.Count -ne 1 -or $wgt[0].Name -ne 'gametranslator-samsung_1.1.0.wgt') {
+            Write-Host "::error::expected exactly gametranslator-samsung_1.1.0.wgt in tv-app, found: $($wgt.Name -join ', ')"; exit 1
+          }
+          $version = (Get-Item app/GameTranslator.Core.dll).VersionInfo.FileVersion
+          Write-Host "GameTranslator.Core.dll version: $version"
+          if (-not $version.StartsWith('1.8.1')) { Write-Host "::error::the Core dll is not this branch's build ($version)"; exit 1 }
+          Compress-Archive -Path app/* -DestinationPath $env:ZIP_NAME -Force
+          Get-Item $env:ZIP_NAME | Format-Table Name, Length
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: GameTranslator-Arabic-windows-x64
+          path: ${{ env.ZIP_NAME }}
+
+      - name: Publish on this fork's Releases page
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $notes = "Arabic edition of GameTranslator (based on upstream $env:UPSTREAM_TAG). Setup guide: docs/arabic-setup.md. Built from commit $env:GITHUB_SHA. Not yet tested on a real PS5 and TV."
+          gh release view $env:RELEASE_TAG -R $env:GITHUB_REPOSITORY 2>$null
+          if ($LASTEXITCODE -eq 0) {
+            gh release upload $env:RELEASE_TAG $env:ZIP_NAME -R $env:GITHUB_REPOSITORY --clobber
+          } else {
+            $global:LASTEXITCODE = 0
+            gh release create $env:RELEASE_TAG $env:ZIP_NAME -R $env:GITHUB_REPOSITORY --target $env:GITHUB_SHA --title "GameTranslator Arabic $env:RELEASE_TAG" --notes $notes
+          }
